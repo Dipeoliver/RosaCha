@@ -3,6 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/drawable/ic_baseline_camera_alt_24.xml" value="0.3635" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.3635" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/drawable/ic_baseline_monetization_on_24.xml" value="0.3635" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/drawable/side_nav_bar.xml" value="0.3635" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/layout/activity_main.xml" value="0.3625" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/layout/app_bar_main.xml" value="0.3625" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/layout/content_main.xml" value="0.3625" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/layout/fragment_client.xml" value="0.5" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/layout/fragment_home.xml" value="0.28854166666666664" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/layout/fragment_inventory.xml" value="0.33" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/layout/fragment_splash_screen.xml" value="0.33" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/layout/nav_header_main.xml" value="0.34814814814814815" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/menu/activity_main_drawer.xml" value="0.3625" />
+        <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaCha/app/src/main/res/menu/main.xml" value="0.3625" />
         <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaChaClausFonseca/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.3555" />
         <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaChaClausFonseca/app/src/main/res/drawable/ic_baseline_people_24.xml" value="0.3235" />
         <entry key="..\:/Users/vntdipe/AndroidStudioProjects/RosaChaClausFonseca/app/src/main/res/drawable/ic_menu_camera.xml" value="0.181" />

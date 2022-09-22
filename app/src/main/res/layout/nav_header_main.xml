@@ -14,12 +14,12 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="170dp"
-        android:layout_height="69dp"
+        android:layout_width="228dp"
+        android:layout_height="129dp"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="0dp"
-        android:scaleType="fitStart"
-        app:srcCompat="@drawable/rosa" />
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/ic_launcher_round" />
 
     <TextView
         android:id="@+id/textView"
