@@ -13,9 +13,9 @@
             android:icon="@drawable/ic_baseline_people_24"
             android:title="@string/menu_client" />
         <item
-            android:id="@+id/nav_inventory"
+            android:id="@+id/nav_add_product"
             android:icon="@drawable/ic_baseline_assignment_24"
-            android:title="@string/menu_inventory" />
+            android:title="@string/menu_add_product" />
         <item
             android:id="@+id/nav_price"
             android:icon="@drawable/ic_baseline_calculate_24"

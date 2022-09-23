@@ -1,10 +1,10 @@
-package com.example.rosachaclausfonseca.ui.inventory
+package com.example.rosachaclausfonseca.ui.product
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class InventoryViewModel : ViewModel() {
+class AddProductViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is Inventory Fragment"

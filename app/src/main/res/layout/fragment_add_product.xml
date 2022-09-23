@@ -4,24 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.inventory.InventoryFragment">
-
-    <TextView
-        android:id="@+id/text_inventory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/menu_inventory"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.977" />
+    tools:context=".ui.product.AddProductFragment">
 
     <ImageButton
         android:id="@+id/btn_scan"
@@ -84,7 +67,7 @@
         app:layout_constraintVertical_bias="0.296" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName6"
+        android:id="@+id/edt_reference"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="124dp"
@@ -118,7 +101,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3">
 
         <RadioButton
-            android:id="@+id/radioButton8"
+            android:id="@+id/radio_button8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -126,7 +109,7 @@
             android:text="Claudia" />
 
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/radio_button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -190,7 +173,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName6" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_reference" />
 
     <TextView
         android:id="@+id/textView7"
@@ -262,7 +245,6 @@
         android:id="@+id/txt_value"
         android:layout_width="262dp"
         android:layout_height="56dp"
-        android:enabled="false"
         android:hint="0000000000000"
         android:textAlignment="center"
         android:textSize="34sp"

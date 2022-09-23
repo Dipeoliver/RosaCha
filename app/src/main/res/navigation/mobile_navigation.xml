@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_splash_screen_fragment">
+    app:startDestination="@id/nav_home">
 
     <fragment
         android:id="@+id/nav_home"
@@ -16,10 +16,10 @@
         android:label="@string/menu_client"
         tools:layout="@layout/fragment_client" />
     <fragment
-        android:id="@+id/nav_inventory"
-        android:name="com.example.rosachaclausfonseca.ui.inventory.InventoryFragment"
-        android:label="@string/menu_inventory"
-        tools:layout="@layout/fragment_inventory" />
+        android:id="@+id/nav_add_product"
+        android:name="com.example.rosachaclausfonseca.ui.product.AddProductFragment"
+        android:label="@string/menu_add_product"
+        tools:layout="@layout/fragment_add_product" />
     <fragment
         android:id="@+id/nav_price"
         android:name="com.example.rosachaclausfonseca.ui.price.PriceFragment"
@@ -30,11 +30,4 @@
         android:name="com.example.rosachaclausfonseca.ui.sales.SalesFragment"
         android:label="@string/menu_sales"
         tools:layout="@layout/fragment_sales" />
-    <fragment
-        android:id="@+id/nav_splash_screen_fragment"
-        android:name="com.example.rosachaclausfonseca.SplashScreenFragment"
-        tools:layout="@layout/fragment_splash_screen" />
-    <action
-        android:id="@+id/action_splashScreenFragment_to_nav_home"
-        app:destination="@id/nav_home" />
 </navigation>

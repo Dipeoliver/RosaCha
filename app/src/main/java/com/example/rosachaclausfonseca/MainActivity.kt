@@ -14,12 +14,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.rosachaclausfonseca.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Mudar da Splash para theme normal
+        Thread.sleep(1000)
+        setTheme(R.style.Theme_RosaChaClausFonseca_PopupOverlay)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -37,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_client, R.id.nav_inventory, R.id.nav_price, R.id.nav_sales
+                R.id.nav_home, R.id.nav_client, R.id.nav_add_product, R.id.nav_price, R.id.nav_sales
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

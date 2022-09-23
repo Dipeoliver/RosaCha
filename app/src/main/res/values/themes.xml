@@ -23,9 +23,9 @@
 
     <style name="Theme.RosaChaClausFonseca.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="splashTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Point 3-->
-        <item name="android:windowBackground">@drawable/side_nav_bar</item>
+        <item name="android:windowBackground">@drawable/splash_bg</item>
 
     </style>
 </resources>
