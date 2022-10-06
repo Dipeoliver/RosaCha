@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.product.AddProductFragment">
+    tools:context=".presentation.dashboard.product.AddProductFragment">
 
     <ImageButton
-        android:id="@+id/btn_scan"
+        android:id="@+id/btn_add_product_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -248,7 +248,7 @@
         android:hint="0000000000000"
         android:textAlignment="center"
         android:textSize="34sp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_scan"
+        app:layout_constraintEnd_toStartOf="@+id/btn_add_product_scan"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />

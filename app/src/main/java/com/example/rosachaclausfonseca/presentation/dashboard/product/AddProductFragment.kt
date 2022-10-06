@@ -1,4 +1,4 @@
-package com.example.rosachaclausfonseca.ui.product
+package com.example.rosachaclausfonseca.presentation.dashboard.product
 
 import android.content.Intent
 import android.os.Bundle
@@ -58,7 +58,7 @@ class AddProductFragment : Fragment() {
 
     @Suppress("DEPRECATION")
     private fun configureButton() {
-        binding.btnScan.setOnClickListener {
+        binding.btnAddProductScan.setOnClickListener {
             val integrator: IntentIntegrator =
                 IntentIntegrator.forSupportFragment(this@AddProductFragment)
             integrator.setPrompt("Scanner Ativo")

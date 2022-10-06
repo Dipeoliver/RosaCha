@@ -1,4 +1,4 @@
-package com.example.rosachaclausfonseca.ui.sales
+package com.example.rosachaclausfonseca.presentation.dashboard.sales
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,15 +1,12 @@
-package com.example.rosachaclausfonseca.ui.sales
+package com.example.rosachaclausfonseca.presentation.dashboard.sales
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
-import com.example.rosachaclausfonseca.R
 import com.example.rosachaclausfonseca.databinding.FragmentSalesBinding
-import com.example.rosachaclausfonseca.ui.price.PriceViewModel
 
 class SalesFragment : Fragment() {
     private var _binding: FragmentSalesBinding? = null
@@ -25,10 +22,6 @@ class SalesFragment : Fragment() {
         _binding = FragmentSalesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.txtSales
-        salesBinding.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 

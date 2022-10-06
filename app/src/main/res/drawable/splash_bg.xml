@@ -4,6 +4,6 @@
     android:drawable="@drawable/bg_gradient_rosa"/>
 <item>
         <bitmap android:gravity="center"
-            android:src="@drawable/ic_rosa_round"/>
+            android:src="@drawable/ic_launcher"/>
 </item>
 </layer-list>

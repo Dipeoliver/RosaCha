@@ -1,12 +1,14 @@
-package com.example.rosachaclausfonseca.ui.price
+package com.example.rosachaclausfonseca.presentation.dashboard.client
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class PriceViewModel : ViewModel() {
+class ClientViewModel : ViewModel() {
+
     private val _text = MutableLiveData<String>().apply {
-        value = "This is Price Fragment"
+        value = "Diego"
     }
+    // receber dados para visualizar na tela
     val text: LiveData<String> = _text
 }
