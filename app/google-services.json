@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "892842259367",
+    "project_id": "fir-rosacha",
+    "storage_bucket": "fir-rosacha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892842259367:android:f3a90e9ceb3800c1153c82",
+        "android_client_info": {
+          "package_name": "com.dipeoliver.example.firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "892842259367-ocqugifmed3826f94amsct1jiq7u8c34.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMZ2JGA_cgs-QI3JPA_gsbWIdPrD_dzVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "892842259367-ocqugifmed3826f94amsct1jiq7u8c34.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
