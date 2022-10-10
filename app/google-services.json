@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:892842259367:android:f3a90e9ceb3800c1153c82",
+        "mobilesdk_app_id": "1:892842259367:android:3d568788b62eaf3a153c82",
         "android_client_info": {
-          "package_name": "com.dipeoliver.example.firebase"
+          "package_name": "com.example.rosachastore"
         }
       },
       "oauth_client": [

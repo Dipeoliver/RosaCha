@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/Theme.AppCompat.DayNight.NoActionBar"
-    android:background="@color/Pink"
+    android:background="@drawable/bg_gradient_rosa"
     tools:context=".presentation.login.LoginFragment">
 
     <EditText
@@ -14,14 +14,14 @@
         android:layout_width="350dp"
         android:layout_height="60dp"
         android:drawableRight="@drawable/ic_baseline_email_24"
-        android:hint="E-mail"
+        android:hint="@string/e_mail"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.422"></EditText>
+        app:layout_constraintVertical_bias="0.422" />
 
     <EditText
         android:id="@+id/passwordLayout"
@@ -42,7 +42,7 @@
     </EditText>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_login"
         style="@style/Button_style"
         android:textColor="@color/white"
         android:text="Sign In"

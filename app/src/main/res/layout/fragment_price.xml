@@ -4,12 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient_rosa2"
     tools:context=".presentation.dashboard.price.PriceFragment">
+
+    <ImageButton
+        android:id="@+id/edt_add_barcode2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_add_task_24"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_price_barcode"
+        app:layout_constraintTop_toBottomOf="@+id/edt_price_scan"
+        tools:layout_editor_absoluteX="340dp" />
 
     <EditText
         android:id="@+id/edt_price_barcode"
+        style="@style/Edit_text"
         android:layout_width="301dp"
-        android:layout_height="0dp"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:ems="10"
@@ -22,19 +33,24 @@
 
     <EditText
         android:id="@+id/edt_price_item"
+        style="@style/Edit_text"
         android:layout_width="380dp"
-        android:layout_height="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="68dp"
         android:ems="10"
         android:hint="Item"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edt_price_barcode" />
 
     <EditText
         android:id="@+id/edt_price_price"
+        style="@style/Edit_text"
+
         android:layout_width="301dp"
-        android:layout_height="43dp"
+        android:layout_height="60dp"
         android:ems="10"
         android:hint="Price"
         android:inputType="textPersonName"
@@ -43,12 +59,14 @@
         app:layout_constraintHorizontal_bias="0.145"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.535" />
+        app:layout_constraintVertical_bias="0.679" />
 
     <EditText
         android:id="@+id/edt_price_color"
+        style="@style/Edit_text"
         android:layout_width="301dp"
-        android:layout_height="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="80dp"
         android:ems="10"
         android:hint="Color"
         android:inputType="textPersonName"
@@ -59,8 +77,10 @@
 
     <EditText
         android:id="@+id/edt_price_size"
+        style="@style/Edit_text"
         android:layout_width="100dp"
-        android:layout_height="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="68dp"
         android:ems="10"
         android:hint="Size"
         android:inputType="textPersonName"
@@ -73,8 +93,8 @@
         android:id="@+id/edt_price_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_baseline_camera_alt_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

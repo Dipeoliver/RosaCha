@@ -12,5 +12,4 @@
         android:orderInCategory="100"
         android:title="sair"
         app:showAsAction="never" />
-
 </menu>
