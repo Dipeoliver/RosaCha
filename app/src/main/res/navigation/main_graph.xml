@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.clausfonseca.rosacha.ui.onboarding.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_authentication"
+            app:destination="@id/authentication"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_splashFragment_to_dashboardActivity3"
+            app:destination="@id/dashboardActivity3" />
+    </fragment>
+    <navigation
+        android:id="@+id/authentication"
+        app:startDestination="@id/loginFragment">
+        <fragment
+            android:id="@+id/registerFragment"
+            android:name="com.clausfonseca.rosacha.ui.onboarding.login.RegisterFragment"
+            android:label="fragment_register"
+            tools:layout="@layout/fragment_register" />
+        <fragment
+            android:id="@+id/recoverFragment"
+            android:name="com.clausfonseca.rosacha.ui.onboarding.login.RecoverFragment"
+            android:label="fragment_recover"
+            tools:layout="@layout/fragment_recover">
+
+
+        </fragment>
+        <fragment
+            android:id="@+id/loginFragment"
+            android:name="com.clausfonseca.rosacha.ui.onboarding.login.LoginFragment"
+            android:label="fragment_login"
+            tools:layout="@layout/fragment_login">
+            <argument
+                android:name="email"
+                app:argType="string" />
+            <action
+                android:id="@+id/action_loginFragment_to_registerFragment"
+                app:destination="@id/registerFragment" />
+            <action
+                android:id="@+id/action_loginFragment_to_recoverFragment"
+                app:destination="@id/recoverFragment" />
+        </fragment>
+        <action
+            android:id="@+id/action_global_dashboardActivity3"
+            app:destination="@id/dashboardActivity3" />
+    </navigation>
+    <activity
+        android:id="@+id/dashboardActivity3"
+        android:name="com.clausfonseca.rosacha.ui.dashboard.DashboardActivity"
+        android:label="activity_dashboard"
+        tools:layout="@layout/activity_dashboard" />
+</navigation>

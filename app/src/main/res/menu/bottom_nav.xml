@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:id="@+id/home"
+        android:icon="@drawable/ic_baseline_home_24"/>
+    <item android:title="Client"
+        android:id="@+id/client"
+        android:icon="@drawable/ic_baseline_person_outline_24"/>/>
+    <item android:title="Product"
+        android:id="@+id/product"
+        android:icon="@drawable/ic_baseline_post_add_24"/>/>
+    <item android:title="Price"
+        android:id="@+id/price"
+        android:icon="@drawable/ic_baseline_monetization_on_24"/>/>
+    <item android:title="Sales"
+        android:id="@+id/sales"
+        android:icon="@drawable/ic_baseline_point_of_sale_24"/>/>
+</menu>

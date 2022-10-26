@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard_graf"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.clausfonseca.rosacha.ui.onboarding.HomeFragment"
+        android:label="fragment_product"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_main_graph2"
+            app:destination="@id/main_graph" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientFragment"
+        android:name="com.clausfonseca.rosacha.ui.dashboard.client.ClientFragment"
+        android:label="fragment_client"
+        tools:layout="@layout/fragment_client" >
+        <action
+            android:id="@+id/action_clientFragment_to_main_graph"
+            app:destination="@id/main_graph" />
+    </fragment>
+    <fragment
+        android:id="@+id/productFragment"
+        android:name="com.clausfonseca.rosacha.ui.dashboard.product.ProductFragment"
+        android:label="ProductFragment"
+        tools:layout="@layout/fragment_product">
+        <action
+            android:id="@+id/action_productFragment_to_main_graph"
+            app:destination="@id/main_graph" />
+    </fragment>
+    <include app:graph="@navigation/main_graph" />
+</navigation>

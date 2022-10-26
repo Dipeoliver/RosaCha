@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "892842259367",
-    "project_id": "fir-rosacha",
-    "storage_bucket": "fir-rosacha.appspot.com"
+    "project_number": "906799141529",
+    "project_id": "rosachafirebase",
+    "storage_bucket": "rosachafirebase.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:892842259367:android:3d568788b62eaf3a153c82",
+        "mobilesdk_app_id": "1:906799141529:android:0b4e5e8dbc55a7b2e75e08",
         "android_client_info": {
-          "package_name": "com.example.rosachastore"
+          "package_name": "com.clausfonseca.rosacha"
         }
       },
       "oauth_client": [
         {
-          "client_id": "892842259367-ocqugifmed3826f94amsct1jiq7u8c34.apps.googleusercontent.com",
+          "client_id": "906799141529-nr5f574oa3bfa36f34dcqd8lrc5ntrvm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBMZ2JGA_cgs-QI3JPA_gsbWIdPrD_dzVQ"
+          "current_key": "AIzaSyDNV4VIpUfGOXiBtBv0GpK9aK7slw3H3H8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "892842259367-ocqugifmed3826f94amsct1jiq7u8c34.apps.googleusercontent.com",
+              "client_id": "906799141529-nr5f574oa3bfa36f34dcqd8lrc5ntrvm.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
