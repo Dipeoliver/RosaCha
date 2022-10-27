@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductBinding
 import com.clausfonseca.rosacha.ui.adapter.ViewPagerAdapter
@@ -20,6 +22,7 @@ class ProductFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +35,12 @@ class ProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
         configTabLayout()
+        initClicks()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun configTabLayout() {
@@ -53,8 +62,25 @@ class ProductFragment : Fragment() {
         }.attach()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun initClicks() {
+        binding.ibLogout.setOnClickListener {
+            logoutApp()
+        }
     }
+
+    private fun logoutApp() {
+        auth.signOut()
+        findNavController().navigate(R.id.action_productFragment_to_authentication)
+    }
+
+//    private fun onBackPressed (){
+//        requireActivity().onBackPressedDispatcher.addCallback(
+//            viewLifecycleOwner,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//                    findNavController().navigate(R.id.action_productFragment_to_homeFragment)
+//                }
+//            }
+//        )
+//    }
 }

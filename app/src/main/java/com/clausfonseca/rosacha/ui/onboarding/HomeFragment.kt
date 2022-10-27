@@ -20,7 +20,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -39,11 +39,13 @@ class HomeFragment : Fragment() {
 
     private fun logoutApp() {
         auth.signOut()
-        findNavController().navigate(R.id.action_homeFragment_to_main_graph2)
+        findNavController().navigate(R.id.action_homeFragment_to_authentication)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

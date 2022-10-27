@@ -32,6 +32,7 @@ class AddProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
+        configureButton()
     }
 
     @Suppress("DEPRECATION")
