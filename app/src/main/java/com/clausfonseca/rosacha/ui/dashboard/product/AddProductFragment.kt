@@ -42,15 +42,15 @@ class AddProductFragment : Fragment() {
 
         if (result != null) {
             if (result.contents != null) {
-                binding.edtBarcode.setText(result.contents)
-                binding.edtReference.requestFocus()
+                binding.edtBarcodeProduct.setText(result.contents)
+                binding.edtReferenceProduct.requestFocus()
 
             } else {
-                binding.edtBarcode.setText("scan failed")
+                binding.edtBarcodeProduct.setText("scan failed")
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
-            binding.edtBarcode.requestFocus()
+            binding.edtBarcodeProduct.requestFocus()
         }
     }
 

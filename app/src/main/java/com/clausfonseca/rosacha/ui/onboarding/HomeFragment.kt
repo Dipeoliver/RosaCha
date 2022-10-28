@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
@@ -30,7 +31,14 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
         initClicks()
+        onBackPressed()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun initClicks() {
         binding.ibLogout.setOnClickListener {
             logoutApp()
@@ -42,10 +50,17 @@ class HomeFragment : Fragment() {
         findNavController().navigate(R.id.action_homeFragment_to_authentication)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    isEnabled = false
+                    requireActivity().finish()
+//                    RosaChaActivity().finish()
+                    SplashFragment().onDestroyView()
+                }
+            }
+        )
     }
-
-
 }

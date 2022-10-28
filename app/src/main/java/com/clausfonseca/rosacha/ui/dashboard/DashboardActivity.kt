@@ -39,8 +39,4 @@ class DashboardActivity : AppCompatActivity() {
         fragmentTransition.replace(R.id.frame_layout, fragment)
         fragmentTransition.commit()
     }
-
-//    override fun onBackPressed() {
-//        finish()
-//    }
 }

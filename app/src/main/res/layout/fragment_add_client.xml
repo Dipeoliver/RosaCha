@@ -33,7 +33,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/edt_barcode"
+        android:id="@+id/edt_barcode_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -59,7 +59,7 @@
         android:text="Phone"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_barcode_price" />
 
     <EditText
         android:id="@+id/edt_barcode2"

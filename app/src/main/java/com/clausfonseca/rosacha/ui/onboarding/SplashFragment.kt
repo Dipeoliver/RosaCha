@@ -42,12 +42,12 @@ class SplashFragment : Fragment() {
             findNavController().navigate(R.id.action_splashFragment_to_authentication)
         } else {
             findNavController().navigate(R.id.action_splashFragment_to_dashboardActivity3)
-
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        findNavController().popBackStack()
     }
 }
