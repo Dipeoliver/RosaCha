@@ -11,10 +11,6 @@
     <string name="empty_email">The email field cannot be empty</string>
     <string name="secret_password">********</string>
     <string name="password_fragment">Password</string>
-    <string name="barcode">Barcode</string>
-    <string name="description">Description</string>
-    <string name="size">Size</string>
-    <string name="color">Color</string>
 
     <!--Login Fragment-->
     <string name="login">Login</string>
@@ -40,21 +36,18 @@
     <string name="add_product">Add Product</string>
     <string name="list_product">List of Products</string>
     <string name="edit_product">Edit Product</string>
+    <string name="barcode">Barcode</string>
     <string name="reference">Reference</string>
-    <string name="cost_price">Cost Price $</string>
-    <string name="sales_price">Sales Price $</string>
+    <string name="description">Description</string>
+    <string name="size">Size</string>
+    <string name="color">Color</string>
+    <string name="cost_price">Cost Price</string>
+    <string name="sales_price">Sales Price</string>
     <string name="owner">Owner</string>
     <string name="claudia">Claudia</string>
     <string name="claudenice">Claudenice</string>
     <string name="add">Add</string>
-    <string name="brand">brand</string>
 
     <!--    Client Fragment-->
-    <string name="add_client">Add Client</string>
-    <string name="list_client">List of Client</string>
-    <string name="edit_client">Edit Client</string>
-    <string name="provider">Provider</string>
-    <string name="rs">RS</string>
-    <string name="symbol_3x">3X = R$</string>
-    <string name="symbol_6x">6X = R$</string>
+
 </resources>

@@ -16,8 +16,8 @@
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_splashFragment_to_dashboardActivity3"
-            app:destination="@id/dashboardActivity"
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true"/>
     </fragment>
@@ -53,39 +53,23 @@
                 app:destination="@id/recoverFragment" />
         </fragment>
         <action
-            android:id="@+id/action_global_dashboardActivity3"
-            app:destination="@id/dashboardActivity" />
+            android:id="@+id/action_global_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </navigation>
-    <activity
-        android:id="@+id/dashboardActivity"
-        android:name="com.clausfonseca.rosacha.ui.dashboard.DashboardActivity"
-        android:label="activity_dashboard"
-        tools:layout="@layout/activity_dashboard" />
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.clausfonseca.rosacha.ui.onboarding.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_authentication"
-            app:destination="@id/authentication" />
-    </fragment>
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/productFragment"
+        android:name="com.clausfonseca.rosacha.ui.dashboard.product.ProductFragment"
+        android:label="ProductFragment" />
     <fragment
         android:id="@+id/clientFragment"
         android:name="com.clausfonseca.rosacha.ui.dashboard.client.ClientFragment"
         android:label="fragment_client"
-        tools:layout="@layout/fragment_client" >
-        <action
-            android:id="@+id/action_clientFragment_to_authentication"
-            app:destination="@id/authentication" />
-    </fragment>
-    <fragment
-        android:id="@+id/productFragment"
-        android:name="com.clausfonseca.rosacha.ui.dashboard.product.ProductFragment"
-        android:label="ProductFragment"
-        tools:layout="@layout/fragment_product">
-        <action
-            android:id="@+id/action_productFragment_to_authentication"
-            app:destination="@id/authentication" />
-    </fragment>
+        tools:layout="@layout/fragment_client" />
 </navigation>

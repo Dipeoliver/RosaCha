@@ -75,7 +75,7 @@ class LoginFragment : Fragment() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    findNavController().navigate(R.id.action_global_dashboardActivity3)
+                    findNavController().navigate(R.id.action_global_homeFragment)
                 } else {
                     binding.progressBar2.isVisible = false
                     Toast.makeText(

@@ -39,6 +39,7 @@ class RegisterFragment : Fragment() {
             validateData()
         }
     }
+
     private fun validateData() {
         val email = binding.edtEmail.text.toString().trim()
         val password = binding.edtPassword.text.toString().trim()
@@ -49,7 +50,11 @@ class RegisterFragment : Fragment() {
                 binding.progressBar.isVisible = true
                 registerUser(email, password)
             } else {
-                Toast.makeText(requireContext(), getString(R.string.check_password), Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.check_password),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         } else {
@@ -63,7 +68,7 @@ class RegisterFragment : Fragment() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    findNavController().navigate(R.id.action_global_dashboardActivity3)
+                    findNavController().navigate(R.id.action_global_homeFragment)
                 } else {
                     binding.progressBar.isVisible = false
                 }

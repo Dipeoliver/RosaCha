@@ -32,7 +32,6 @@ class AddProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
-        configureButton()
     }
 
     @Suppress("DEPRECATION")
@@ -42,15 +41,15 @@ class AddProductFragment : Fragment() {
 
         if (result != null) {
             if (result.contents != null) {
-                binding.edtBarcodeProduct.setText(result.contents)
-                binding.edtReferenceProduct.requestFocus()
+                binding.edtBarcode.setText(result.contents)
+                binding.edtReference.requestFocus()
 
             } else {
-                binding.edtBarcodeProduct.setText("scan failed")
+                binding.edtBarcode.setText("scan failed")
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
-            binding.edtBarcodeProduct.requestFocus()
+            binding.edtBarcode.requestFocus()
         }
     }
 

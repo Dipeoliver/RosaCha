@@ -1,42 +1,36 @@
 package com.clausfonseca.rosacha.ui.dashboard
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import android.os.Bundle
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.ActivityDashboardBinding
-import com.clausfonseca.rosacha.ui.dashboard.client.ClientFragment
-import com.clausfonseca.rosacha.ui.dashboard.price.PriceFragment
-import com.clausfonseca.rosacha.ui.dashboard.product.ProductFragment
-import com.clausfonseca.rosacha.ui.onboarding.HomeFragment
+import com.clausfonseca.rosacha.databinding.FragmentAddProductBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDashboardBinding
+    private lateinit var navController:NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        replaceFragment(HomeFragment())
-        binding.bottomNavigationView.setOnItemSelectedListener {
-            when (it.itemId) {
 
-                R.id.home -> replaceFragment(HomeFragment())
-                R.id.product -> replaceFragment(ProductFragment())
-                R.id.client -> replaceFragment(ClientFragment())
-                R.id.price -> replaceFragment(PriceFragment())
-                else -> {}
-            }
-            true
-        }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransition = fragmentManager.beginTransaction()
-        fragmentTransition.replace(R.id.frame_layout, fragment)
-        fragmentTransition.commit()
+//        val navController = findNavController(R.id.homeFragment)
+//
+////        navController = navHostFragment.findNavController()
+//        binding.bottomNavigationView.setupWithNavController(navController)
+//        val appBarConfiguration =
+//            AppBarConfiguration(setOf(R.id.homeFragment, R.id.productFragment, R.id.clientFragment))
+//        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 }
