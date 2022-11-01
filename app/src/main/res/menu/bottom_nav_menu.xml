@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="Home"
-        android:id="@+id/home"
+        android:id="@+id/homeFragment"
         android:icon="@drawable/ic_baseline_home_24"/>
     <item android:title="Client"
-        android:id="@+id/client"
+        android:id="@+id/clientFragment"
         android:icon="@drawable/ic_baseline_person_outline_24"/>/>
     <item android:title="Product"
-        android:id="@+id/product"
+        android:id="@+id/productFragment"
         android:icon="@drawable/ic_baseline_post_add_24"/>/>
     <item android:title="Price"
         android:id="@+id/price"

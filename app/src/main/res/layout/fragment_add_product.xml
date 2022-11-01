@@ -6,9 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.product.AddProductFragment">
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/barcode"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/edt_barcode"
+        android:id="@+id/edt_barcode_product"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -25,30 +35,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <TextView
-        android:id="@+id/textView4"
+    <ImageButton
+        android:id="@+id/btn_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/barcode"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/ic_baseline_photo_camera_24"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_barcode_product"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edt_barcode_product"
+        app:layout_constraintTop_toTopOf="@+id/edt_barcode_product" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:text="@string/reference"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_barcode_product" />
 
     <EditText
-        android:id="@+id/edt_reference"
+        android:id="@+id/edt_reference_product"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -69,14 +81,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:text="@string/description"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_reference" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_reference_product" />
 
     <EditText
-        android:id="@+id/edt_description"
+        android:id="@+id/edt_description_product"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -93,29 +105,72 @@
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/brand"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_description_product" />
+
+    <EditText
+        android:id="@+id/edt_brand_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_edit"
+        android:ems="10"
+        android:hint="@string/brand"
+        android:inputType="textPersonName"
+        android:padding="14dp"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+    <TextView
+        android:id="@+id/txt_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="212dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/provider"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_description_product" />
+
+    <EditText
+        android:id="@+id/edt_provider_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/bg_edit"
+        android:ems="10"
+        android:hint="@string/provider"
+        android:inputType="textPersonName"
+        android:padding="14dp"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edt_brand_product"
+        app:layout_constraintTop_toBottomOf="@+id/txt_provider" />
+
+    <TextView
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:text="@string/size"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_description" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="152dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/color"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toEndOf="@+id/textView7"
-        app:layout_constraintTop_toBottomOf="@+id/edt_description" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_brand_product" />
 
     <EditText
-        android:id="@+id/edt_size"
+        android:id="@+id/edt_size_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -129,19 +184,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="212dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/color"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_provider_product" />
+
+
     <EditText
-        android:id="@+id/edt_color"
+        android:id="@+id/edt_color_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:background="@drawable/bg_edit"
         android:ems="10"
         android:hint="@string/color"
         android:inputType="textPersonName"
         android:padding="14dp"
         android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@+id/edt_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edt_size_product"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <TextView
@@ -149,25 +218,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:text="@string/cost_price"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_size" />
-
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="116dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/sales_price"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toEndOf="@+id/textView9"
-        app:layout_constraintTop_toBottomOf="@+id/edt_color" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_size_product" />
 
     <EditText
-        android:id="@+id/edt_cost_price"
+        android:id="@+id/edt_cost_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -175,30 +233,53 @@
         android:background="@drawable/bg_edit"
         android:ems="10"
         android:hint="@string/cost_price"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         android:padding="14dp"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/sales_price"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/edt_color_product" />
+
     <EditText
-        android:id="@+id/edt_sales_price"
+        android:id="@+id/edt_sales_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:background="@drawable/bg_edit"
         android:ems="10"
         android:hint="@string/sales_price"
         android:inputType="number"
         android:padding="14dp"
         android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@+id/edt_cost_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edt_cost_product"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/owner"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_cost_product" />
 
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/rg_owner_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -230,41 +311,34 @@
             android:textColor="@color/white" />
     </RadioGroup>
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/owner"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_cost_price" />
-
     <Button
-        android:id="@+id/btn_add"
+        android:id="@+id/btn_add_product"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/pink"
         android:text="@string/add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/rg_owner_product"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <ImageButton
-        android:id="@+id/btn_scan"
+    <ProgressBar
+        android:id="@+id/progressBar4"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/white"
-        android:src="@drawable/ic_baseline_photo_camera_24"
-        app:layout_constraintBottom_toBottomOf="@+id/edt_barcode"
+        android:layout_marginTop="3dp"
+        android:indeterminateTint="@color/white"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/edt_barcode"
-        app:layout_constraintTop_toTopOf="@+id/edt_barcode" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/rg_owner_product" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

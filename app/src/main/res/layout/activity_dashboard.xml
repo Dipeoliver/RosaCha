@@ -6,6 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.DashboardActivity">
 
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/frame_layout"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_marginStart="1dp"-->
+    <!--        android:layout_marginTop="1dp"-->
+    <!--        android:layout_marginEnd="1dp"-->
+    <!--        android:layout_marginBottom="1dp"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent">-->
+    <!--    </FrameLayout>-->
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/dash_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/nav_graph" />
+
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -14,6 +41,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav" />
+        app:menu="@menu/bottom_nav_menu" />
+    <!--app:layout_constraintTop_toBottomOf="@+id/frame_layout"-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

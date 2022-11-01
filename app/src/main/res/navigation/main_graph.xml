@@ -16,8 +16,8 @@
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_splashFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
+            android:id="@+id/action_splashFragment_to_dash"
+            app:destination="@id/dash"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true"/>
     </fragment>
@@ -53,23 +53,10 @@
                 app:destination="@id/recoverFragment" />
         </fragment>
         <action
-            android:id="@+id/action_global_homeFragment"
-            app:destination="@id/homeFragment"
+            android:id="@+id/action_global_dash"
+            app:destination="@id/dash"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true"/>
     </navigation>
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.clausfonseca.rosacha.ui.onboarding.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
-    <fragment
-        android:id="@+id/productFragment"
-        android:name="com.clausfonseca.rosacha.ui.dashboard.product.ProductFragment"
-        android:label="ProductFragment" />
-    <fragment
-        android:id="@+id/clientFragment"
-        android:name="com.clausfonseca.rosacha.ui.dashboard.client.ClientFragment"
-        android:label="fragment_client"
-        tools:layout="@layout/fragment_client" />
+    <include app:graph="@navigation/nav_graph" />
 </navigation>
