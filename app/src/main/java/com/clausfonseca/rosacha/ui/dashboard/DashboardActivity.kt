@@ -4,15 +4,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.ActivityDashboardBinding
 import com.clausfonseca.rosacha.ui.dashboard.client.ClientFragment
 import com.clausfonseca.rosacha.ui.dashboard.price.PriceFragment
 import com.clausfonseca.rosacha.ui.dashboard.product.ProductFragment
-import com.clausfonseca.rosacha.ui.onboarding.HomeFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class DashboardActivity : AppCompatActivity() {
 

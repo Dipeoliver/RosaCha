@@ -33,6 +33,11 @@ class LoginFragment : Fragment() {
         initClicks()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun initClicks() {
         binding.btnLogin.setOnClickListener {
             validateData()
@@ -85,10 +90,5 @@ class LoginFragment : Fragment() {
                     ).show()
                 }
             }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

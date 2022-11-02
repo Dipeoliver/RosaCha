@@ -34,6 +34,11 @@ class RegisterFragment : Fragment() {
         initClicks()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun initClicks() {
         binding.btnRegister.setOnClickListener {
             validateData()
@@ -73,10 +78,5 @@ class RegisterFragment : Fragment() {
                     binding.progressBar.isVisible = false
                 }
             }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

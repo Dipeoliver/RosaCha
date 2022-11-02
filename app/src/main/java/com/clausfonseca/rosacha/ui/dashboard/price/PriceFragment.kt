@@ -1,13 +1,14 @@
 package com.clausfonseca.rosacha.ui.dashboard.price
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.clausfonseca.rosacha.R
+import androidx.fragment.app.Fragment
 import com.clausfonseca.rosacha.databinding.FragmentPriceBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class PriceFragment : Fragment() {
@@ -15,7 +16,6 @@ class PriceFragment : Fragment() {
     private var _binding: FragmentPriceBinding? = null
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,9 +26,22 @@ class PriceFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        auth = Firebase.auth
+        initClicks()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
+    private fun initClicks() {
+        binding.ibLogout.setOnClickListener {
+            logoutApp()
+        }
+    }
+    private fun logoutApp() {
+        auth.signOut()
+    }
 }

@@ -20,7 +20,6 @@ class SplashFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,6 +34,11 @@ class SplashFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed(this::checkAuth, 2000)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     // verificar se usuario esta logado
     private fun checkAuth() {
         auth = Firebase.auth
@@ -44,10 +48,5 @@ class SplashFragment : Fragment() {
             findNavController().navigate(R.id.action_splashFragment_to_dash)
 
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

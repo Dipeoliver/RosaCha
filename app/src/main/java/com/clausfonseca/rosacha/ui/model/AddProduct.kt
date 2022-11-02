@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.ui.dashboard.model
+package com.clausfonseca.rosacha.ui.model
 
 import android.os.Parcelable
 import com.clausfonseca.rosacha.ui.helper.FirebaseHelper

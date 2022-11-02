@@ -8,14 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentAddProductBinding
-import com.clausfonseca.rosacha.ui.dashboard.model.AddProduct
 import com.clausfonseca.rosacha.ui.helper.FirebaseHelper
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.clausfonseca.rosacha.ui.model.AddProduct
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.util.*
@@ -24,7 +20,6 @@ class AddProductFragment : Fragment() {
 
     private var _binding: FragmentAddProductBinding? = null
     private val binding get() = _binding!!
-    private lateinit var auth: FirebaseAuth
 
     private lateinit var addProduct: AddProduct
     private var newTask: Boolean = true
@@ -40,7 +35,6 @@ class AddProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        auth = Firebase.auth
         configureButton()
         initListeners()
     }
