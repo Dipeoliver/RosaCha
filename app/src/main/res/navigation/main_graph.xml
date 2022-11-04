@@ -17,7 +17,7 @@
             app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_splashFragment_to_homeFragment2"
-            app:destination="@id/homeFragment"
+            app:destination="@id/home_fragment"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true"/>
     </fragment>
@@ -54,37 +54,60 @@
         </fragment>
         <action
             android:id="@+id/action_global_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/home_fragment" />
     </navigation>
     <fragment
-        android:id="@+id/homeFragment"
+        android:id="@+id/home_fragment"
         android:name="com.clausfonseca.rosacha.view.onboarding.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_productFragment"
-            app:destination="@id/productFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_authentication"
             app:destination="@id/authentication"
-            app:popUpTo="@id/homeFragment"
+            app:popUpTo="@id/home_fragment"
             app:popUpToInclusive="true"/>
     </fragment>
     <fragment
-        android:id="@+id/productFragment"
+        android:id="@+id/product_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.product.ProductFragment"
         android:label="ProductFragment"
-        tools:layout="@layout/fragment_product"/>
+        tools:layout="@layout/fragment_product">
+        <action
+            android:id="@+id/action_product_fragment_to_authentication"
+            app:destination="@id/authentication"
+            app:popUpTo="@id/product_fragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
     <fragment
-        android:id="@+id/clientFragment"
+        android:id="@+id/client_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.client.ClientFragment"
         tools:layout="@layout/fragment_client"
         android:label="ClientFragment" >
         <action
-            android:id="@+id/action_clientFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            tools:layout="@layout/fragment_product"
-            app:popUpTo="@id/clientFragment"
+            android:id="@+id/action_clientFragment_to_authentication"
+            app:destination="@id/authentication"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/price_fragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.price.PriceFragment"
+        android:label="fragment_price"
+        tools:layout="@layout/fragment_price" >
+        <action
+            android:id="@+id/action_price_fragment_to_authentication"
+            app:destination="@id/authentication"
+            app:popUpTo="@id/price_fragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/sales_fragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.sales.SalesFragment"
+        android:label="SalesFragment"
+        tools:layout="@layout/fragment_sales">
+        <action
+            android:id="@+id/action_sales_fragment_to_authentication"
+            app:destination="@id/authentication"
+            app:popUpTo="@id/sales_fragment"
             app:popUpToInclusive="true"/>
     </fragment>
 </navigation>

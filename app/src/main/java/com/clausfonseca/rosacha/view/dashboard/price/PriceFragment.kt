@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentPriceBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -41,7 +43,9 @@ class PriceFragment : Fragment() {
             logoutApp()
         }
     }
+
     private fun logoutApp() {
         auth.signOut()
+        findNavController().navigate(R.id.action_price_fragment_to_authentication)
     }
 }

@@ -47,5 +47,4 @@ class HomeFragment : Fragment() {
         auth.signOut()
         findNavController().navigate(R.id.action_homeFragment_to_authentication)
     }
-
 }

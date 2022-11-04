@@ -72,6 +72,7 @@ class ClientFragment : Fragment() {
 
     private fun logoutApp() {
         auth.signOut()
+        findNavController().navigate(R.id.action_clientFragment_to_authentication)
     }
 
 //    private fun onBackPressed() {

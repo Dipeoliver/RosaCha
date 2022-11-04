@@ -85,7 +85,6 @@ class AddProductFragment : Fragment() {
     }
 
     private fun validateData() {
-
         val barcode = binding.edtBarcodeProduct.text.toString().trim()
         val reference = binding.edtReferenceProduct.text.toString().trim()
         val description = binding.edtDescriptionProduct.text.toString().trim()
@@ -104,7 +103,7 @@ class AddProductFragment : Fragment() {
             if (newTask) addProduct = AddProduct()
 
             val date = Calendar.getInstance().time
-            var dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+            val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
             val productDate = dateTimeFormat.format(date)
 
             addProduct.barcode = barcode
@@ -126,7 +125,6 @@ class AddProductFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
         }
-
     }
 
     private fun insertProduct() {

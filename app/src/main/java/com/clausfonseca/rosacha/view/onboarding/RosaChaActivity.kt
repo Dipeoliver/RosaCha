@@ -10,7 +10,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.ActivityMainBinding
 import com.clausfonseca.rosacha.view.dashboard.client.ClientFragment
+import com.clausfonseca.rosacha.view.dashboard.price.PriceFragment
 import com.clausfonseca.rosacha.view.dashboard.product.ProductFragment
+import com.clausfonseca.rosacha.view.dashboard.sales.SalesFragment
 
 
 class RosaChaActivity : AppCompatActivity() {
@@ -29,9 +31,11 @@ class RosaChaActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.homeFragment,
-                R.id.productFragment,
-                R.id.clientFragment -> {
+                R.id.home_fragment,
+                R.id.product_fragment,
+                R.id.client_fragment,
+                R.id.price_fragment,
+                R.id.sales_fragment -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
                 else -> {
@@ -41,14 +45,14 @@ class RosaChaActivity : AppCompatActivity() {
         }
         binding.bottomNavigationView.setupWithNavController(navController)
 
-
         binding.bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
 
                 R.id.home_fragment -> replaceFragment(HomeFragment())
                 R.id.product_fragment -> replaceFragment(ProductFragment())
                 R.id.client_fragment -> replaceFragment(ClientFragment())
-//                R.id.price -> replaceFragment(PriceFragment())
+                R.id.price_fragment -> replaceFragment(PriceFragment())
+                R.id.sales_fragment -> replaceFragment(SalesFragment())
                 else -> {}
             }
             true

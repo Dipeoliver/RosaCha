@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductBinding
 import com.clausfonseca.rosacha.view.adapter.ViewPagerAdapter
@@ -67,5 +68,6 @@ class ProductFragment : Fragment() {
 
     private fun logoutApp() {
         auth.signOut()
+        findNavController().navigate(R.id.action_product_fragment_to_authentication)
     }
 }
