@@ -5,7 +5,7 @@ import com.clausfonseca.rosacha.view.helper.FirebaseHelper
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddProduct(
+data class Product(
     var id: String = "",
     var barcode: String = "",
     var reference: String = "",

@@ -68,6 +68,5 @@ class ProductFragment : Fragment() {
 
     private fun logoutApp() {
         auth.signOut()
-        findNavController().navigate(R.id.action_product_fragment_to_authentication)
     }
 }

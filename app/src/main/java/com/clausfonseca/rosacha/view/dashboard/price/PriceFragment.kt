@@ -46,6 +46,5 @@ class PriceFragment : Fragment() {
 
     private fun logoutApp() {
         auth.signOut()
-        findNavController().navigate(R.id.action_price_fragment_to_authentication)
     }
 }

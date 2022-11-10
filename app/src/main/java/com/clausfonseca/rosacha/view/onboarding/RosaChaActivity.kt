@@ -2,13 +2,13 @@ package com.clausfonseca.rosacha.view.onboarding
 
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.ActivityMainBinding
+import com.clausfonseca.rosacha.view.dashboard.HomeFragment
 import com.clausfonseca.rosacha.view.dashboard.client.ClientFragment
 import com.clausfonseca.rosacha.view.dashboard.price.PriceFragment
 import com.clausfonseca.rosacha.view.dashboard.product.ProductFragment

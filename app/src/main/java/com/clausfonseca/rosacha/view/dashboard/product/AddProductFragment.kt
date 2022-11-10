@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentAddProductBinding
 import com.clausfonseca.rosacha.view.helper.FirebaseHelper
-import com.clausfonseca.rosacha.view.model.AddProduct
+import com.clausfonseca.rosacha.view.model.Product
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.text.SimpleDateFormat
@@ -22,7 +22,7 @@ class AddProductFragment : Fragment() {
     private var _binding: FragmentAddProductBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var addProduct: AddProduct
+    private lateinit var product: Product
     private var newTask: Boolean = true
     private var statusOwner: Int = 0
 
@@ -100,23 +100,23 @@ class AddProductFragment : Fragment() {
         ) {
             binding.progressBar4.isVisible = true
 
-            if (newTask) addProduct = AddProduct()
+            if (newTask) product = Product()
 
             val date = Calendar.getInstance().time
             val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
             val productDate = dateTimeFormat.format(date)
 
-            addProduct.barcode = barcode
-            addProduct.reference = reference
-            addProduct.description = description
-            addProduct.brand = brand
-            addProduct.provider = provider
-            addProduct.size = size
-            addProduct.color = color
-            addProduct.cost_price = costPrice.toDouble()
-            addProduct.sales_price = salesPrice.toDouble()
-            addProduct.owner = statusOwner
-            addProduct.productDate = productDate
+            product.barcode = barcode
+            product.reference = reference
+            product.description = description
+            product.brand = brand
+            product.provider = provider
+            product.size = size
+            product.color = color
+            product.cost_price = costPrice.toDouble()
+            product.sales_price = salesPrice.toDouble()
+            product.owner = statusOwner
+            product.productDate = productDate
             insertProduct()
         } else {
             Toast.makeText(
@@ -130,10 +130,11 @@ class AddProductFragment : Fragment() {
     private fun insertProduct() {
         FirebaseHelper
             .getDatabase()
-            .child("addProduct")
-            .child(FirebaseHelper.getIdUser() ?: "") // id do usuario
-            .child(addProduct.id)
-            .setValue(addProduct)
+            .child("Product")
+//            .child(FirebaseHelper.getIdUser() ?: "")
+            .child("Product_Item") // id do usuario
+            .child(product.id)
+            .setValue(product)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     if (newTask) { // nova tarefa

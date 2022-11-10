@@ -24,6 +24,9 @@
     <navigation
         android:id="@+id/authentication"
         app:startDestination="@id/loginFragment">
+        <deepLink
+            android:id ="@id/authentication"
+            app:uri="android-app://com.clausfonseca.rosacha/login_fragment" />
         <fragment
             android:id="@+id/registerFragment"
             android:name="com.clausfonseca.rosacha.view.onboarding.login.RegisterFragment"
@@ -42,6 +45,8 @@
             android:name="com.clausfonseca.rosacha.view.onboarding.login.LoginFragment"
             android:label="fragment_login"
             tools:layout="@layout/fragment_login">
+
+
             <argument
                 android:name="email"
                 app:argType="string" />
@@ -54,60 +59,36 @@
         </fragment>
         <action
             android:id="@+id/action_global_homeFragment"
-            app:destination="@id/home_fragment" />
+            app:destination="@id/home_fragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </navigation>
     <fragment
         android:id="@+id/home_fragment"
-        android:name="com.clausfonseca.rosacha.view.onboarding.HomeFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_authentication"
-            app:destination="@id/authentication"
-            app:popUpTo="@id/home_fragment"
-            app:popUpToInclusive="true"/>
+        <deepLink app:uri="android-app://com.clausfonseca.rosacha/home_fragment" />
     </fragment>
+
     <fragment
         android:id="@+id/product_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.product.ProductFragment"
         android:label="ProductFragment"
-        tools:layout="@layout/fragment_product">
-        <action
-            android:id="@+id/action_product_fragment_to_authentication"
-            app:destination="@id/authentication"
-            app:popUpTo="@id/product_fragment"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        tools:layout="@layout/fragment_product"/>
     <fragment
         android:id="@+id/client_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.client.ClientFragment"
-        tools:layout="@layout/fragment_client"
-        android:label="ClientFragment" >
-        <action
-            android:id="@+id/action_clientFragment_to_authentication"
-            app:destination="@id/authentication"
-            />
-    </fragment>
+        android:label="fragment_client"
+        tools:layout="@layout/fragment_client"/>
     <fragment
         android:id="@+id/price_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.price.PriceFragment"
         android:label="fragment_price"
-        tools:layout="@layout/fragment_price" >
-        <action
-            android:id="@+id/action_price_fragment_to_authentication"
-            app:destination="@id/authentication"
-            app:popUpTo="@id/price_fragment"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        tools:layout="@layout/fragment_price" />
     <fragment
         android:id="@+id/sales_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.sales.SalesFragment"
         android:label="SalesFragment"
-        tools:layout="@layout/fragment_sales">
-        <action
-            android:id="@+id/action_sales_fragment_to_authentication"
-            app:destination="@id/authentication"
-            app:popUpTo="@id/sales_fragment"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        tools:layout="@layout/fragment_sales"/>
 </navigation>

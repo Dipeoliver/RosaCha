@@ -1,5 +1,6 @@
-package com.clausfonseca.rosacha.view.onboarding
+package com.clausfonseca.rosacha.view.dashboard
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,8 @@ class HomeFragment : Fragment() {
 
     private fun logoutApp() {
         auth.signOut()
-        findNavController().navigate(R.id.action_homeFragment_to_authentication)
+        findNavController().popBackStack()
+        val uri = Uri.parse("android-app://com.clausfonseca.rosacha/login_fragment")
+        findNavController().navigate(uri)
     }
 }

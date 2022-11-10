@@ -1,17 +1,13 @@
 package com.clausfonseca.rosacha.view.dashboard.client
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentClientBinding
 import com.clausfonseca.rosacha.view.adapter.ViewPagerAdapter
-import com.clausfonseca.rosacha.view.onboarding.HomeFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -65,14 +61,16 @@ class ClientFragment : Fragment() {
     }
 
     private fun initClicks() {
-        binding.ibLogout.setOnClickListener {
+        binding.imageButtonClientLogout.setOnClickListener {
             logoutApp()
         }
     }
 
     private fun logoutApp() {
-        auth.signOut()
-        findNavController().navigate(R.id.action_clientFragment_to_authentication)
+//        auth.signOut()
+//        val uri = Uri.parse("android-app://com.clausfonseca.rosacha/login_fragment")
+//        findNavController().navigate(uri)
+
     }
 
 //    private fun onBackPressed() {
