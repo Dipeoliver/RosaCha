@@ -25,24 +25,23 @@
                 android:background="@color/rose"
                 android:elevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/image_button_client_logout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tabIndicatorColor="@color/white"
                 app:tabTextAppearance="@style/CustomTabLayout"
                 app:tabTextColor="@color/white" />
 
-            <ImageButton
-                android:id="@+id/image_button_client_logout"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/logout"
-                android:paddingHorizontal="8dp"
-                android:src="@drawable/ic_baseline_login_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/image_button_client_logout"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:background="@android:color/transparent"-->
+<!--                android:contentDescription="@string/logout"-->
+<!--                android:paddingHorizontal="8dp"-->
+<!--                android:src="@drawable/ic_baseline_login_24"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

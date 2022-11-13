@@ -8,7 +8,7 @@ import com.clausfonseca.rosacha.view.model.Product
 import com.google.firebase.database.core.Context
 
 class ProductAdapter(
-    private val Context: android.content.Context,
+    private val context: android.content.Context,
     private val productList: List<Product>,
     val taskSelected: (Product, Int) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.MyViewHolder>() {

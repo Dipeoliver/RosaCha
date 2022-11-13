@@ -33,7 +33,6 @@ class ProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
         configTabLayout()
-        initClicks()
     }
 
     override fun onDestroyView() {
@@ -58,15 +57,5 @@ class ProductFragment : Fragment() {
                 position
             )
         }.attach()
-    }
-
-    private fun initClicks() {
-        binding.ibLogout.setOnClickListener {
-            logoutApp()
-        }
-    }
-
-    private fun logoutApp() {
-        auth.signOut()
     }
 }

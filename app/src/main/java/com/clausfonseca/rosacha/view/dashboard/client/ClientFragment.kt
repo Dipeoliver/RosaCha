@@ -32,7 +32,6 @@ class ClientFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
         configTabLayout()
-        initClicks()
 //        onBackPressed()
     }
 
@@ -59,29 +58,5 @@ class ClientFragment : Fragment() {
             )
         }.attach()
     }
-
-    private fun initClicks() {
-        binding.imageButtonClientLogout.setOnClickListener {
-            logoutApp()
-        }
-    }
-
-    private fun logoutApp() {
-//        auth.signOut()
-//        val uri = Uri.parse("android-app://com.clausfonseca.rosacha/login_fragment")
-//        findNavController().navigate(uri)
-
-    }
-
-//    private fun onBackPressed() {
-//        requireActivity().onBackPressedDispatcher.addCallback(
-//            viewLifecycleOwner,
-//            object : OnBackPressedCallback(true) {
-//                override fun handleOnBackPressed() {
-//                    isEnabled = false
-//                }
-//            }
-//        )
-//    }
 }
 
