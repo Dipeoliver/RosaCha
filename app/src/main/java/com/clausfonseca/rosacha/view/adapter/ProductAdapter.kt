@@ -39,7 +39,6 @@ class ProductAdapter(
         holder.binding.txtOwner.text = product.owner.toString()
         holder.binding.txtCostPrice.text = product.cost_price.toString()
         holder.binding.txtSalesPrice.text = product.sales_price.toString()
-        holder.binding.txtDate.text = product.productDate
 
 //        holder.binding.btnDelete.setOnClickListener {
 //            taskSelected(task, SELECT_REMOVE)

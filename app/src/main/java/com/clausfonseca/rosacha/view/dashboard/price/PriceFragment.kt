@@ -31,18 +31,13 @@ class PriceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
-        initClicks()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    private fun initClicks() {
-        binding.ibLogout.setOnClickListener {
-            logoutApp()
-        }
-    }
+
 
     private fun logoutApp() {
         auth.signOut()

@@ -144,6 +144,7 @@ class AddProductFragment : Fragment() {
                             "Tarefa Salva com sucesso",
                             Toast.LENGTH_SHORT
                         ).show()
+                        cleaner()
                         binding.progressBar4.isVisible = false
                     } else { // iditando tarefa
                         binding.progressBar4.isVisible = false
@@ -163,5 +164,21 @@ class AddProductFragment : Fragment() {
                 binding.progressBar4.isVisible = false
                 Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun cleaner() {
+        binding.apply {
+            edtBarcodeProduct.text.clear()
+            edtReferenceProduct.text.clear()
+            edtDescriptionProduct.text.clear()
+            edtBrandProduct.text.clear()
+            edtProviderProduct.text.clear()
+            edtSizeProduct.text.clear()
+            edtColorProduct.text.clear()
+            edtCostProduct.text.clear()
+            edtSalesProduct.text.clear()
+            edtBarcodeProduct.requestFocus()
+        }
+
     }
 }

@@ -1,8 +1,17 @@
+Feitos
 1 colocar seta de voltar na tela de esqueci senha.
-2 colocar focu na tela esqueci senha
+2 colocar focus na tela esqueci senha
 3 Tratar quando tem uma escrita no email que não e um email real
 4 arrumar o layout após delete dos botões de logout
-5 verificar o insert do (Client) para colocar usuario padrão
-6 Fazer o select do do (Client)
-7 corrigir o layout para exibir os intes na lista. ***********
+5 fazer o cleaner dos campos de adicionar produto
 
+A fazer
+1 verificar o insert do (Client) para colocar usuario padrão
+2 Fazer o select do do (Client)
+3 corrigir o layout para exibir os intes na lista *****************
+4 colocar scrool dentro das telas
+5 fazer o botão add ficar sempre embaixo
+6 exibir nome das pessoas ao inves de boolean
+7 ajustar o index dos campos adicionar o produto
+
+                                                

@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentLoginBinding
+import com.clausfonseca.rosacha.view.helper.FirebaseHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -85,7 +86,7 @@ class LoginFragment : Fragment() {
                     binding.progressBar2.isVisible = false
                     Toast.makeText(
                         requireContext(),
-                        getString(R.string.not_login),
+                        FirebaseHelper.validError(task.exception?.message ?: ""),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

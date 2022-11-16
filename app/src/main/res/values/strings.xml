@@ -33,7 +33,7 @@
     <string name="create_an_account">Create an account</string>
     <string name="register">Register</string>
     <string name="check_password">Passwords must be the same</string>
-    <string name="empty_fields">Fields cannot be empt</string>
+    <string name="empty_fields">Fields cannot be empty</string>
 
     <!--    Product Fragment-->
     <string name="add_product">Add Product</string>
@@ -46,7 +46,7 @@
     <string name="claudia">Claudia</string>
     <string name="claudenice">Claudenice</string>
     <string name="add">Add</string>
-    <string name="brand">brand</string>
+    <string name="brand">Brand</string>
 
     <!--    Client Fragment-->
     <string name="add_client">Add Client</string>
@@ -62,7 +62,7 @@
     <string name="list_sales">List of Sales</string>
     <string name="edit_sales">Edit Sales</string>
 
-    <!--    errors Firebase Athentication-->
+    <!--    errors Firebase Authentication-->
     <string name="account_not_registered_register_fragment">There is no user record corresponding to this identifier.</string>
     <string name="invalid_email_register_fragment">The email address is badly formatted.</string>
     <string name="invalid_password_register_fragment">The password is invalid or the user does not have a password.</string>

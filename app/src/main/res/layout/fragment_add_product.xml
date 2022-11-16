@@ -260,7 +260,7 @@
         android:background="@drawable/bg_edit"
         android:ems="10"
         android:hint="@string/sales_price"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         android:padding="14dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -311,6 +311,20 @@
             android:textColor="@color/white" />
     </RadioGroup>
 
+    <ProgressBar
+        android:id="@+id/progressBar4"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:indeterminateTint="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_owner_product"
+        tools:visibility="visible" />
+
     <Button
         android:id="@+id/btn_add_product"
         android:layout_width="0dp"
@@ -325,18 +339,5 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/progressBar4"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:indeterminateTint="@color/white"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@+id/rg_owner_product" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

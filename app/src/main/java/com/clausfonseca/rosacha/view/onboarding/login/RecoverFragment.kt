@@ -1,17 +1,21 @@
 package com.clausfonseca.rosacha.view.onboarding.login
 
+import android.R
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.clausfonseca.rosacha.R
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.databinding.FragmentRecoverBinding
+import com.clausfonseca.rosacha.view.helper.FirebaseHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+
 
 class RecoverFragment : Fragment() {
     private var _binding: FragmentRecoverBinding? = null
@@ -33,9 +37,22 @@ class RecoverFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
         initClicks()
-
         receivedArgs = requireArguments().get("email").toString()
         binding.edtEmail.setText(receivedArgs)
+        configureComponents()
+
+    }
+
+    private fun configureComponents() {
+        binding.apply {
+            edtEmail.requestFocus()
+            (activity as AppCompatActivity?)?.setSupportActionBar(toolbarRecovery)
+            toolbarRecovery.setNavigationIcon(com.clausfonseca.rosacha.R.drawable.ic_back)
+//            (activity as AppCompatActivity?)?.supportActionBar?.setTitle(getString(com.clausfonseca.rosacha.R.string.recovery_account));
+            toolbarRecovery.setNavigationOnClickListener {
+                findNavController().navigate(com.clausfonseca.rosacha.R.id.action_recoverFragment_to_loginFragment)
+            }
+        }
     }
 
     private fun initClicks() {
@@ -53,7 +70,7 @@ class RecoverFragment : Fragment() {
         } else {
             Toast.makeText(
                 requireContext(),
-                getString(R.string.empty_email),
+                getString(com.clausfonseca.rosacha.R.string.empty_email),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -66,8 +83,14 @@ class RecoverFragment : Fragment() {
                 if (task.isSuccessful) {
                     Toast.makeText(
                         requireContext(),
-                        getString(R.string.sent_email),
+                        getString(com.clausfonseca.rosacha.R.string.sent_email),
                         Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        FirebaseHelper.validError(task.exception?.message ?: ""),
+                        Toast.LENGTH_LONG
                     ).show()
                 }
                 binding.progressBar3.isVisible = false

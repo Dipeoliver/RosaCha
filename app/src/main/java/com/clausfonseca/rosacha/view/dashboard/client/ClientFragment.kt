@@ -32,7 +32,7 @@ class ClientFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
         configTabLayout()
-//        onBackPressed()
+
     }
 
     override fun onDestroyView() {

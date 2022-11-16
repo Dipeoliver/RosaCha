@@ -26,24 +26,12 @@
                 android:background="@color/rose"
                 android:elevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ib_logout"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tabIndicatorColor="@color/white"
                 app:tabTextAppearance="@style/CustomTabLayout"
                 app:tabTextColor="@color/white" />
-
-            <ImageButton
-                android:id="@+id/ib_logout"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/logout"
-                android:paddingHorizontal="8dp"
-                android:src="@drawable/ic_baseline_login_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -209,7 +197,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="176dp"
             android:text="@string/rs"
-            android:textColor="@color/pink"
+            android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toEndOf="parent"
@@ -224,7 +212,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="72dp"
             android:text="148.50"
-            android:textColor="@color/pink"
+            android:textColor="@color/white"
             android:textSize="100sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
