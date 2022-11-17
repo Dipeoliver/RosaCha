@@ -36,12 +36,7 @@ class ListProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initClick()
         getTasks()
-    }
-
-    private fun initClick() {
-
     }
 
     private fun getTasks() {
@@ -76,12 +71,12 @@ class ListProductFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        binding.rvTask.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvTask.setHasFixedSize(true)
+        binding.rvProduct.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvProduct.setHasFixedSize(true)
         productAdapter = ProductAdapter(requireContext(), productlist) { task, int ->
 
         }
-        binding.rvTask.adapter = productAdapter
+        binding.rvProduct.adapter = productAdapter
     }
 
 }
