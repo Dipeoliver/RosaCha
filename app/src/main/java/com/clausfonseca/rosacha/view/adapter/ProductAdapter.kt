@@ -10,8 +10,16 @@ import com.google.firebase.database.core.Context
 class ProductAdapter(
     private val context: android.content.Context,
     private val productList: List<Product>,
-    val taskSelected: (Product, Int) -> Unit
+    val productSelected: (Product, Int) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.MyViewHolder>() {
+
+    companion object {
+
+        val SELECT_REMOVE: Int = 1
+        val SELECT_EDIT: Int = 2
+        val SELECT_DETAILS: Int = 3
+
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
@@ -40,14 +48,11 @@ class ProductAdapter(
         holder.binding.txtCostPrice.text = product.cost_price.toString()
         holder.binding.txtSalesPrice.text = product.sales_price.toString()
 
-//        holder.binding.btnDelete.setOnClickListener {
-//            taskSelected(task, SELECT_REMOVE)
-//        }
-//        holder.binding.btnEdit.setOnClickListener {
-//            taskSelected(task, SELECT_EDIT)
-//        }
-//        holder.binding.btnEdit.setOnClickListener {
-//            taskSelected(task, SELECT_EDIT)
-//        }
+        holder.binding.btnProductDelete.setOnClickListener {
+            productSelected(product, SELECT_REMOVE)
+        }
+        holder.binding.btnProductUpdate.setOnClickListener {
+            productSelected(product, SELECT_EDIT)
+        }
     }
 }

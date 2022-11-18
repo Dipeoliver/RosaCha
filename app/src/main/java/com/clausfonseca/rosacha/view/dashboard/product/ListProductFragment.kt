@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentListProductBinding
 import com.clausfonseca.rosacha.view.adapter.ProductAdapter
 import com.clausfonseca.rosacha.view.helper.FirebaseHelper
@@ -73,10 +71,32 @@ class ListProductFragment : Fragment() {
     private fun initAdapter() {
         binding.rvProduct.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProduct.setHasFixedSize(true)
-        productAdapter = ProductAdapter(requireContext(), productlist) { task, int ->
-
+        productAdapter = ProductAdapter(requireContext(), productlist) { product, select ->
+            optionSelect(product, select)
         }
         binding.rvProduct.adapter = productAdapter
     }
 
+    private fun optionSelect(product: Product, select: Int) {
+        when (select) {
+            ProductAdapter.SELECT_REMOVE -> {
+                deleteProduct(product)
+            }
+//            ClientAdapter.SELECT_EDIT -> {
+//                val action = HomeFragmentDirections
+//                    .actionHomeFragmentToFormTaskFragment(task)
+//                findNavController().navigate(action)
+//            }
+        }
+
+    }
+
+    private fun deleteProduct(client: Product) {
+        FirebaseHelper
+            .getDatabase()
+            .child("Product")
+            .child("Product_Item")
+            .child(client.id)
+            .removeValue()
+    }
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.clausfonseca.rosacha.databinding.FragmentListClientBinding
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
@@ -71,9 +72,31 @@ class ListClientFragment : Fragment() {
     private fun initAdapter() {
         binding.rvClient.layoutManager = LinearLayoutManager(requireContext())
         binding.rvClient.setHasFixedSize(true)
-        clientAdapter = ClientAdapter(requireContext(), clientlist) { task, int ->
-
+        clientAdapter = ClientAdapter(requireContext(), clientlist) { client, select ->
+            optionSelect(client, select)
         }
         binding.rvClient.adapter = clientAdapter
+    }
+
+    private fun optionSelect(client: Client, select: Int) {
+        when (select) {
+            ClientAdapter.SELECT_REMOVE -> {
+                deleteClient(client)
+            }
+//            ClientAdapter.SELECT_EDIT -> {
+//                val action = HomeFragmentDirections
+//                    .actionHomeFragmentToFormTaskFragment(task)
+//                findNavController().navigate(action)
+//            }
+        }
+    }
+
+    private fun deleteClient(client: Client) {
+        FirebaseHelper
+            .getDatabase()
+            .child("Client")
+            .child("Clients")
+            .child(client.id)
+            .removeValue()
     }
 }

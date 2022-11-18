@@ -185,7 +185,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView36" />
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/btn_product_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
@@ -195,13 +195,13 @@
                 app:srcCompat="@drawable/ic_update_24" />
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/btn_product_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageButton"
-                app:layout_constraintTop_toTopOf="@+id/imageButton"
+                app:layout_constraintStart_toEndOf="@+id/btn_product_update"
+                app:layout_constraintTop_toTopOf="@+id/btn_product_update"
                 app:srcCompat="@drawable/ic_delete_forever_24" />
 
 
