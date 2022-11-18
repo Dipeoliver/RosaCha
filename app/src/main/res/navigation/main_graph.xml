@@ -76,6 +76,9 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/home_fragment" />
+        <action
+            android:id="@+id/action_home_fragment_to_client_fragment"
+            app:destination="@id/client_fragment" />
     </fragment>
 
     <fragment
@@ -87,7 +90,13 @@
         android:id="@+id/client_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.client.ClientFragment"
         android:label="fragment_client"
-        tools:layout="@layout/fragment_client"/>
+        tools:layout="@layout/fragment_client">
+        <argument
+            android:name="clientArguments"
+            app:argType="com.clausfonseca.rosacha.view.model.Client"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
         android:id="@+id/price_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.price.PriceFragment"

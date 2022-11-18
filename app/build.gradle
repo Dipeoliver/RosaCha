@@ -4,6 +4,9 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
 
+    // passar itens entre fragments
+    id("androidx.navigation.safeargs.kotlin")
+
 }
 
 android {

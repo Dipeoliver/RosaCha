@@ -7,12 +7,12 @@ Feitos
 6 verificar o insert do (Client) para colocar usuario padrão
 7 corrigir o layout para exibir os intes na lista 
 8 Fazer o select dos (Client)
-
+9 Opção de Delete para Client e Product
 
 A fazer
-4 colocar scrool dentro das telas
-5 fazer o botão add ficar sempre embaixo
-6 exibir nome das pessoas ao inves de boolean
-7 ajustar o index dos campos adicionar o produto
-
+1 colocar scrool dentro das telas
+2 fazer o botão add ficar sempre embaixo
+3 exibir nome das pessoas ao inves de boolean
+4 ajustar o index dos campos adicionar o produto
+5 Adicionar confirmação para o Delete 
                                                 

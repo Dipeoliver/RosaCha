@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.clausfonseca.rosacha.databinding.FragmentAddClientBinding
 import com.clausfonseca.rosacha.view.helper.FirebaseHelper
 import com.clausfonseca.rosacha.view.model.Client
@@ -15,11 +16,12 @@ import java.util.*
 
 class AddClientFragment : Fragment() {
 
+    private val args: ClientFragmentArgs by navArgs()
+
     private var _binding: FragmentAddClientBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var client: Client
-
+    private var client: Client? = null
+    private var newClient: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +36,7 @@ class AddClientFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.edtNameClient.requestFocus()
         initListeners()
+//        getArgs()
     }
 
     override fun onDestroyView() {
@@ -47,7 +50,6 @@ class AddClientFragment : Fragment() {
         }
 
     }
-
 
     private fun validateData() {
         val name = binding.edtNameClient.text.toString().trim()
@@ -63,11 +65,11 @@ class AddClientFragment : Fragment() {
             var dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
             val clientDate = dateTimeFormat.format(date)
 
-            client.name = name
-            client.phone = phone
-            client.email = email
-            client.birthday = birthday
-            client.clientDate = clientDate
+            client?.name = name
+            client?.phone = phone
+            client?.email = email
+            client?.birthday = birthday
+            client?.clientDate = clientDate
 
             insertClient()
         } else {
@@ -87,29 +89,56 @@ class AddClientFragment : Fragment() {
             .child("Client")
 //            .child(FirebaseHelper.getIdUser() ?: "") // id do usuario
             .child("Clients") // id do usuario
-            .child(client.id)
+            .child(client?.id ?: "")
             .setValue(client)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Client  Salvo com sucesso",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    cleaner()
-                    binding.progressBar.isVisible = false
+                if (newClient) { // nova tarefa
+                    if (task.isSuccessful) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Client  Salvo com sucesso",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        cleaner()
+                        binding.progressBar.isVisible = false
+                    } else { // iditando tarefa
+                        binding.progressBar.isVisible = false
+                        Toast.makeText(
+                            requireContext(),
+                            "Tarefa Atualizada com Sucesso",
+                            Toast.LENGTH_SHORT
+                        )
+                    }
                 } else {
                     binding.progressBar.isVisible = false
 
                     Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT)
                         .show()
-
                 }
             }.addOnFailureListener {
                 binding.progressBar.isVisible = false
                 Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT).show()
             }
     }
+
+//    private fun getArgs() {
+//        args.let {
+//            if (it.clientArguments != null) {
+//                client = it.clientArguments
+//            }
+//
+//            if (args.clientArguments != null) configTask()
+//        }
+//    }
+//
+//    private fun configTask() {
+//        newClient = false
+////        binding.txtTollbar.text = "Editando uma tarefa"
+//        binding.edtNameClient.setText(client?.name)
+//        binding.edtPhoneClient.setText(client?.phone)
+//        binding.edtEmailClient.setText(client?.email)
+//        binding.edtBirthdayClient.setText(client?.birthday)
+//    }
 
     private fun cleaner() {
         binding.apply {

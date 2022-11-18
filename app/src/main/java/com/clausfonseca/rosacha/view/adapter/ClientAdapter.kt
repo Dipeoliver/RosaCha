@@ -17,7 +17,6 @@ class ClientAdapter(
         val SELECT_REMOVE: Int = 1
         val SELECT_EDIT: Int = 2
         val SELECT_DETAILS: Int = 3
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientAdapter.MyViewHolder {

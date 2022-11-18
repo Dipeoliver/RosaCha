@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.clausfonseca.rosacha.databinding.FragmentListClientBinding
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
+import com.clausfonseca.rosacha.view.dashboard.HomeFragment
+import com.clausfonseca.rosacha.view.dashboard.HomeFragmentDirections
 import com.clausfonseca.rosacha.view.helper.FirebaseHelper
 import com.clausfonseca.rosacha.view.model.Client
 import com.clausfonseca.rosacha.view.model.Product
@@ -83,11 +85,11 @@ class ListClientFragment : Fragment() {
             ClientAdapter.SELECT_REMOVE -> {
                 deleteClient(client)
             }
-//            ClientAdapter.SELECT_EDIT -> {
-//                val action = HomeFragmentDirections
-//                    .actionHomeFragmentToFormTaskFragment(task)
-//                findNavController().navigate(action)
-//            }
+            ClientAdapter.SELECT_EDIT -> {
+                val action = HomeFragmentDirections
+                    .actionHomeFragmentToClientFragment(client)
+                findNavController().navigate(action)
+            }
         }
     }
 
