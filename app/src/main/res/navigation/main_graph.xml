@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.clausfonseca.rosacha.ui.onboarding.SplashFragment"
+        android:name="com.clausfonseca.rosacha.view.onboarding.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash">
         <action
@@ -16,32 +16,44 @@
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_splashFragment_to_dashboardActivity3"
-            app:destination="@id/dashboardActivity"
+            android:id="@+id/action_splashFragment_to_homeFragment2"
+            app:destination="@id/home_fragment"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true"/>
     </fragment>
     <navigation
         android:id="@+id/authentication"
         app:startDestination="@id/loginFragment">
+        <deepLink
+            android:id ="@id/authentication"
+            app:uri="android-app://com.clausfonseca.rosacha/login_fragment" />
         <fragment
             android:id="@+id/registerFragment"
-            android:name="com.clausfonseca.rosacha.ui.onboarding.login.RegisterFragment"
+            android:name="com.clausfonseca.rosacha.view.onboarding.login.RegisterFragment"
             android:label="fragment_register"
-            tools:layout="@layout/fragment_register" />
+            tools:layout="@layout/fragment_register" >
+            <action
+                android:id="@+id/action_registerFragment_to_loginFragment"
+                app:destination="@id/loginFragment" />
+        </fragment>
         <fragment
             android:id="@+id/recoverFragment"
-            android:name="com.clausfonseca.rosacha.ui.onboarding.login.RecoverFragment"
+            android:name="com.clausfonseca.rosacha.view.onboarding.login.RecoverFragment"
             android:label="fragment_recover"
             tools:layout="@layout/fragment_recover">
 
 
+            <action
+                android:id="@+id/action_recoverFragment_to_loginFragment"
+                app:destination="@id/loginFragment" />
         </fragment>
         <fragment
             android:id="@+id/loginFragment"
-            android:name="com.clausfonseca.rosacha.ui.onboarding.login.LoginFragment"
+            android:name="com.clausfonseca.rosacha.view.onboarding.login.LoginFragment"
             android:label="fragment_login"
             tools:layout="@layout/fragment_login">
+
+
             <argument
                 android:name="email"
                 app:argType="string" />
@@ -53,39 +65,43 @@
                 app:destination="@id/recoverFragment" />
         </fragment>
         <action
-            android:id="@+id/action_global_dashboardActivity3"
-            app:destination="@id/dashboardActivity" />
+            android:id="@+id/action_global_homeFragment"
+            app:destination="@id/home_fragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </navigation>
-    <activity
-        android:id="@+id/dashboardActivity"
-        android:name="com.clausfonseca.rosacha.ui.dashboard.DashboardActivity"
-        android:label="activity_dashboard"
-        tools:layout="@layout/activity_dashboard" />
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.clausfonseca.rosacha.ui.onboarding.HomeFragment"
+        android:id="@+id/home_fragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_authentication"
-            app:destination="@id/authentication" />
+        <deepLink app:uri="android-app://com.clausfonseca.rosacha/home_fragment" />
     </fragment>
+
     <fragment
-        android:id="@+id/clientFragment"
-        android:name="com.clausfonseca.rosacha.ui.dashboard.client.ClientFragment"
-        android:label="fragment_client"
-        tools:layout="@layout/fragment_client" >
-        <action
-            android:id="@+id/action_clientFragment_to_authentication"
-            app:destination="@id/authentication" />
-    </fragment>
-    <fragment
-        android:id="@+id/productFragment"
-        android:name="com.clausfonseca.rosacha.ui.dashboard.product.ProductFragment"
+        android:id="@+id/product_fragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.product.ProductFragment"
         android:label="ProductFragment"
-        tools:layout="@layout/fragment_product">
-        <action
-            android:id="@+id/action_productFragment_to_authentication"
-            app:destination="@id/authentication" />
+        tools:layout="@layout/fragment_product"/>
+    <fragment
+        android:id="@+id/price_fragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.price.PriceFragment"
+        android:label="fragment_price"
+        tools:layout="@layout/fragment_price" />
+    <fragment
+        android:id="@+id/sales_fragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.sales.SalesFragment"
+        android:label="SalesFragment"
+        tools:layout="@layout/fragment_sales"/>
+    <fragment
+        android:id="@+id/addClientFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment"
+        android:label="fragment_add_client"
+        tools:layout="@layout/fragment_add_client" >
+        <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_add_client" />
+        <argument
+            android:name="ArgsClient"
+            app:argType="com.clausfonseca.rosacha.view.model.Client"
+            app:nullable="true" />
     </fragment>
 </navigation>
