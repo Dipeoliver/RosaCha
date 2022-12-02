@@ -9,19 +9,23 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.clausfonseca.rosacha.databinding.FragmentAddClientBinding
+import com.clausfonseca.rosacha.view.dashboard.HomeFragment
 import com.clausfonseca.rosacha.view.helper.FirebaseHelper
 import com.clausfonseca.rosacha.view.model.Client
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AddClientFragment : Fragment() {
 
-    private val args: ClientFragmentArgs by navArgs()
+    private val args: AddClientFragmentArgs by navArgs()
 
     private var _binding: FragmentAddClientBinding? = null
     private val binding get() = _binding!!
-    private var client: Client? = null
+    private lateinit var client: Client
     private var newClient: Boolean = true
+
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +52,6 @@ class AddClientFragment : Fragment() {
         binding.btnAddClient.setOnClickListener {
             validateData()
         }
-
     }
 
     private fun validateData() {
@@ -62,14 +65,14 @@ class AddClientFragment : Fragment() {
 
             client = Client()
             val date = Calendar.getInstance().time
-            var dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+            val dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
             val clientDate = dateTimeFormat.format(date)
 
-            client?.name = name
-            client?.phone = phone
-            client?.email = email
-            client?.birthday = birthday
-            client?.clientDate = clientDate
+            client.name = name
+            client.phone = phone
+            client.email = email
+            client.birthday = birthday
+            client.clientDate = clientDate
 
             insertClient()
         } else {
@@ -79,11 +82,25 @@ class AddClientFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
         }
-
-
     }
 
     private fun insertClient() {
+        db.collection("Clients").document(client.id)
+            .set(client).addOnCompleteListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Cliente adicionado com sucesso",
+                    Toast.LENGTH_SHORT
+                ).show()
+                cleaner()
+                binding.progressBar.isVisible = false
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Erro ao salvar Cliente", Toast.LENGTH_SHORT)
+                    .show()
+            }
+    }
+
+    private fun insertClient_RealtimeDatabase() {
         FirebaseHelper
             .getDatabase()
             .child("Client")

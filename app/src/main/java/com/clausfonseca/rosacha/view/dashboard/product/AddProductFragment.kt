@@ -12,6 +12,9 @@ import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentAddProductBinding
 import com.clausfonseca.rosacha.view.helper.FirebaseHelper
 import com.clausfonseca.rosacha.view.model.Product
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.text.SimpleDateFormat
@@ -25,6 +28,9 @@ class AddProductFragment : Fragment() {
     private lateinit var product: Product
     private var newTask: Boolean = true
     private var statusOwner: Int = 0
+
+
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -128,6 +134,22 @@ class AddProductFragment : Fragment() {
     }
 
     private fun insertProduct() {
+        db.collection("Products").document(product.barcode)
+            .set(product).addOnCompleteListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Produto adicionado com sucesso",
+                    Toast.LENGTH_SHORT
+                ).show()
+                cleaner()
+                binding.progressBar4.isVisible = false
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Erro ao salvar Produto", Toast.LENGTH_SHORT)
+                    .show()
+            }
+    }
+
+    private fun insertProduct_RealTimeDatabase() {
         FirebaseHelper
             .getDatabase()
             .child("Product")

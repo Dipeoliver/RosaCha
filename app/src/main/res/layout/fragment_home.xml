@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_cons"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.dashboard.HomeFragment">
@@ -31,6 +32,18 @@
                 app:tabIndicatorColor="@color/white"
                 app:tabTextAppearance="@style/CustomTabLayout"
                 app:tabTextColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foregroundTint="@color/white"
+                android:text="Homeum"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tabs"
+                app:layout_constraintStart_toStartOf="@+id/tabs"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </TextView>
 
             <ImageButton
                 android:id="@+id/ib_logout"

@@ -30,13 +30,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
+        binding.homeCons.visibility = View.GONE
         initClicks()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 
     private fun initClicks() {
         binding.ibLogout.setOnClickListener {

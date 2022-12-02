@@ -37,6 +37,7 @@ class RosaChaActivity : AppCompatActivity() {
                 R.id.price_fragment,
                 R.id.sales_fragment -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
+
                 }
                 else -> {
                     binding.bottomNavigationView.visibility = View.GONE
@@ -46,6 +47,7 @@ class RosaChaActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
         binding.bottomNavigationView.setOnItemSelectedListener {
+
             when (it.itemId) {
 
                 R.id.home_fragment -> replaceFragment(HomeFragment())
@@ -64,6 +66,7 @@ class RosaChaActivity : AppCompatActivity() {
         val fragmentTransition = fragmentManager.beginTransaction()
         fragmentTransition.replace(R.id.nav_host_fragment, fragment)
         fragmentTransition.commit()
+
     }
 }
 
