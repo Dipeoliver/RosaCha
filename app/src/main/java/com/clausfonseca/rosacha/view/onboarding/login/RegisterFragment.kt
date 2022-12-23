@@ -11,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentRegisterBinding
-import com.clausfonseca.rosacha.view.helper.FirebaseHelper
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

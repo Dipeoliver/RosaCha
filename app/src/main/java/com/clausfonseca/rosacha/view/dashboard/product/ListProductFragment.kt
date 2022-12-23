@@ -10,8 +10,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.clausfonseca.rosacha.databinding.FragmentListProductBinding
 import com.clausfonseca.rosacha.view.adapter.ProductAdapter
-import com.clausfonseca.rosacha.view.helper.FirebaseHelper
-import com.clausfonseca.rosacha.view.model.Product
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
+import com.clausfonseca.rosacha.model.Product
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

@@ -10,11 +10,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentAddProductBinding
-import com.clausfonseca.rosacha.view.helper.FirebaseHelper
-import com.clausfonseca.rosacha.view.model.Product
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
+import com.clausfonseca.rosacha.model.Product
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.text.SimpleDateFormat

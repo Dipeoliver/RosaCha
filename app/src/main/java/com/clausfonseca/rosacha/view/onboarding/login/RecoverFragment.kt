@@ -1,6 +1,5 @@
 package com.clausfonseca.rosacha.view.onboarding.login
 
-import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.databinding.FragmentRecoverBinding
-import com.clausfonseca.rosacha.view.helper.FirebaseHelper
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

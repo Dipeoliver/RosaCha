@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.databinding.ClientAdapterBinding
-import com.clausfonseca.rosacha.view.model.Client
+import com.clausfonseca.rosacha.model.Client
 
 class ClientAdapter(
     private val context: android.content.Context,

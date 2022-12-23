@@ -1,7 +1,7 @@
-package com.clausfonseca.rosacha.view.model
+package com.clausfonseca.rosacha.model
 
 import android.os.Parcelable
-import com.clausfonseca.rosacha.view.helper.FirebaseHelper
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

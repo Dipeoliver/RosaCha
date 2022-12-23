@@ -2,22 +2,26 @@ package com.clausfonseca.rosacha.view.dashboard.client
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentClientBinding
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
-import com.clausfonseca.rosacha.view.helper.FirebaseHelper
-import com.clausfonseca.rosacha.view.model.Client
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
+import com.clausfonseca.rosacha.databinding.FragmentHomeBinding
+import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.view.dashboard.DashboardViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ClientFragment : Fragment() {
 
@@ -25,6 +29,8 @@ class ClientFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var clientAdapter: ClientAdapter
     private val clientlist = mutableListOf<Client>()
+
+    var db: FirebaseFirestore? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,8 +42,10 @@ class ClientFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        db = FirebaseFirestore.getInstance()
         initClick()
-        getTasks()
+//        getTasks()
+        getClients()
     }
 
     override fun onDestroyView() {
@@ -51,6 +59,51 @@ class ClientFragment : Fragment() {
             findNavController().navigate(uri)
             binding.root.removeAllViewsInLayout()
         }
+    }
+
+    private fun getClients() {
+
+        db!!.collection("Clients").get().addOnSuccessListener { results ->
+
+            if (results != null) {
+                clientlist.clear()
+
+                // result é uma lista
+                for (result in results) {
+                    val key = result.id // pegar o nome  da pasta do documento
+                    val client = result.toObject(Client::class.java)
+
+                    clientlist.add(client)
+                    binding.textinfo.text = ""
+                }
+                initAdapter()
+                binding.progressBar4.isVisible = false
+            } else {
+                binding.progressBar4.isVisible = false
+                binding.textinfo.text = "Nehuma Tarefa encontrada"
+                Toast.makeText(
+                    requireContext(),
+                    "Erro ao exibir o documento, ele não existe",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }.addOnFailureListener { error ->
+            binding.progressBar4.isVisible = false
+            Toast.makeText(
+                requireContext(),
+                "Error ${error.message.toString()}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun initAdapter() {
+        binding.rvClient.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvClient.setHasFixedSize(true)
+        clientAdapter = ClientAdapter(requireContext(), clientlist) { client, select ->
+            optionSelect(client, select)
+        }
+        binding.rvClient.adapter = clientAdapter
     }
 
     private fun getTasks() {
@@ -83,14 +136,6 @@ class ClientFragment : Fragment() {
             })
     }
 
-    private fun initAdapter() {
-        binding.rvClient.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvClient.setHasFixedSize(true)
-        clientAdapter = ClientAdapter(requireContext(), clientlist) { client, select ->
-            optionSelect(client, select)
-        }
-        binding.rvClient.adapter = clientAdapter
-    }
 
     private fun optionSelect(client: Client, select: Int) {
         when (select) {

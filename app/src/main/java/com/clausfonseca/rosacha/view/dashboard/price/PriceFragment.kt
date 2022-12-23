@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.clausfonseca.rosacha.databinding.FragmentPriceBinding
-import com.clausfonseca.rosacha.view.model.Product
+import com.clausfonseca.rosacha.model.Product
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore

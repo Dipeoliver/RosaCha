@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.helper
+package com.clausfonseca.rosacha.data.firebase
 
 import com.clausfonseca.rosacha.R
 import com.google.firebase.auth.FirebaseAuth

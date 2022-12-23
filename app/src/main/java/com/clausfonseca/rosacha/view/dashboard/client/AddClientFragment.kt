@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentAddClientBinding
-import com.clausfonseca.rosacha.view.dashboard.HomeFragment
-import com.clausfonseca.rosacha.view.helper.FirebaseHelper
-import com.clausfonseca.rosacha.view.model.Client
-import com.google.firebase.firestore.FirebaseFirestore
+import com.clausfonseca.rosacha.model.Client
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class AddClientFragment : Fragment() {
 
@@ -22,10 +22,11 @@ class AddClientFragment : Fragment() {
 
     private var _binding: FragmentAddClientBinding? = null
     private val binding get() = _binding!!
+    private val viewModel : AddClientViewModel by viewModels()
+
     private lateinit var client: Client
     private var newClient: Boolean = true
 
-    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,7 +86,7 @@ class AddClientFragment : Fragment() {
     }
 
     private fun insertClient() {
-        db.collection("Clients").document(client.id)
+        viewModel.db.collection("Clients").document(client.id)
             .set(client).addOnCompleteListener {
                 Toast.makeText(
                     requireContext(),

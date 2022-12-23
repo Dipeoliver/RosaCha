@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.databinding.ItemProductAdapterBinding
-import com.clausfonseca.rosacha.view.model.Product
+import com.clausfonseca.rosacha.model.Product
 import com.google.firebase.database.core.Context
 
 class ProductAdapter(
