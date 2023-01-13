@@ -6,12 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".view.dashboard.product.AddProductFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.appcompat.widget.Toolbar>
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -23,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="60dp"
                 android:text="@string/barcode"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
@@ -39,10 +53,10 @@
                 android:background="@drawable/bg_edit"
                 android:ems="10"
                 android:hint="@string/barcode"
-                android:inputType="number|numberDecimal"
+                android:inputType="number"
+                android:nextFocusDown="@id/edt_reference_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                android:nextFocusDown="@id/edt_reference_product"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.079"
                 app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +69,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="32dp"
                 android:backgroundTint="@color/white"
-                android:src="@drawable/ic_baseline_photo_camera_24"
+                android:src="@drawable/ic_baseline_qr_code_scanner_24"
                 app:layout_constraintBottom_toBottomOf="@+id/edt_barcode_product"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/edt_barcode_product"
@@ -66,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="28dp"
                 android:text="@string/reference"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
@@ -78,14 +92,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="90dp"
+                android:layout_marginEnd="200dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
                 android:hint="@string/reference"
                 android:inputType="textPersonName"
+                android:nextFocusDown="@id/edt_description_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                android:nextFocusDown="@id/edt_description_product"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -95,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/description"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
@@ -112,9 +126,9 @@
                 android:ems="10"
                 android:hint="@string/description"
                 android:inputType="textPersonName"
+                android:nextFocusDown="@id/edt_brand_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                android:nextFocusDown="@id/edt_brand_product"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -140,9 +154,9 @@
                 android:ems="10"
                 android:hint="@string/brand"
                 android:inputType="textPersonName"
+                android:nextFocusDown="@id/edt_provider_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                android:nextFocusDown="@id/edt_provider_product"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
@@ -168,9 +182,9 @@
                 android:ems="10"
                 android:hint="@string/provider"
                 android:inputType="textPersonName"
+                android:nextFocusDown="@id/edt_size_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                android:nextFocusDown="@id/edt_size_product"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/edt_brand_product"
                 app:layout_constraintTop_toBottomOf="@+id/txt_provider" />
@@ -196,9 +210,9 @@
                 android:ems="10"
                 android:hint="@string/size"
                 android:inputType="textPersonName"
+                android:nextFocusDown="@id/edt_color_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                android:nextFocusDown="@id/edt_color_product"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -225,9 +239,9 @@
                 android:ems="10"
                 android:hint="@string/color"
                 android:inputType="textPersonName"
+                android:nextFocusDown="@id/edt_cost_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                android:nextFocusDown="@id/edt_cost_product"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/edt_size_product"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -253,9 +267,9 @@
                 android:ems="10"
                 android:hint="@string/cost_price"
                 android:inputType="number|numberDecimal"
+                android:nextFocusDown="@id/edt_sales_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                android:nextFocusDown="@id/edt_sales_product"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
@@ -281,9 +295,9 @@
                 android:ems="10"
                 android:hint="@string/sales_price"
                 android:inputType="number|numberDecimal"
+                android:nextFocusDown="@id/rg_owner_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                android:nextFocusDown="@id/rg_owner_product"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/edt_cost_product"
                 app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -332,29 +346,50 @@
                     android:textColor="@color/white" />
             </RadioGroup>
 
-            <ProgressBar
-                android:id="@+id/progressBar4"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminateTint="@color/white"
-                android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rg_owner_product"
-                tools:visibility="visible" />
 
             <Button
                 android:id="@+id/btn_add_product"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:backgroundTint="@color/pink"
                 android:text="@string/add"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/progressBar4" />
+                app:layout_constraintTop_toBottomOf="@+id/rg_owner_product" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="145dp"
+                android:layout_height="124dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="12dp"
+                android:visibility="visible"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="@+id/btn_scan"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/edt_reference_product"
+                app:layout_constraintTop_toBottomOf="@+id/edt_barcode_product"
+                android:src="@drawable/no_image" />
+
+            <Button
+                android:id="@+id/btn_Photo"
+                android:layout_width="54dp"
+                android:layout_height="38dp"
+                android:text="Foto"
+                app:layout_constraintEnd_toEndOf="@+id/imageView3"
+                app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+            <Button
+                android:id="@+id/btn_gall"
+                android:layout_width="54dp"
+                android:layout_height="38dp"
+                android:text="Ga"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                app:layout_constraintEnd_toEndOf="@+id/imageView3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

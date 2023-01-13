@@ -12,6 +12,44 @@ Feitos
 11 fazer o botão add ficar sempre embaixo
 12 ajustar o index dos campos adicionar o produto
 
+04/01/23
+- adicionado mascara de e-mail / Phone / Date
+- Colocar o progressbar por cima tela
+
+06/01/23
+- Mudar o graph para deeplink
+- Tratar para o campo barcode nao estar vazio em price
+- Receber o focus no campo Barcode e limpar campos ao nao encontrar produto
+- mascara para sempre ter 2 casas decimais na consulta de price
+
+09/01/23
+- Adicionei mais numeros de parcelas divididas
+- Adicionei scanner Price pela camera
+- Modifiquei visual da ListProduct
+- modificar todos _binding
+- colocar UPPERCASE para lembrar textos 
+
+
+11/01/23
+- ao mudar aba dentro de campos(cliente) ao adicionar novo não aparece direto
+
+
+13/01/23
+- mudar para adicionar cliente e produto em uma nova aba, usando float Button
+- Salvar imagem do produto
+-----------------------------------------------------------------------------
+
 A fazer
-2 Adicionar confirmação para o Delete 
-                                                
+
+- colocar a lista de clientes e produtos em ordem alfabetica
+- lista(clients) esta cortando ultimo item
+- fazer o campo imageview dar um reset e nao salvar nada se vazio
+- arrumar botoes imagem para dicionar camera ou galeria
+- colocar para não pegar imagem se campo barcode estiver vazio
+- Adicionar botão voltar na aba de adicionar produtos
+
+- Adicionar confirmação para o Delete 
+- mudar arquitetura  
+- validação de campos
+- scroll adicionar produto nao funciona
+

@@ -16,15 +16,14 @@ import com.google.firebase.ktx.Firebase
 
 class SalesFragment : Fragment() {
 
-    private var _binding: FragmentSalesBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentSalesBinding
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSalesBinding.inflate(inflater, container, false)
+        binding = FragmentSalesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -36,7 +35,6 @@ class SalesFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 
     private fun configTabLayout() {

@@ -18,15 +18,15 @@ import com.google.firebase.ktx.Firebase
 
 class RegisterFragment : Fragment() {
 
-    private var _binding: FragmentRegisterBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentRegisterBinding
+
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        binding = FragmentRegisterBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -40,7 +40,6 @@ class RegisterFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 
 

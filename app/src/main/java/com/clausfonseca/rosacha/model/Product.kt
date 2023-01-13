@@ -16,7 +16,7 @@ data class Product(
     var color: String = "",
     var cost_price: Double = 0.0,
     var sales_price: Double = 0.0,
-    var owner: Int = 0,
+    var owner: String ="",
     var productDate: String =""
 ) : Parcelable {
     //    gerar um id automático

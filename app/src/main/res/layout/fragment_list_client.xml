@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.dashboard.product.ListProductFragment">
+    tools:context=".view.dashboard.client.ListClientFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_product"
+        android:id="@+id/rv_client"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="2"
-        tools:listitem="@layout/item_product_adapter" />
+        tools:itemCount="4"
+        tools:listitem="@layout/client_adapter" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_product"
+        android:id="@+id/fab_add_client"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

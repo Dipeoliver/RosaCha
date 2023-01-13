@@ -1,5 +1,6 @@
 package com.clausfonseca.rosacha.view.dashboard.client
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,21 +9,24 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentAddClientBinding
 import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.utils.mask.DateMask
+import com.clausfonseca.rosacha.utils.mask.PhoneMask
+import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
+import com.clausfonseca.rosacha.utils.mask.validateEmailRegex
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class AddClientFragment : Fragment() {
 
-    private val args: AddClientFragmentArgs by navArgs()
-
-    private var _binding: FragmentAddClientBinding? = null
-    private val binding get() = _binding!!
-    private val viewModel : AddClientViewModel by viewModels()
+    private lateinit var binding: FragmentAddClientBinding
+    private val viewModel: AddClientViewModel by viewModels()
 
     private lateinit var client: Client
     private var newClient: Boolean = true
@@ -32,7 +36,7 @@ class AddClientFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentAddClientBinding.inflate(inflater, container, false)
+        binding = FragmentAddClientBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -41,47 +45,69 @@ class AddClientFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.edtNameClient.requestFocus()
         initListeners()
-//        getArgs()
+        configureComponents()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+    }
+
+    private fun configureComponents() {
+        //Mask to Phone
+        val country = PhoneNumberFormatType.PT_BR // OR PhoneNumberFormatType.PT_BR
+        val phoneFormatter = PhoneMask(WeakReference(binding.edtPhoneClient), country)
+        binding.edtPhoneClient.addTextChangedListener(phoneFormatter)
+//        binding.edtPhoneClient.addTextChangedListener(DateMask.mask(binding.edtPhoneClient, DateMask.FORMAT_FONE))
+
+        //Mask to Date
+        binding.edtBirthdayClient.addTextChangedListener(DateMask.mask(binding.edtBirthdayClient, DateMask.FORMAT_DATE))
     }
 
     private fun initListeners() {
         binding.btnAddClient.setOnClickListener {
             validateData()
         }
+
+        binding.btnBack.setOnClickListener {
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
+            findNavController().navigate(uri)
+        }
     }
 
+
+
     private fun validateData() {
+
+        val phone = binding.edtPhoneClient.text.toString()
         val name = binding.edtNameClient.text.toString().trim()
-        val phone = binding.edtPhoneClient.text.toString().trim()
-        val email = binding.edtEmailClient.text.toString().trim()
         val birthday = binding.edtBirthdayClient.text.toString().trim()
 
-        if (name.isNotEmpty() && phone.isNotEmpty()) {
-            binding.progressBar.isVisible = true
-
-            client = Client()
-            val date = Calendar.getInstance().time
-            val dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
-            val clientDate = dateTimeFormat.format(date)
-
-            client.name = name
-            client.phone = phone
-            client.email = email
-            client.birthday = birthday
-            client.clientDate = clientDate
-
-            insertClient()
+        val email = binding.edtEmailClient.text.toString().trim()
+        if (!email.validateEmailRegex(email)) {
+            Toast.makeText(context, "Erro de validação do email", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(
-                requireContext(),
-                "Preencher os campos Obrigatórios",
-                Toast.LENGTH_LONG
-            ).show()
+            if (name.isNotEmpty() && phone.length > 13) {
+//                binding.progressBar.isVisible = true
+
+                client = Client()
+                val date = Calendar.getInstance().time
+                val dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+                val clientDate = dateTimeFormat.format(date)
+
+                client.name = name.uppercase()
+                client.phone = phone
+                client.email = email.lowercase()
+                client.birthday = birthday
+                client.clientDate = clientDate
+
+                insertClient()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Preencher os campos Obrigatórios",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
@@ -94,69 +120,12 @@ class AddClientFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
                 cleaner()
-                binding.progressBar.isVisible = false
+//                binding.progressBar.isVisible = false
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Erro ao salvar Cliente", Toast.LENGTH_SHORT)
                     .show()
             }
     }
-
-    private fun insertClient_RealtimeDatabase() {
-        FirebaseHelper
-            .getDatabase()
-            .child("Client")
-//            .child(FirebaseHelper.getIdUser() ?: "") // id do usuario
-            .child("Clients") // id do usuario
-            .child(client?.id ?: "")
-            .setValue(client)
-            .addOnCompleteListener { task ->
-                if (newClient) { // nova tarefa
-                    if (task.isSuccessful) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Client  Salvo com sucesso",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        cleaner()
-                        binding.progressBar.isVisible = false
-                    } else { // iditando tarefa
-                        binding.progressBar.isVisible = false
-                        Toast.makeText(
-                            requireContext(),
-                            "Tarefa Atualizada com Sucesso",
-                            Toast.LENGTH_SHORT
-                        )
-                    }
-                } else {
-                    binding.progressBar.isVisible = false
-
-                    Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }.addOnFailureListener {
-                binding.progressBar.isVisible = false
-                Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-//    private fun getArgs() {
-//        args.let {
-//            if (it.clientArguments != null) {
-//                client = it.clientArguments
-//            }
-//
-//            if (args.clientArguments != null) configTask()
-//        }
-//    }
-//
-//    private fun configTask() {
-//        newClient = false
-////        binding.txtTollbar.text = "Editando uma tarefa"
-//        binding.edtNameClient.setText(client?.name)
-//        binding.edtPhoneClient.setText(client?.phone)
-//        binding.edtEmailClient.setText(client?.email)
-//        binding.edtBirthdayClient.setText(client?.birthday)
-//    }
 
     private fun cleaner() {
         binding.apply {

@@ -1,74 +1,74 @@
-package com.clausfonseca.rosacha.view.dashboard.product
+package com.clausfonseca.rosacha.view.dashboard.client
 
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.br.jafapps.bdfirestore.util.DialogProgress
-import com.clausfonseca.rosacha.databinding.FragmentListProductBinding
-import com.clausfonseca.rosacha.view.adapter.ProductAdapter
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentClientBinding
+import com.clausfonseca.rosacha.databinding.FragmentListClientBinding
 import com.clausfonseca.rosacha.model.Client
-import com.clausfonseca.rosacha.model.Product
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.clausfonseca.rosacha.view.adapter.ClientAdapter
 import com.google.firebase.firestore.FirebaseFirestore
 
+class ListClientFragment : Fragment() {
 
-class ListProductFragment : Fragment() {
-
-    private lateinit var binding: FragmentListProductBinding
-    private lateinit var productAdapter: ProductAdapter
-    private val productlist = mutableListOf<Product>()
+    private lateinit var binding: FragmentListClientBinding
+    private lateinit var clientAdapter: ClientAdapter
+    private val clientlist = mutableListOf<Client>()
 
     var db: FirebaseFirestore? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentListProductBinding.inflate(inflater, container, false)
+    ): View {
+        binding = FragmentListClientBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = FirebaseFirestore.getInstance()
-        getProducts()
+        getClients()
         initClick()
     }
 
+    override fun onResume() {
+        super.onResume()
+        getClients()
+    }
+
     private fun initClick() {
-        binding.fabAddProduct.setOnClickListener {
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/addProduct_fragment")
+        binding.fabAddClient.setOnClickListener {
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/addClient_Fragment")
             findNavController().navigate(uri)
+//            binding.root.removeAllViewsInLayout()
         }
     }
 
     // Firestore DataBase
-    private fun getProducts() {
+    private fun getClients() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
 
-        db!!.collection("Products").get().addOnSuccessListener { results ->
+        db!!.collection("Clients").get().addOnSuccessListener { results ->
 
             if (results != null) {
-                productlist.clear()
+                clientlist.clear()
 
                 // result é uma lista
                 for (result in results) {
                     val key = result.id // pegar o nome  da pasta do documento
-                    val product = result.toObject(Product::class.java)
+                    val client = result.toObject(Client::class.java)
 
-                    productlist.add(product)
+                    clientlist.add(client)
                 }
                 initAdapter()
                 dialogProgress.dismiss()
@@ -89,38 +89,34 @@ class ListProductFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
-
     }
 
     private fun initAdapter() {
-        binding.rvProduct.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvProduct.setHasFixedSize(true)
-        productAdapter = ProductAdapter(requireContext(), productlist) { product, select ->
-            optionSelect(product, select)
+        binding.rvClient.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvClient.setHasFixedSize(true)
+        clientAdapter = ClientAdapter(requireContext(), clientlist) { client, select ->
+            optionSelect(client, select)
         }
-        binding.rvProduct.adapter = productAdapter
+        binding.rvClient.adapter = clientAdapter
     }
 
-    private fun optionSelect(product: Product, select: Int) {
+    private fun optionSelect(client: Client, select: Int) {
         when (select) {
-            ProductAdapter.SELECT_REMOVE -> {
-                deleteProduct(product)
+            ClientAdapter.SELECT_REMOVE -> {
+                deleteClient(client)
             }
-//            ClientAdapter.SELECT_EDIT -> {
-//                val action = HomeFragmentDirections
-//                    .actionHomeFragmentToFormTaskFragment(task)
-//                findNavController().navigate(action)
-//            }
+            ClientAdapter.SELECT_EDIT -> {
+            }
         }
-
     }
 
-    private fun deleteProduct(client: Product) {
+    private fun deleteClient(client: Client) {
         FirebaseHelper
             .getDatabase()
-            .child("Product")
-            .child("Product_Item")
+            .child("Client")
+            .child("Clients")
             .child(client.id)
             .removeValue()
     }
 }
+

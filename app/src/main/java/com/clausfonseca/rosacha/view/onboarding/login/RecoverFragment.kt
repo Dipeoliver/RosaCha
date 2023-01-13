@@ -17,8 +17,7 @@ import com.google.firebase.ktx.Firebase
 
 
 class RecoverFragment : Fragment() {
-    private var _binding: FragmentRecoverBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentRecoverBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var receivedArgs: String
 
@@ -28,7 +27,7 @@ class RecoverFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentRecoverBinding.inflate(inflater, container, false)
+        binding = FragmentRecoverBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -41,10 +41,10 @@ class ProductAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val product = productList[position]
         holder.binding.txtBarcode.text = product.barcode
-        holder.binding.txtBrand.text = product.brand
-        holder.binding.txtProv.text = product.provider
+//        holder.binding.txtBrand.text = product.brand
+//        holder.binding.txtProv.text = product.provider
         holder.binding.txtDescription.text = product.description
-        holder.binding.txtOwner.text = product.owner.toString()
+//        holder.binding.txtOwner.text = product.owner.toString()
         holder.binding.txtCostPrice.text = product.cost_price.toString()
         holder.binding.txtSalesPrice.text = product.sales_price.toString()
 

@@ -1,73 +1,124 @@
 package com.clausfonseca.rosacha.view.dashboard.product
 
+import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.os.Environment
+import android.provider.MediaStore
+import android.view.*
 import android.widget.Toast
-import androidx.core.view.isVisible
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import com.br.jafapps.bdfirestore.util.DialogProgress
+import com.br.jafapps.bdfirestore.util.Util
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentAddProductBinding
-import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.model.Product
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.log
 
+@Suppress("DEPRECATION")
 class AddProductFragment : Fragment() {
 
-    private var _binding: FragmentAddProductBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentAddProductBinding
+
+    private lateinit var firebaseStorage: FirebaseStorage
+    private val db = FirebaseFirestore.getInstance()
+    private lateinit var auth: FirebaseAuth
+
+    var uri_Imagem: Uri? = null
+    private var pictureName: String? = ""
 
     private lateinit var product: Product
+
     private var newTask: Boolean = true
     private var statusOwner: Int = 0
+    private var owner: String = ""
 
-
-    private val db = FirebaseFirestore.getInstance()
+    val dialogProgress = DialogProgress()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentAddProductBinding.inflate(inflater, container, false)
+        binding = FragmentAddProductBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         configureButton()
         initListeners()
+        auth = Firebase.auth
+        firebaseStorage = Firebase.storage
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
+    // BARCODE  &&  IMAGEVIEW   --------------------------------------------------------
     @Suppress("DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        var result: IntentResult? =
-            IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
 
-        if (result != null) {
-            if (result.contents != null) {
-                binding.edtBarcodeProduct.setText(result.contents)
-                binding.edtReferenceProduct.requestFocus()
+        // setar a imagem na ImageView
 
-            } else {
-                binding.edtBarcodeProduct.setText("scan failed")
+        if (requestCode == 11 || requestCode == 22) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (resultCode == Activity.RESULT_OK) {
+
+                if (requestCode == 11 && data != null) {  // galeria
+                    uri_Imagem = data.data
+
+                    binding.imageView3.setImageURI(uri_Imagem)
+
+                } else if (requestCode == 22 && uri_Imagem != null) {// camera
+
+                    binding.imageView3.setImageURI(uri_Imagem)
+                }
             }
         } else {
-            super.onActivityResult(requestCode, resultCode, data)
-            binding.edtBarcodeProduct.requestFocus()
+            // BARCODE
+            var result: IntentResult? =
+                IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+
+            if (result != null) {
+                if (result.contents != null) {
+                    binding.edtBarcodeProduct.setText(result.contents)
+                    binding.edtReferenceProduct.requestFocus()
+
+                } else {
+                    binding.edtBarcodeProduct.setText("scan failed")
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data)
+                binding.edtBarcodeProduct.requestFocus()
+            }
         }
     }
 
+    // BARCODE
     @Suppress("DEPRECATION")
     private fun configureButton() {
         binding.btnScan.setOnClickListener {
@@ -77,17 +128,97 @@ class AddProductFragment : Fragment() {
             integrator.initiateScan()
         }
     }
+    // ----------------------------------------------------------------------------------
 
-    private fun initListeners() {
-        binding.btnAddProduct.setOnClickListener { validateData() }
-        binding.rgOwnerProduct.setOnCheckedChangeListener() { _, id ->
-            statusOwner = when (id) {
-                R.id.claudia -> 0
-                else -> 1
+    // STORAGE----------------------------------------------------------------------------
+    //  Capturar imagem da Camera
+    private fun obterImagemdaCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // versão nova
+            val contentValues = ContentValues()
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            val resolver = activity?.contentResolver
+            uri_Imagem =
+                resolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+
+        } else { // versão antiga
+            val autorização = "com.clausfonseca.rosacha"
+            val diretorio =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+            val path = diretorio.path ?: ""
+            val nomeImagem = path + "/Products" + pictureName + ".jpg"
+            if (nomeImagem == "/Products.jpg") {
+                val nomeImagem = diretorio.path + "/Products" + System.currentTimeMillis() + ".jpg"
             }
+            val file = File(nomeImagem)
+            uri_Imagem = activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
         }
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri_Imagem)
+        startActivityForResult(intent, 22)
     }
 
+    // selecionar imagem da galeria
+    private fun obterImagemdaGaleria() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        startActivityForResult(Intent.createChooser(intent, "Escolha uma Imagem"), 11)
+    }
+
+    // com recurso para diminuir a imagem
+    fun uploadImagem() {
+
+        pictureName = binding.edtBarcodeProduct.text.toString()
+
+        activity?.let {
+            Glide.with(it.baseContext).asBitmap().load(uri_Imagem)
+                .apply(RequestOptions.overrideOf(800, 480)).listener(object : RequestListener<Bitmap> {
+
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Bitmap>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Util.exibirToast(requireContext(), "Erro ao diminuir imagem")
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        bitmap: Bitmap?,
+                        model: Any?,
+                        target: Target<Bitmap>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+
+                        val baos = ByteArrayOutputStream()
+                        bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                        val data = baos.toByteArray()
+//                        val uid = auth.currentUser?.uid
+
+                        val reference =
+                            firebaseStorage.reference   // upload de imagem adicionando usuario especifico
+                                .child("Products")
+//                                .child(uid.toString())
+                                .child(pictureName + ".jpg")
+                        val uploadTask = reference.putBytes(data)
+                        uploadTask.addOnSuccessListener {
+
+                        }.addOnFailureListener { error ->
+                            Util.exibirToast(
+                                requireContext(),
+                                "Erro ao realizar o upload da imagem: ${error.message.toString()}"
+                            )
+                        }
+                        return false
+                    }
+                }).submit()
+        }
+    }
+    // ----------------------------------------------------------------------------------
+
+    // FIRESTORE--------------------------------------------------------------------------
     private fun validateData() {
         val barcode = binding.edtBarcodeProduct.text.toString().trim()
         val reference = binding.edtReferenceProduct.text.toString().trim()
@@ -99,10 +230,11 @@ class AddProductFragment : Fragment() {
         val costPrice = binding.edtCostProduct.text.toString().trim()
         val salesPrice = binding.edtSalesProduct.text.toString().trim()
 
-        if (barcode.isNotEmpty() && description.isNotEmpty() && size.isNotEmpty() &&
-            color.isNotEmpty() && costPrice.isNotEmpty() && salesPrice.isNotEmpty()
+        if (barcode.isNotEmpty() && description.isNotEmpty() && size.isNotEmpty() && costPrice.isNotEmpty() && salesPrice.isNotEmpty()
         ) {
-            binding.progressBar4.isVisible = true
+
+
+            dialogProgress.show(childFragmentManager, "0")
 
             if (newTask) product = Product()
 
@@ -112,16 +244,23 @@ class AddProductFragment : Fragment() {
 
             product.barcode = barcode
             product.reference = reference
-            product.description = description
-            product.brand = brand
-            product.provider = provider
+            product.description = description.uppercase()
+            product.brand = brand.uppercase()
+            product.provider = provider.uppercase()
             product.size = size
-            product.color = color
+            product.color = color.uppercase()
             product.cost_price = costPrice.toDouble()
             product.sales_price = salesPrice.toDouble()
-            product.owner = statusOwner
+            owner = if (statusOwner == 0) {
+                "Claudia"
+            } else {
+                "Claudenice"
+            }
+            product.owner = owner
             product.productDate = productDate
             insertProduct()
+            uploadImagem()
+
         } else {
             Toast.makeText(
                 requireContext(),
@@ -131,6 +270,7 @@ class AddProductFragment : Fragment() {
         }
     }
 
+    // Inserir produto no Firestore
     private fun insertProduct() {
         db.collection("Products").document(product.barcode)
             .set(product).addOnCompleteListener {
@@ -140,50 +280,36 @@ class AddProductFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
                 cleaner()
-                binding.progressBar4.isVisible = false
+                dialogProgress.dismiss()
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Erro ao salvar Produto", Toast.LENGTH_SHORT)
                     .show()
             }
     }
+    // ----------------------------------------------------------------------------------
 
-    private fun insertProduct_RealTimeDatabase() {
-        FirebaseHelper
-            .getDatabase()
-            .child("Product")
-//            .child(FirebaseHelper.getIdUser() ?: "")
-            .child("Product_Item") // id do usuario
-            .child(product.id)
-            .setValue(product)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    if (newTask) { // nova tarefa
-//                        findNavController().popBackStack() // voltar para a tela anterior
-                        Toast.makeText(
-                            requireContext(),
-                            "Tarefa Salva com sucesso",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        cleaner()
-                        binding.progressBar4.isVisible = false
-                    } else { // iditando tarefa
-                        binding.progressBar4.isVisible = false
-                        Toast.makeText(
-                            requireContext(),
-                            "Tarefa Atualizada com Sucesso",
-                            Toast.LENGTH_SHORT
-                        )
-                    }
-
-                } else {
-                    Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT)
-                        .show()
-
-                }
-            }.addOnFailureListener {
-                binding.progressBar4.isVisible = false
-                Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT).show()
+    private fun initListeners() {
+        binding.btnAddProduct.setOnClickListener {
+            validateData()
+        }
+        binding.rgOwnerProduct.setOnCheckedChangeListener() { _, id ->
+            statusOwner = when (id) {
+                R.id.claudia -> 0
+                else -> 1
             }
+        }
+
+        binding.btnPhoto.setOnClickListener {
+            obterImagemdaCamera()
+        }
+
+        binding.btnGall.setOnClickListener {
+            obterImagemdaGaleria()
+        }
+//        binding.btnBack.setOnClickListener {
+//            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
+//            findNavController().navigate(uri)
+//        }
     }
 
     private fun cleaner() {
@@ -198,7 +324,7 @@ class AddProductFragment : Fragment() {
             edtCostProduct.text.clear()
             edtSalesProduct.text.clear()
             edtBarcodeProduct.requestFocus()
-        }
 
+        }
     }
 }
