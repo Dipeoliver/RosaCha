@@ -6,15 +6,61 @@
     android:layout_height="match_parent"
     tools:context=".view.dashboard.product.AddProductFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </androidx.appcompat.widget.Toolbar>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/rose"
+                android:elevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabIndicatorColor="@color/white"
+                app:tabTextAppearance="@style/CustomTabLayout"
+                app:tabTextColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Product"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tabs"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.517">
+
+            </TextView>
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="8dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -164,18 +210,16 @@
                 android:id="@+id/txt_provider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="212dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/provider"
                 android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/edt_provider_product"
                 app:layout_constraintTop_toBottomOf="@+id/edt_description_product" />
 
             <EditText
                 android:id="@+id/edt_provider_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_edit"
@@ -186,7 +230,6 @@
                 android:padding="14dp"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/edt_brand_product"
                 app:layout_constraintTop_toBottomOf="@+id/txt_provider" />
 
             <TextView
@@ -220,11 +263,10 @@
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="212dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/color"
                 android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/edt_color_product"
                 app:layout_constraintTop_toBottomOf="@+id/edt_provider_product" />
 
 
@@ -232,7 +274,6 @@
                 android:id="@+id/edt_color_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_edit"
@@ -243,7 +284,6 @@
                 android:padding="14dp"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/edt_size_product"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
             <TextView
@@ -277,18 +317,16 @@
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="104dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/sales_price"
                 android:textColor="@color/white"
-                app:layout_constraintStart_toEndOf="@+id/textView9"
+                app:layout_constraintStart_toStartOf="@+id/edt_sales_product"
                 app:layout_constraintTop_toBottomOf="@+id/edt_color_product" />
 
             <EditText
                 android:id="@+id/edt_sales_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_edit"
@@ -299,7 +337,6 @@
                 android:padding="14dp"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/edt_cost_product"
                 app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
             <TextView

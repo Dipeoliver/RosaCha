@@ -11,11 +11,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.br.jafapps.bdfirestore.util.DialogProgress
 import com.br.jafapps.bdfirestore.util.Util
 import com.bumptech.glide.Glide
@@ -39,7 +37,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.log
 
 @Suppress("DEPRECATION")
 class AddProductFragment : Fragment() {
@@ -71,7 +68,6 @@ class AddProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         configureButton()
         initListeners()
         auth = Firebase.auth
@@ -259,8 +255,9 @@ class AddProductFragment : Fragment() {
             product.owner = owner
             product.productDate = productDate
             insertProduct()
-            uploadImagem()
-
+            if (uri_Imagem != null) {
+                uploadImagem()
+            }
         } else {
             Toast.makeText(
                 requireContext(),
@@ -300,16 +297,16 @@ class AddProductFragment : Fragment() {
         }
 
         binding.btnPhoto.setOnClickListener {
-            obterImagemdaCamera()
+            if (binding.edtBarcodeProduct.text.isNotEmpty()) obterImagemdaCamera()
         }
 
         binding.btnGall.setOnClickListener {
-            obterImagemdaGaleria()
+            if (binding.edtBarcodeProduct.text.isNotEmpty()) obterImagemdaGaleria()
         }
-//        binding.btnBack.setOnClickListener {
-//            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
-//            findNavController().navigate(uri)
-//        }
+        binding.btnBack.setOnClickListener {
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
+            findNavController().navigate(uri)
+        }
     }
 
     private fun cleaner() {
@@ -324,7 +321,7 @@ class AddProductFragment : Fragment() {
             edtCostProduct.text.clear()
             edtSalesProduct.text.clear()
             edtBarcodeProduct.requestFocus()
-
+            binding.imageView3.setImageResource(R.drawable.no_image)
         }
     }
 }

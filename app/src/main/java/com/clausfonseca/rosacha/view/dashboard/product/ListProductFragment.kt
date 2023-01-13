@@ -46,6 +46,11 @@ class ListProductFragment : Fragment() {
         initClick()
     }
 
+    override fun onResume() {
+        super.onResume()
+        getProducts()
+    }
+
     private fun initClick() {
         binding.fabAddProduct.setOnClickListener {
             val uri = Uri.parse("android-app://com.clausfonseca.rosacha/addProduct_fragment")
