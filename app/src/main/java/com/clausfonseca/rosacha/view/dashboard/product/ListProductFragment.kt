@@ -2,30 +2,24 @@ package com.clausfonseca.rosacha.view.dashboard.product
 
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.br.jafapps.bdfirestore.util.DialogProgress
-import com.clausfonseca.rosacha.databinding.FragmentListProductBinding
-import com.clausfonseca.rosacha.view.adapter.ProductAdapter
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
-import com.clausfonseca.rosacha.databinding.FragmentClientBinding
-import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.databinding.FragmentProductListBinding
 import com.clausfonseca.rosacha.model.Product
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.clausfonseca.rosacha.view.adapter.ProductAdapter
 import com.google.firebase.firestore.FirebaseFirestore
 
 
 class ListProductFragment : Fragment() {
 
-    private lateinit var binding: FragmentListProductBinding
+    private lateinit var binding: FragmentProductListBinding
     private lateinit var productAdapter: ProductAdapter
     private val productlist = mutableListOf<Product>()
 
@@ -35,7 +29,7 @@ class ListProductFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentListProductBinding.inflate(inflater, container, false)
+        binding = FragmentProductListBinding.inflate(inflater, container, false)
         return binding.root
     }
 

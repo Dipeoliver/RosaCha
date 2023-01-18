@@ -6,13 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
-import com.clausfonseca.rosacha.databinding.FragmentAddClientBinding
+import com.clausfonseca.rosacha.databinding.FragmentClientAddBinding
 import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.utils.mask.DateMask
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
@@ -25,7 +22,7 @@ import java.util.*
 
 class AddClientFragment : Fragment() {
 
-    private lateinit var binding: FragmentAddClientBinding
+    private lateinit var binding: FragmentClientAddBinding
     private val viewModel: AddClientViewModel by viewModels()
 
     private lateinit var client: Client
@@ -36,7 +33,7 @@ class AddClientFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAddClientBinding.inflate(inflater, container, false)
+        binding = FragmentClientAddBinding.inflate(inflater, container, false)
         return binding.root
 
     }

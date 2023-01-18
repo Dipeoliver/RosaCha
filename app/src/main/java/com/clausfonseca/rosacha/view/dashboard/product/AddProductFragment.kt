@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -23,8 +25,10 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.clausfonseca.rosacha.R
-import com.clausfonseca.rosacha.databinding.FragmentAddProductBinding
+import com.clausfonseca.rosacha.databinding.FragmentProductAddBinding
+import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetBinding
 import com.clausfonseca.rosacha.model.Product
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,7 +45,7 @@ import java.util.*
 @Suppress("DEPRECATION")
 class AddProductFragment : Fragment() {
 
-    private lateinit var binding: FragmentAddProductBinding
+    private lateinit var binding: FragmentProductAddBinding
 
     private lateinit var firebaseStorage: FirebaseStorage
     private val db = FirebaseFirestore.getInstance()
@@ -57,12 +61,13 @@ class AddProductFragment : Fragment() {
     private var owner: String = ""
 
     val dialogProgress = DialogProgress()
+    var dialog: BottomSheetDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAddProductBinding.inflate(inflater, container, false)
+        binding = FragmentProductAddBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -83,16 +88,18 @@ class AddProductFragment : Fragment() {
         if (requestCode == 11 || requestCode == 22) {
             super.onActivityResult(requestCode, resultCode, data)
             if (resultCode == Activity.RESULT_OK) {
+                binding.imvPlus.visibility = GONE
 
                 if (requestCode == 11 && data != null) {  // galeria
                     uri_Imagem = data.data
 
-                    binding.imageView3.setImageURI(uri_Imagem)
+                    binding.imvPhoto.setImageURI(uri_Imagem)
 
                 } else if (requestCode == 22 && uri_Imagem != null) {// camera
 
-                    binding.imageView3.setImageURI(uri_Imagem)
+                    binding.imvPhoto.setImageURI(uri_Imagem)
                 }
+                dialog?.dismiss()
             }
         } else {
             // BARCODE
@@ -296,17 +303,37 @@ class AddProductFragment : Fragment() {
             }
         }
 
-        binding.btnPhoto.setOnClickListener {
-            if (binding.edtBarcodeProduct.text.isNotEmpty()) obterImagemdaCamera()
-        }
-
-        binding.btnGall.setOnClickListener {
-            if (binding.edtBarcodeProduct.text.isNotEmpty()) obterImagemdaGaleria()
-        }
         binding.btnBack.setOnClickListener {
             val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
             findNavController().navigate(uri)
         }
+
+        binding.imvPhoto.setOnClickListener {
+            if (binding.edtBarcodeProduct.text.isNotEmpty()) showBottomSheetDialog()
+            else Util.exibirToast(requireContext(), "Preencher campo Barcode Primeiro")
+        }
+    }
+
+    private fun showBottomSheetDialog() {
+        dialog = BottomSheetDialog(requireContext())
+
+        val sheetBinding: ItemCustomBottonSheetBinding = ItemCustomBottonSheetBinding.inflate(layoutInflater, null, false)
+
+        sheetBinding.imvBottomPhoto.setOnClickListener {
+            obterImagemdaCamera()
+        }
+        sheetBinding.txtBottomPhoto.setOnClickListener {
+            obterImagemdaCamera()
+        }
+
+        sheetBinding.imvBottomGallery.setOnClickListener {
+            obterImagemdaGaleria()
+        }
+        sheetBinding.txtBottomGallery.setOnClickListener {
+            obterImagemdaGaleria()
+        }
+        dialog?.setContentView(sheetBinding.root)
+        dialog?.show()
     }
 
     private fun cleaner() {
@@ -321,7 +348,8 @@ class AddProductFragment : Fragment() {
             edtCostProduct.text.clear()
             edtSalesProduct.text.clear()
             edtBarcodeProduct.requestFocus()
-            binding.imageView3.setImageResource(R.drawable.no_image)
+            binding.imvPhoto.setImageResource(R.drawable.no_image)
+            binding.imvPlus.visibility = VISIBLE
         }
     }
 }

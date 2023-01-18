@@ -192,9 +192,8 @@
 
             <EditText
                 android:id="@+id/edt_brand_product"
-                android:layout_width="wrap_content"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
@@ -203,7 +202,7 @@
                 android:nextFocusDown="@id/edt_provider_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/edt_description_product"
                 app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
             <TextView
@@ -218,10 +217,9 @@
 
             <EditText
                 android:id="@+id/edt_provider_product"
-                android:layout_width="wrap_content"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
                 android:hint="@string/provider"
@@ -229,7 +227,7 @@
                 android:nextFocusDown="@id/edt_size_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/edt_description_product"
                 app:layout_constraintTop_toBottomOf="@+id/txt_provider" />
 
             <TextView
@@ -245,7 +243,7 @@
 
             <EditText
                 android:id="@+id/edt_size_product"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
@@ -256,6 +254,7 @@
                 android:nextFocusDown="@id/edt_color_product"
                 android:padding="14dp"
                 android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/edt_brand_product"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -272,10 +271,9 @@
 
             <EditText
                 android:id="@+id/edt_color_product"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
                 android:hint="@string/color"
@@ -283,7 +281,8 @@
                 android:nextFocusDown="@id/edt_cost_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/edt_provider_product"
+                app:layout_constraintStart_toStartOf="@+id/edt_provider_product"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
             <TextView
@@ -299,7 +298,7 @@
 
             <EditText
                 android:id="@+id/edt_cost_product"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
@@ -310,6 +309,7 @@
                 android:nextFocusDown="@id/edt_sales_product"
                 android:padding="14dp"
                 android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/edt_size_product"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
@@ -325,10 +325,9 @@
 
             <EditText
                 android:id="@+id/edt_sales_product"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
                 android:hint="@string/sales_price"
@@ -336,7 +335,8 @@
                 android:nextFocusDown="@id/rg_owner_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/edt_color_product"
+                app:layout_constraintStart_toStartOf="@+id/edt_color_product"
                 app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
             <TextView
@@ -399,34 +399,29 @@
                 app:layout_constraintTop_toBottomOf="@+id/rg_owner_product" />
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/imv_photo"
                 android:layout_width="145dp"
                 android:layout_height="124dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="12dp"
-                android:visibility="visible"
                 android:scaleType="centerCrop"
+                android:src="@drawable/no_image"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="@+id/btn_scan"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/edt_reference_product"
-                app:layout_constraintTop_toBottomOf="@+id/edt_barcode_product"
-                android:src="@drawable/no_image" />
+                app:layout_constraintTop_toBottomOf="@+id/edt_barcode_product" />
 
-            <Button
-                android:id="@+id/btn_Photo"
-                android:layout_width="54dp"
-                android:layout_height="38dp"
-                android:text="Foto"
-                app:layout_constraintEnd_toEndOf="@+id/imageView3"
-                app:layout_constraintTop_toTopOf="@+id/imageView3" />
-
-            <Button
-                android:id="@+id/btn_gall"
-                android:layout_width="54dp"
-                android:layout_height="38dp"
-                android:text="Ga"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                app:layout_constraintEnd_toEndOf="@+id/imageView3" />
+            <ImageView
+                android:id="@+id/imv_plus"
+                android:layout_width="34dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="6dp"
+                android:src="@drawable/ic_baseline_add_circle_24"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/imv_photo"
+                app:layout_constraintEnd_toEndOf="@+id/imv_photo" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -15,6 +15,6 @@ class AddSalesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_sales, container, false)
+        return inflater.inflate(R.layout.fragment_sales_add, container, false)
     }
 }

@@ -15,6 +15,6 @@ class EditClientFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_client, container, false)
+        return inflater.inflate(R.layout.fragment_client_edit, container, false)
     }
 }

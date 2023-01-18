@@ -14,6 +14,6 @@ class ListSalesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_sales, container, false)
+        return inflater.inflate(R.layout.fragment_sales_list, container, false)
     }
 }

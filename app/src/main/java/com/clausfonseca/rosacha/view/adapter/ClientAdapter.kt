@@ -3,7 +3,7 @@ package com.clausfonseca.rosacha.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.clausfonseca.rosacha.databinding.ClientAdapterBinding
+import com.clausfonseca.rosacha.databinding.ItemClientAdapterBinding
 import com.clausfonseca.rosacha.model.Client
 
 class ClientAdapter(
@@ -21,7 +21,7 @@ class ClientAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientAdapter.MyViewHolder {
         return MyViewHolder(
-            ClientAdapterBinding.inflate(
+            ItemClientAdapterBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -29,7 +29,7 @@ class ClientAdapter(
         )
     }
 
-    inner class MyViewHolder(val binding: ClientAdapterBinding) :
+    inner class MyViewHolder(val binding: ItemClientAdapterBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun getItemCount() = clientList.size

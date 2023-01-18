@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.br.jafapps.bdfirestore.util.DialogProgress
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentClientBinding
-import com.clausfonseca.rosacha.databinding.FragmentListClientBinding
+import com.clausfonseca.rosacha.databinding.FragmentClientListBinding
 import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ListClientFragment : Fragment() {
 
-    private lateinit var binding: FragmentListClientBinding
+    private lateinit var binding: FragmentClientListBinding
     private lateinit var clientAdapter: ClientAdapter
     private val clientlist = mutableListOf<Client>()
 
@@ -29,7 +29,7 @@ class ListClientFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentListClientBinding.inflate(inflater, container, false)
+        binding = FragmentClientListBinding.inflate(inflater, container, false)
         return binding.root
     }
 

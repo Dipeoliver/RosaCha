@@ -16,7 +16,7 @@ class DialogProgress : DialogFragment() {
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        val view = inflater.inflate(R.layout.dialog_progress, container)
+        val view = inflater.inflate(R.layout.item_dialog_progress, container)
 
         retainInstance.to(true)
 

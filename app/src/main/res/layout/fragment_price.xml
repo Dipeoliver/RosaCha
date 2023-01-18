@@ -300,5 +300,14 @@
         app:layout_constraintTop_toTopOf="@+id/textView22"
         app:layout_constraintVertical_bias="1.0" />
 
+    <ImageView
+        android:id="@+id/imv_product"
+        android:layout_width="172dp"
+        android:layout_height="186dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_image"
+        app:layout_constraintEnd_toEndOf="@+id/edt_color_price"
+        app:layout_constraintTop_toTopOf="@+id/textView18" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

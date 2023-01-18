@@ -110,14 +110,14 @@
         android:id="@+id/addClient_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment"
         android:label="fragment_add_client"
-        tools:layout="@layout/fragment_add_client" >
+        tools:layout="@layout/fragment_client_add" >
     <deepLink app:uri="android-app://com.clausfonseca.rosacha/addClient_Fragment" />
     </fragment>
     <fragment
         android:id="@+id/addProduct_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.product.AddProductFragment"
         android:label="fragment_add_product"
-        tools:layout="@layout/fragment_add_product" >
+        tools:layout="@layout/fragment_product_add" >
     <deepLink app:uri="android-app://com.clausfonseca.rosacha/addProduct_fragment" />
     </fragment>
 </navigation>

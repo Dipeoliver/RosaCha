@@ -37,19 +37,22 @@ Feitos
 13/01/23
 - mudar para adicionar cliente e produto em uma nova aba, usando float Button
 - Salvar imagem do produto
+- colocar para não pegar imagem se campo barcode estiver vazio
+- fazer o campo imageview dar um reset e nao salvar nada se vazio
+- Adicionar botão voltar na aba de adicionar produtos
+- arrumar botoes imagem para dicionar camera ou galeria
+
+16/01/23
+- Na aba price exibe foto do produto ao fazer pesquisa
 -----------------------------------------------------------------------------
 
 A fazer
 
 - colocar a lista de clientes e produtos em ordem alfabetica
 - lista(clients) esta cortando ultimo item
-- fazer o campo imageview dar um reset e nao salvar nada se vazio
-- arrumar botoes imagem para dicionar camera ou galeria
-- colocar para não pegar imagem se campo barcode estiver vazio
-- Adicionar botão voltar na aba de adicionar produtos
 
 - Adicionar confirmação para o Delete 
-- mudar arquitetura  
 - validação de campos
 - scroll adicionar produto nao funciona
+- mudar arquitetura  
 
