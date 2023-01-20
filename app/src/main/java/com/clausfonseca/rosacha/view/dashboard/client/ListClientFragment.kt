@@ -1,7 +1,9 @@
 package com.clausfonseca.rosacha.view.dashboard.client
 
+import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.br.jafapps.bdfirestore.util.DialogProgress
+import com.br.jafapps.bdfirestore.util.Util
+import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentClientBinding
 import com.clausfonseca.rosacha.databinding.FragmentClientListBinding
@@ -103,20 +107,56 @@ class ListClientFragment : Fragment() {
     private fun optionSelect(client: Client, select: Int) {
         when (select) {
             ClientAdapter.SELECT_REMOVE -> {
-                deleteClient(client)
+                configDialog(client)
             }
             ClientAdapter.SELECT_EDIT -> {
             }
         }
     }
 
+    private fun configDialog(client: Client) {
+
+        val builder = AlertDialog.Builder(requireContext())
+
+        //set title for alert dialog
+//        builder.setTitle("Atenção")
+        builder.setTitle(Html.fromHtml("<font color='#FB2391'>Atenção</font>"));
+
+        //set message for alert dialog
+//        builder.setMessage(Html.fromHtml("<font color='#FB2391'>Realmente deseja excluir o cliente: ${client.name}</font>"));
+        builder.setMessage("Realmente deseja excluir: ${client.name}")
+        builder.setIcon(R.drawable.ic_warning)
+
+        //performing positive action
+        builder.setPositiveButton("Yes") { dialogInterface, which ->
+            deleteClient(client)
+        }
+//        //performing cancel action
+//        builder.setNeutralButton("Cancel"){dialogInterface , which ->
+//            Toast.makeText(applicationContext,"clicked cancel\n operation cancel",Toast.LENGTH_LONG).show()
+//        }
+        //performing negative action
+        builder.setNegativeButton("No") { dialogInterface, which ->
+            dialogInterface.dismiss()
+        }
+        // Create the AlertDialog
+        val alertDialog: AlertDialog = builder.create()
+        // Set other dialog properties
+        alertDialog.setCancelable(false)
+        alertDialog.show()
+    }
+
     private fun deleteClient(client: Client) {
-        FirebaseHelper
-            .getDatabase()
-            .child("Client")
-            .child("Clients")
-            .child(client.id)
-            .removeValue()
+        val reference = db!!.collection("Clients")
+
+        reference.document(client.id).delete().addOnCompleteListener() { task ->
+            if (task.isSuccessful) {
+                Util.exibirToast(requireContext(), "Deletado com Sucesso")
+                getClients()
+            } else {
+                Util.exibirToast(requireContext(), "erro ao deletar no banco ${task.exception.toString()}")
+            }
+        }
     }
 }
 

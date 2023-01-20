@@ -1,14 +1,18 @@
 package com.br.jafapps.bdfirestore.util
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.text.Html
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.clausfonseca.rosacha.R
+import com.clausfonseca.rosacha.model.Client
 
 
 @Suppress("DEPRECATION")
@@ -45,15 +49,10 @@ class Util {
             ActivityCompat.requestPermissions(activity!!, list.toTypedArray(), requestCode)
             return false
         }
-
-
-
         fun exibirToast(context: Context, mensagem: String){
 
             Toast.makeText(context, mensagem , Toast.LENGTH_LONG).show()
         }
-
-
         fun statusInternet(context: Context): Boolean {
             val conexao =  context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -87,13 +86,5 @@ class Util {
 
 
 
-    
-
-
-
-
     }
-
-
-
 }

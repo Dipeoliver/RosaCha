@@ -44,15 +44,23 @@ Feitos
 
 16/01/23
 - Na aba price exibe foto do produto ao fazer pesquisa
+
+18/01/23
+- lista(clients) esta cortando ultimo item
+
+
+20/01/23
+- Adicionar confirmação para o Delete
+- scroll adicionar produto nao funciona
 -----------------------------------------------------------------------------
 
 A fazer
 
-- colocar a lista de clientes e produtos em ordem alfabetica
-- lista(clients) esta cortando ultimo item
+- ao voltar no botão de baixo nao carrega a tela novamente 
+- inserir map no firebase
+- biblioteca adionar grafico na home
 
-- Adicionar confirmação para o Delete 
+- colocar a lista de clientes e produtos em ordem alfabetica 
 - validação de campos
-- scroll adicionar produto nao funciona
 - mudar arquitetura  
 
