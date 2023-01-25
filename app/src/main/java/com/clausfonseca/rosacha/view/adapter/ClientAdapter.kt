@@ -9,6 +9,7 @@ import com.clausfonseca.rosacha.model.Client
 class ClientAdapter(
     private val context: android.content.Context,
     private val clientList: List<Client>,
+    var lastItemRecyclerView: LastItemRecyclerView,
     val clientSelected: (Client, Int) -> Unit
 ) : RecyclerView.Adapter<ClientAdapter.MyViewHolder>() {
 
@@ -48,5 +49,14 @@ class ClientAdapter(
         holder.binding.btnClientUpdate.setOnClickListener {
             clientSelected(client, SELECT_EDIT)
         }
+
+        // quando chegar na ultima posição que tem na tela chama a função abaixo
+        if (position == itemCount - 1){
+            lastItemRecyclerView.lastItemRecyclerView(true)
+        }
+    }
+
+    interface LastItemRecyclerView {
+        fun lastItemRecyclerView(isShow: Boolean)
     }
 }

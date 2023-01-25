@@ -20,14 +20,16 @@ import com.clausfonseca.rosacha.databinding.FragmentClientListBinding
 import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 
-class ListClientFragment : Fragment() {
+class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
 
     private lateinit var binding: FragmentClientListBinding
     private lateinit var clientAdapter: ClientAdapter
     private val clientlist = mutableListOf<Client>()
 
     var db: FirebaseFirestore? = null
+    var nextquery: Query? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,13 +42,18 @@ class ListClientFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = FirebaseFirestore.getInstance()
-        getClients()
         initClick()
+        initAdapter()
+        getClients()
     }
 
     override fun onResume() {
         super.onResume()
         getClients()
+    }
+
+    override fun lastItemRecyclerView(isShow: Boolean) {
+        getMoreClients()
     }
 
     private fun initClick() {
@@ -62,7 +69,8 @@ class ListClientFragment : Fragment() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
 
-        db!!.collection("Clients").get().addOnSuccessListener { results ->
+        db!!.collection("Clients").orderBy("name").limit(10).get().addOnSuccessListener { results ->
+            dialogProgress.dismiss()
 
             if (results != null) {
                 clientlist.clear()
@@ -71,12 +79,14 @@ class ListClientFragment : Fragment() {
                 for (result in results) {
                     val key = result.id // pegar o nome  da pasta do documento
                     val client = result.toObject(Client::class.java)
-
                     clientlist.add(client)
                 }
-                initAdapter()
-                dialogProgress.dismiss()
+                // pegar ultimo item da query
+                val lastresult = results.documents[results.size() - 1]
+                nextquery = db!!.collection("Clients").orderBy("name").startAfter(lastresult).limit(10)
 
+                clientAdapter.notifyDataSetChanged()
+                //initAdapter()
             } else {
                 dialogProgress.dismiss()
                 Toast.makeText(
@@ -95,10 +105,34 @@ class ListClientFragment : Fragment() {
         }
     }
 
+    private fun getMoreClients() {
+        nextquery?.get()?.addOnSuccessListener { results ->
+
+            // o if e para verificar se chegou o fim da lista
+            if (results.size() > 0) {
+                // pegar ultimo item da query
+                val lastresult = results.documents[results.size() - 1]
+
+                nextquery = db!!.collection("Clients").orderBy("name").startAfter(lastresult).limit(10)
+
+                for (result in results) {
+                    val client = result.toObject(Client::class.java)
+                    clientlist.add(client)
+                }
+                // notificar que teve atualizalçao
+                clientAdapter.notifyDataSetChanged()
+            } else {
+//                Util.exibirToast(requireContext(), "Não ha mais itens para serem exibidos")
+            }
+        }?.addOnFailureListener() { error ->
+            Util.exibirToast(requireContext(), error.message.toString())
+        }
+    }
+
     private fun initAdapter() {
         binding.rvClient.layoutManager = LinearLayoutManager(requireContext())
         binding.rvClient.setHasFixedSize(true)
-        clientAdapter = ClientAdapter(requireContext(), clientlist) { client, select ->
+        clientAdapter = ClientAdapter(requireContext(), clientlist, this) { client, select ->
             optionSelect(client, select)
         }
         binding.rvClient.adapter = clientAdapter
@@ -158,5 +192,7 @@ class ListClientFragment : Fragment() {
             }
         }
     }
+
+
 }
 

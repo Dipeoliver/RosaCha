@@ -147,11 +147,12 @@
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/rs"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/txt_value_price"
+        app:layout_constraintEnd_toStartOf="@+id/txt_value_price"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_value_price" />
 
@@ -161,7 +162,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:inputType="numberDecimal"
-        android:text="00.00"
+        android:text="259.94"
         android:textColor="@color/white"
         android:textSize="100sp"
         android:textStyle="bold"
@@ -306,6 +307,7 @@
         android:layout_height="186dp"
         android:scaleType="centerCrop"
         android:src="@drawable/no_image"
+        app:layout_constraintBottom_toBottomOf="@+id/textView22"
         app:layout_constraintEnd_toEndOf="@+id/edt_color_price"
         app:layout_constraintTop_toTopOf="@+id/textView18" />
 

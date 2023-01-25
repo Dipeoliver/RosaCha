@@ -52,15 +52,19 @@ Feitos
 20/01/23
 - Adicionar confirmação para o Delete
 - scroll adicionar produto nao funciona
+
+25/01/23
+- adicionei paginação no cliente / produto para exibir de 10 em 10
+- colocar a lista de clientes e produtos em ordem alfabetica
 -----------------------------------------------------------------------------
 
 A fazer
 
+- colocar quebra de linha na mensagem de excluir ? não sei se fica bom
 - ao voltar no botão de baixo nao carrega a tela novamente 
 - inserir map no firebase
 - biblioteca adionar grafico na home
-
-- colocar a lista de clientes e produtos em ordem alfabetica 
 - validação de campos
 - mudar arquitetura  
+
 
