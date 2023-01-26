@@ -4,10 +4,13 @@ import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
+import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +19,7 @@ import com.br.jafapps.bdfirestore.util.Util
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentProductListBinding
+import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.model.Product
 import com.clausfonseca.rosacha.view.adapter.ProductAdapter
 import com.google.firebase.firestore.FirebaseFirestore
@@ -27,14 +31,14 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     private lateinit var binding: FragmentProductListBinding
     private lateinit var productAdapter: ProductAdapter
     private val productlist = mutableListOf<Product>()
-
     var db: FirebaseFirestore? = null
     var nextquery: Query? = null
+    var isFilterOn = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentProductListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -42,9 +46,10 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = FirebaseFirestore.getInstance()
-        initClick()
+        initListeners()
         initAdapter()
         getProducts()
+        searchProduct()
     }
 
     override fun onResume() {
@@ -53,14 +58,66 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     }
 
     override fun lastItemRecyclerView(isShow: Boolean) {
-        getMoreProducts()
+        if (isFilterOn)
+        else getMoreProducts()
     }
 
-    private fun initClick() {
+    private fun initListeners() {
         binding.fabAddProduct.setOnClickListener {
             val uri = Uri.parse("android-app://com.clausfonseca.rosacha/addProduct_fragment")
             findNavController().navigate(uri)
         }
+    }
+
+    // To control the click into searchView
+    private fun searchProduct() {
+        binding.svProduct.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+        binding.svProduct.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("Diego-onQueryTextSubmit", query.toString())
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                isFilterOn = true
+                filterSearchProduct(newText.toString())
+                Log.d("Diego-onQueryTextChange", newText.toString())
+                return true
+            }
+        })
+        binding.svProduct.setOnCloseListener(object : SearchView.OnCloseListener,
+            android.widget.SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                binding.svProduct.onActionViewCollapsed()
+                productlist.clear()
+                productAdapter.notifyDataSetChanged()
+                getProducts()
+                isFilterOn = false
+                return true
+            }
+        })
+    }
+
+    // Firestore DataBase -----------------------------------------------
+    private fun filterSearchProduct(newText: String) {
+        db!!.collection("Products").orderBy("description").startAt(newText)
+            .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
+                if (results != null) {
+                    productlist.clear()
+                    for (result in results) {
+                        val product = result.toObject(Product::class.java)
+                        productlist.add(product)
+                    }
+                    productAdapter.notifyDataSetChanged()
+                }
+            }?.addOnFailureListener { error ->
+                Toast.makeText(
+                    requireContext(),
+                    "Error ${error.message.toString()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     // Firestore DataBase
@@ -127,11 +184,12 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
             Util.exibirToast(requireContext(), error.message.toString())
         }
     }
+    // END Firestore DataBase -------------------------------------------
 
     private fun initAdapter() {
         binding.rvProduct.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProduct.setHasFixedSize(true)
-        productAdapter = ProductAdapter(requireContext(), productlist,this) { product, select ->
+        productAdapter = ProductAdapter(requireContext(), productlist, this) { product, select ->
             optionSelect(product, select)
         }
         binding.rvProduct.adapter = productAdapter
@@ -147,6 +205,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
         }
     }
 
+    // Delete Product  ---------------------------------------------------
     private fun configDialog(product: Product) {
 
         val builder = AlertDialog.Builder(requireContext())
@@ -186,6 +245,6 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
             .child(product.id)
             .removeValue()
     }
-
+// END Delete Product ----------------------------------------------------
 
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,9 +29,9 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
     private lateinit var binding: FragmentClientListBinding
     private lateinit var clientAdapter: ClientAdapter
     private val clientlist = mutableListOf<Client>()
-
     var db: FirebaseFirestore? = null
     var nextquery: Query? = null
+    var isFilterOn = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +59,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
     }
 
     override fun lastItemRecyclerView(isShow: Boolean) {
-        getMoreClients()
+        if (isFilterOn)
+        else getMoreClients()
     }
 
     private fun initListeners() {
@@ -69,7 +71,9 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
         }
     }
 
+    // To control the click into searchView
     private fun searchClient() {
+        binding.svClient.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
         binding.svClient.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -78,13 +82,47 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                isFilterOn = true
+                filterSearchClient(newText.toString())
                 Log.d("Diego-onQueryTextChange", newText.toString())
+                return true
+            }
+        })
+        binding.svClient.setOnCloseListener(object : SearchView.OnCloseListener,
+            android.widget.SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                binding.svClient.onActionViewCollapsed()
+                clientlist.clear()
+                clientAdapter.notifyDataSetChanged()
+                getClients()
+                isFilterOn = false
                 return true
             }
         })
     }
 
-    // Firestore DataBase
+
+    // Firestore DataBase -----------------------------------------------
+    private fun filterSearchClient(newText: String) {
+        db!!.collection("Clients").orderBy("name").startAt(newText)
+            .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
+                if (results != null) {
+                    clientlist.clear()
+                    for (result in results) {
+                        val client = result.toObject(Client::class.java)
+                        clientlist.add(client)
+                    }
+                    clientAdapter.notifyDataSetChanged()
+                }
+            }?.addOnFailureListener { error ->
+                Toast.makeText(
+                    requireContext(),
+                    "Error ${error.message.toString()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
     private fun getClients() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
@@ -148,6 +186,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
             Util.exibirToast(requireContext(), error.message.toString())
         }
     }
+    // END Firestore DataBase -------------------------------------------
 
     private fun initAdapter() {
         binding.rvClient.layoutManager = LinearLayoutManager(requireContext())
@@ -168,6 +207,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
         }
     }
 
+    // Delete Client ---------------------------------------------------
     private fun configDialog(client: Client) {
 
         val builder = AlertDialog.Builder(requireContext())
@@ -212,6 +252,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
             }
         }
     }
+    // END Delete Client -----------------------------------------------
+
 
 // Menu-----------------------------------------------------------------
 //    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -227,7 +269,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
 //            else -> true
 //        }
 //    }
-    // Menu-----------------------------------------------------------------
+// Menu-----------------------------------------------------------------
 }
 
 

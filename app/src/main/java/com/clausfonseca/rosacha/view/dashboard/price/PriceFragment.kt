@@ -192,12 +192,14 @@ class PriceFragment : Fragment() {
     // ----------------------------------------------------------------------------------
     private fun cleaner() {
         binding.edtDescriptionPrice.setText("")
-        binding.txtValuePrice.text = "00.00"
-        binding.txtValue2xPrice.text = "00.00"
-        binding.txtValue3xPrice.text = "00.00"
-        binding.txtValue4xPrice.text = "00.00"
-        binding.txtValue5xPrice.text = "00.00"
-        binding.txtValue6xPrice.text = "00.00"
+        binding.txtValuePrice.text = ""
+        binding.txtValue2xPrice.text = ""
+        binding.txtValue3xPrice.text = ""
+        binding.txtValue4xPrice.text = ""
+        binding.txtValue5xPrice.text = ""
+        binding.txtValue6xPrice.text = ""
+        binding.edtSizePrice.setText("")
+        binding.edtColorPrice.setText("")
         binding.edtBarcodePrice.requestFocus()
         binding.edtBarcodePrice.selectAll()
         binding.imvProduct.setImageResource(R.drawable.no_image)

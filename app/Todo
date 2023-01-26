@@ -56,6 +56,10 @@ Feitos
 25/01/23
 - adicionei paginação no cliente / produto para exibir de 10 em 10
 - colocar a lista de clientes e produtos em ordem alfabetica
+
+26/01/24
+
+- Filtragem na lista de clientes pelo nome e  Produtos pela descrição
 -----------------------------------------------------------------------------
 
 A fazer
