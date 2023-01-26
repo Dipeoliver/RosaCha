@@ -26,7 +26,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductAddBinding
-import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetBinding
+import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
 import com.clausfonseca.rosacha.model.Product
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
@@ -317,7 +317,7 @@ class AddProductFragment : Fragment() {
     private fun showBottomSheetDialog() {
         dialog = BottomSheetDialog(requireContext())
 
-        val sheetBinding: ItemCustomBottonSheetBinding = ItemCustomBottonSheetBinding.inflate(layoutInflater, null, false)
+        val sheetBinding: ItemCustomBottonSheetTakePictureBinding = ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
 
         sheetBinding.imvBottomPhoto.setOnClickListener {
             obterImagemdaCamera()

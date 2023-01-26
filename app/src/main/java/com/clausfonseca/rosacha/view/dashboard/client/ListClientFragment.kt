@@ -4,21 +4,22 @@ import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.br.jafapps.bdfirestore.util.DialogProgress
 import com.br.jafapps.bdfirestore.util.Util
 import com.clausfonseca.rosacha.R
-import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
-import com.clausfonseca.rosacha.databinding.FragmentClientBinding
 import com.clausfonseca.rosacha.databinding.FragmentClientListBinding
 import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -35,6 +36,9 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+//        val menuHost: MenuHost = requireActivity()
+//        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         binding = FragmentClientListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -42,9 +46,10 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = FirebaseFirestore.getInstance()
-        initClick()
+        initListeners()
         initAdapter()
         getClients()
+        searchClient()
     }
 
     override fun onResume() {
@@ -56,12 +61,27 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
         getMoreClients()
     }
 
-    private fun initClick() {
+    private fun initListeners() {
         binding.fabAddClient.setOnClickListener {
             val uri = Uri.parse("android-app://com.clausfonseca.rosacha/addClient_Fragment")
             findNavController().navigate(uri)
 //            binding.root.removeAllViewsInLayout()
         }
+    }
+
+    private fun searchClient() {
+        binding.svClient.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("Diego-onQueryTextSubmit", query.toString())
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("Diego-onQueryTextChange", newText.toString())
+                return true
+            }
+        })
     }
 
     // Firestore DataBase
@@ -193,6 +213,22 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
         }
     }
 
-
+// Menu-----------------------------------------------------------------
+//    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+//        menuInflater.inflate(R.menu.search, menu)
+//    }
+//
+//    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+//        return when (menuItem.itemId) {
+//            R.id.action_search -> {
+//                Toast.makeText(requireContext(), "ok", Toast.LENGTH_SHORT).show()
+//                true
+//            }
+//            else -> true
+//        }
+//    }
+    // Menu-----------------------------------------------------------------
 }
+
+
 

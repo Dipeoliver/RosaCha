@@ -14,6 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -32,9 +33,13 @@
                 app:tabTextAppearance="@style/CustomTabLayout"
                 app:tabTextColor="@color/white" />
 
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
@@ -46,4 +51,10 @@
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
 
     </androidx.viewpager2.widget.ViewPager2>
+
+
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

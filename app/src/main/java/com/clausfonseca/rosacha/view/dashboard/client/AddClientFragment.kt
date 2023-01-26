@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -26,8 +27,6 @@ class AddClientFragment : Fragment() {
     private val viewModel: AddClientViewModel by viewModels()
 
     private lateinit var client: Client
-    private var newClient: Boolean = true
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,11 +42,10 @@ class AddClientFragment : Fragment() {
         binding.edtNameClient.requestFocus()
         initListeners()
         configureComponents()
+
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
+
 
     private fun configureComponents() {
         //Mask to Phone
@@ -70,7 +68,6 @@ class AddClientFragment : Fragment() {
             findNavController().navigate(uri)
         }
     }
-
 
 
     private fun validateData() {

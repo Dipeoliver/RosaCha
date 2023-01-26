@@ -59,4 +59,5 @@ class ClientAdapter(
     interface LastItemRecyclerView {
         fun lastItemRecyclerView(isShow: Boolean)
     }
+
 }
