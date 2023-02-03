@@ -160,7 +160,7 @@
         android:id="@+id/txt_value_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="32dp"
         android:inputType="numberDecimal"
         android:textColor="@color/white"
         android:textSize="100sp"

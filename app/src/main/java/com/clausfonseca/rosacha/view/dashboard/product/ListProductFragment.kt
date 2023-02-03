@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -22,14 +23,22 @@ import com.clausfonseca.rosacha.databinding.FragmentProductListBinding
 import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.model.Product
 import com.clausfonseca.rosacha.view.adapter.ProductAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 
 
-class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
+class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, ProductAdapter.ClickProduto {
 
     private lateinit var binding: FragmentProductListBinding
     private lateinit var productAdapter: ProductAdapter
+    private lateinit var firebaseStorage: FirebaseStorage
+    private lateinit var auth: FirebaseAuth
+
     private val productlist = mutableListOf<Product>()
     var db: FirebaseFirestore? = null
     var nextquery: Query? = null
@@ -46,6 +55,9 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = FirebaseFirestore.getInstance()
+        firebaseStorage = Firebase.storage
+        auth = Firebase.auth
+        onBackPressed()
         initListeners()
         initAdapter()
         getProducts()
@@ -57,10 +69,26 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
         getProducts()
     }
 
+    override fun clickProduto(product: Product) {
+        Util.exibirToast(requireContext(), product.description.toString())
+    }
+
     override fun lastItemRecyclerView(isShow: Boolean) {
         if (isFilterOn)
         else getMoreProducts()
     }
+
+    // ao clicar botão voltar abaixo
+
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
+                findNavController().navigate(uri)
+            }
+        })
+    }
+
 
     private fun initListeners() {
         binding.fabAddProduct.setOnClickListener {
@@ -103,7 +131,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     private fun filterSearchProduct(newText: String) {
         db!!.collection("Products").orderBy("description").startAt(newText)
             .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
-                if (results != null) {
+                if (results.size() > 0) {
                     productlist.clear()
                     for (result in results) {
                         val product = result.toObject(Product::class.java)
@@ -128,12 +156,12 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
         db!!.collection("Products").orderBy("description").limit(10).get().addOnSuccessListener { results ->
             dialogProgress.dismiss()
 
-            if (results != null) {
+
+            if (results.size() > 0) {
                 productlist.clear()
 
                 // result é uma lista
                 for (result in results) {
-                    val key = result.id // pegar o nome  da pasta do documento
                     val product = result.toObject(Product::class.java)
                     productlist.add(product)
                 }
@@ -189,7 +217,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     private fun initAdapter() {
         binding.rvProduct.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProduct.setHasFixedSize(true)
-        productAdapter = ProductAdapter(requireContext(), productlist, this) { product, select ->
+        productAdapter = ProductAdapter(requireContext(), productlist, this, this) { product, select ->
             optionSelect(product, select)
         }
         binding.rvProduct.adapter = productAdapter
@@ -238,12 +266,24 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     }
 
     private fun deleteProduct(product: Product) {
-        FirebaseHelper
-            .getDatabase()
-            .child("Product")
-            .child("Product_Item")
-            .child(product.id)
-            .removeValue()
+        val reference = db!!.collection("Products")
+        reference.document(product.barcode).delete().addOnCompleteListener() { task ->
+            if (task.isSuccessful) {
+                removeImage(product.barcode)
+                Util.exibirToast(requireContext(), "Deletado com Sucesso")
+                getProducts()
+            } else {
+                Util.exibirToast(requireContext(), "erro ao deletar no banco ${task.exception.toString()}")
+            }
+        }
+    }
+
+    fun removeImage(barcode: String) {
+        val reference = firebaseStorage.reference.child("Products").child("${barcode}.jpg")
+        reference.delete().addOnSuccessListener { task ->
+        }.addOnFailureListener { error ->
+            Util.exibirToast(requireContext(), "Falha ao deletar a imagem ${error.message.toString()}")
+        }
     }
 // END Delete Product ----------------------------------------------------
 

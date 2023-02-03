@@ -11,7 +11,9 @@ class Client(
     var phone: String = "",
     var email: String = "",
     var birthday: String = "",
-    var clientDate: String =""
+    var clientDate: String ="",
+    var urlImagem: String= ""
+
 ) : Parcelable {
     //    gerar um id automático
     init {

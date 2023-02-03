@@ -14,10 +14,12 @@ data class Product(
     var provider: String = "",
     var size: String = "",
     var color: String = "",
-    var cost_price: Double = 0.0,
-    var sales_price: Double = 0.0,
+    var costPrice: Double = 0.0,
+    var salesPrice: Double = 0.0,
     var owner: String ="",
-    var productDate: String =""
+    var productDate: String ="",
+    var urlImagem: String= ""
+
 ) : Parcelable {
     //    gerar um id automático
     init {

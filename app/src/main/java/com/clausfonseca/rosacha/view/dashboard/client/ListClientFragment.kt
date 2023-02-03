@@ -1,6 +1,7 @@
 package com.clausfonseca.rosacha.view.dashboard.client
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -19,15 +21,20 @@ import com.br.jafapps.bdfirestore.util.Util
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentClientListBinding
 import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.model.Product
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 
-class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
+class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, ClientAdapter.ClickClient {
 
     private lateinit var binding: FragmentClientListBinding
     private lateinit var clientAdapter: ClientAdapter
+    private lateinit var firebaseStorage: FirebaseStorage
     private val clientlist = mutableListOf<Client>()
     var db: FirebaseFirestore? = null
     var nextquery: Query? = null
@@ -47,16 +54,24 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = FirebaseFirestore.getInstance()
+        firebaseStorage = Firebase.storage
         initListeners()
         initAdapter()
         getClients()
         searchClient()
+        onBackPressed()
     }
 
     override fun onResume() {
         super.onResume()
         getClients()
     }
+
+    override fun clickClient(client: Client) {
+        super.clickClient(client)
+        Util.exibirToast(requireContext(), client.name.toString())
+    }
+
 
     override fun lastItemRecyclerView(isShow: Boolean) {
         if (isFilterOn)
@@ -106,7 +121,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
     private fun filterSearchClient(newText: String) {
         db!!.collection("Clients").orderBy("name").startAt(newText)
             .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
-                if (results != null) {
+                if (results.size() > 0) {
                     clientlist.clear()
                     for (result in results) {
                         val client = result.toObject(Client::class.java)
@@ -130,7 +145,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
         db!!.collection("Clients").orderBy("name").limit(10).get().addOnSuccessListener { results ->
             dialogProgress.dismiss()
 
-            if (results != null) {
+            if (results.size() > 0) {
                 clientlist.clear()
 
                 // result é uma lista
@@ -191,7 +206,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
     private fun initAdapter() {
         binding.rvClient.layoutManager = LinearLayoutManager(requireContext())
         binding.rvClient.setHasFixedSize(true)
-        clientAdapter = ClientAdapter(requireContext(), clientlist, this) { client, select ->
+        clientAdapter = ClientAdapter(requireContext(), clientlist, this, this) { client, select ->
             optionSelect(client, select)
         }
         binding.rvClient.adapter = clientAdapter
@@ -242,15 +257,31 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView {
 
     private fun deleteClient(client: Client) {
         val reference = db!!.collection("Clients")
-
         reference.document(client.id).delete().addOnCompleteListener() { task ->
             if (task.isSuccessful) {
+                removeImage(client.phone)
                 Util.exibirToast(requireContext(), "Deletado com Sucesso")
                 getClients()
             } else {
                 Util.exibirToast(requireContext(), "erro ao deletar no banco ${task.exception.toString()}")
             }
         }
+    }
+    fun removeImage(id: String) {
+        val reference = firebaseStorage.reference.child("Clients").child("${id}.jpg")
+        reference.delete().addOnSuccessListener { task ->
+        }.addOnFailureListener { error ->
+            Util.exibirToast(requireContext(), "Falha ao deletar a imagem ${error.message.toString()}")
+        }
+    }
+
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
+                findNavController().navigate(uri)
+            }
+        })
     }
     // END Delete Client -----------------------------------------------
 

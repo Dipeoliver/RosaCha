@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.ItemProductAdapterBinding
 import com.clausfonseca.rosacha.model.Product
 import com.clausfonseca.rosacha.view.dashboard.product.ListProductFragment
@@ -11,6 +13,7 @@ import com.clausfonseca.rosacha.view.dashboard.product.ListProductFragment
 class ProductAdapter(
     private val context: Context,
     private val productList: List<Product>,
+    var clickProduto: ClickProduto,
     var lastItemRecyclerView: ListProductFragment,
     val productSelected: (Product, Int) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.MyViewHolder>() {
@@ -41,23 +44,30 @@ class ProductAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val product = productList[position]
         holder.binding.txtBarcode.text = product.barcode
-//        holder.binding.txtBrand.text = product.brand
-//        holder.binding.txtProv.text = product.provider
         holder.binding.txtDescription.text = product.description
-//        holder.binding.txtOwner.text = product.owner.toString()
-        holder.binding.txtCostPrice.text = product.cost_price.toString()
-        holder.binding.txtSalesPrice.text = product.sales_price.toString()
+        holder.binding.txtSalesPrice.text = String.format("%.2f", product.salesPrice)
+
+        if (product.urlImagem == "") {
+            Glide.with(context).load(R.drawable.no_image).into(holder.binding.imvProduto)
+        } else Glide.with(context).load(product.urlImagem).into(holder.binding.imvProduto)
 
         holder.binding.btnProductDelete.setOnClickListener {
             productSelected(product, SELECT_REMOVE)
         }
-        holder.binding.btnProductUpdate.setOnClickListener {
-            productSelected(product, SELECT_EDIT)
+
+        // click no card view
+        holder.binding.cardViewProduct1.setOnClickListener {
+            clickProduto.clickProduto((product))
         }
+
         // quando chegar na ultima posição que tem na tela chama a função abaixo
         if (position == itemCount - 1) {
             lastItemRecyclerView.lastItemRecyclerView(true)
         }
+    }
+
+    interface ClickProduto {
+        fun clickProduto(product: Product)
     }
 
     interface LastItemRecyclerView {

@@ -57,20 +57,37 @@ Feitos
 - adicionei paginação no cliente / produto para exibir de 10 em 10
 - colocar a lista de clientes e produtos em ordem alfabetica
 
-26/01/24
+26/01/23
 
 - Filtragem na lista de clientes pelo nome e  Produtos pela descrição
+
+27/01/23
+- ao voltar no botão de baixo nao carrega a tela novamente 
+- Correção arredondamento de casas decimais dentro "Price"
+
+01/02/23
+- Delete de produtos nao funciona
+- arredondar 2 casa o valor de sales em lista de produtos
+- ao ter lista vazia em clientes da problema, mesmo produto ja arrumado
+- adicionado selecção nas lista por click
+
+02/02/23
+- ao salvar um novo produto se nao tiver foto salva uma padrão
+
+03/02/23
+- ao apagar produto / client apagar foto  tb
+- adicionar para selecionar foto em clients
+- click de voltar fica loop infinito
 -----------------------------------------------------------------------------
 
 A fazer
 
-- colocar quebra de linha na mensagem de excluir ? não sei se fica bom
-- ao voltar no botão de baixo nao carrega a tela novamente 
-
-- inserir map no firebase
-- biblioteca adionar grafico na home
+- implementar update (client / product)
+- inserir map no firebase (sales)
 
 - validação de campos
+- biblioteca adionar grafico na (home)
 - mudar arquitetura  
+- checar todos texto (portugues / ingles)
 
 

@@ -12,7 +12,7 @@
         android:icon="@drawable/ic_baseline_post_add_24"/>/>
     <item android:title="Price"
         android:id="@+id/price_fragment"
-        android:icon="@drawable/ic_baseline_monetization_on_24"/>/>
+        android:icon="@drawable/ic_baseline_search_24"/>/>
     <item android:title="Sales"
         android:id="@+id/sales_fragment"
         android:icon="@drawable/ic_baseline_point_of_sale_24"/>/>

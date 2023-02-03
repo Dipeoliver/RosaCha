@@ -2,10 +2,13 @@ package com.clausfonseca.rosacha.view.dashboard.price
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.br.jafapps.bdfirestore.util.DialogProgress
 import com.br.jafapps.bdfirestore.util.Util
 import com.bumptech.glide.Glide
@@ -48,14 +51,9 @@ class PriceFragment : Fragment() {
         firebaseStorage = Firebase.storage
         configureButton()
         iniclicks()
+        onBackPressed()
     }
 
-    private fun iniclicks() {
-        binding.edtBarcodePrice.requestFocus()
-        binding.btnSearchPrice.setOnClickListener {
-            selectPrice(binding.edtBarcodePrice.text.toString())
-        }
-    }
 
     // BARCODE----------------------------------------------------------------------------
     @Suppress("DEPRECATION")
@@ -104,20 +102,16 @@ class PriceFragment : Fragment() {
             db.collection("Products").document(barcode.toString()).get()
                 .addOnSuccessListener { product ->
                     if (product != null && product.exists()) {
-                        val price: Double = product.getDouble("sales_price") ?: 0.0
+                        val price: Double = product.getDouble("salesPrice") ?: 0.0
                         binding.edtDescriptionPrice.setText(product.getString("description"))
                         binding.edtColorPrice.setText(product.getString("color"))
                         binding.edtSizePrice.setText(product.getString("size"))
-
-                        val df = DecimalFormat("#.##")
-                        df.roundingMode = RoundingMode.UP
-
-                        binding.txtValuePrice.text = (df.format(price)).toString()
-                        binding.txtValue2xPrice.text = (df.format(price / 2)).toString()
-                        binding.txtValue3xPrice.text = (df.format(price / 3)).toString()
-                        binding.txtValue4xPrice.text = (df.format(price / 4)).toString()
-                        binding.txtValue5xPrice.text = (df.format(price / 5)).toString()
-                        binding.txtValue6xPrice.text = (df.format(price / 6)).toString()
+                        binding.txtValuePrice.text = String.format("%.2f", price)
+                        binding.txtValue2xPrice.text = String.format("%.2f", price / 2)
+                        binding.txtValue3xPrice.text = String.format("%.2f", price / 3)
+                        binding.txtValue4xPrice.text = String.format("%.2f", price / 4)
+                        binding.txtValue5xPrice.text = String.format("%.2f", price / 5)
+                        binding.txtValue6xPrice.text = String.format("%.2f", price / 6)
 
                         download_Image_Name(barcode)
                         dialogProgress.dismiss()
@@ -190,6 +184,24 @@ class PriceFragment : Fragment() {
     }
 
     // ----------------------------------------------------------------------------------
+
+    private fun iniclicks() {
+        binding.edtBarcodePrice.requestFocus()
+        binding.btnSearchPrice.setOnClickListener {
+            selectPrice(binding.edtBarcodePrice.text.toString())
+        }
+    }
+
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
+                findNavController().navigate(uri)
+            }
+        })
+    }
+
+
     private fun cleaner() {
         binding.edtDescriptionPrice.setText("")
         binding.txtValuePrice.text = ""
@@ -202,7 +214,7 @@ class PriceFragment : Fragment() {
         binding.edtColorPrice.setText("")
         binding.edtBarcodePrice.requestFocus()
         binding.edtBarcodePrice.selectAll()
-        binding.imvProduct.setImageResource(R.drawable.no_image)
+        binding.imvProduct.setImageResource(R.drawable.baseline_image_not_supported_24)
 
     }
 }

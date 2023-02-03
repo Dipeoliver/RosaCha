@@ -23,7 +23,6 @@ class RosaChaActivity : AppCompatActivity() {
         configComponents()
     }
 
-
     private fun configComponents() {
         var oldItemId = 0
         val navController = findNavController(R.id.nav_host_fragment)
