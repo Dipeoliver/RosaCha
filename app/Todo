@@ -78,11 +78,17 @@ Feitos
 - ao apagar produto / client apagar foto  tb
 - adicionar para selecionar foto em clients
 - click de voltar fica loop infinito
+
+07/02/23
+- implementar update (client / product)
+
+08/02/23
+- controle de permissão ao acessar camera e arquivos
+- Correção de editar e não perder a foto
 -----------------------------------------------------------------------------
 
 A fazer
 
-- implementar update (client / product)
 - inserir map no firebase (sales)
 
 - validação de campos

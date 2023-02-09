@@ -37,7 +37,7 @@ class ProductFragment : Fragment() {
 
         adapter.addFragment(ListProductFragment(), getString(R.string.list_product))
 //        adapter.addFragment(AddProductFragment(), getString(R.string.add_product))
-        adapter.addFragment(EditProductFragment(), getString(R.string.edit_product))
+//        adapter.addFragment(EditProductFragment(), getString(R.string.edit_product))
 
         binding.viewPager.offscreenPageLimit = adapter.itemCount
 

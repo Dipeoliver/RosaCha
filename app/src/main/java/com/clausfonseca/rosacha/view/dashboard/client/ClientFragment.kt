@@ -40,7 +40,7 @@ class ClientFragment : Fragment() {
 
         adapter.addFragment(ListClientFragment(), getString(R.string.list_client))
 //        adapter.addFragment(AddClientFragment(), getString(R.string.add_client))
-        adapter.addFragment(EditClientFragment(), getString(R.string.edit_client))
+//        adapter.addFragment(EditClientFragment(), getString(R.string.edit_client))
 
         binding.viewPager.offscreenPageLimit = adapter.itemCount
 

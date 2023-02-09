@@ -25,7 +25,7 @@
                 android:background="@color/rose"
                 android:elevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_back"
+                app:layout_constraintEnd_toStartOf="@+id/btn_back_edit"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tabIndicatorColor="@color/white"
@@ -96,7 +96,7 @@
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="28dp"
         android:text="Phone"
         android:textColor="@color/white"
@@ -199,8 +199,8 @@
         android:layout_marginBottom="4dp"
         android:src="@drawable/ic_baseline_add_circle_24"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/imv_photo_client"
-        app:layout_constraintEnd_toEndOf="@+id/imv_photo_client" />
+        app:layout_constraintBottom_toBottomOf="@+id/imv_photo_client_edit"
+        app:layout_constraintEnd_toEndOf="@+id/imv_photo_client_edit" />
 
     <Button
         android:id="@+id/btn_add_client"
@@ -215,10 +215,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="32dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

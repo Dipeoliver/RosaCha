@@ -18,11 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.br.jafapps.bdfirestore.util.DialogProgress
 import com.br.jafapps.bdfirestore.util.Util
 import com.clausfonseca.rosacha.R
-import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentProductListBinding
 import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.model.Product
 import com.clausfonseca.rosacha.view.adapter.ProductAdapter
+import com.clausfonseca.rosacha.view.dashboard.client.ClientFragmentDirections
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -70,7 +70,11 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
     }
 
     override fun clickProduto(product: Product) {
-        Util.exibirToast(requireContext(), product.description.toString())
+        selectedProduct(product)
+    }
+
+    private fun selectedProduct(product: Product) {
+        findNavController().navigate(ProductFragmentDirections.actionProductFragmentToEditProductFragment(product))
     }
 
     override fun lastItemRecyclerView(isShow: Boolean) {
@@ -267,13 +271,15 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
 
     private fun deleteProduct(product: Product) {
         val reference = db!!.collection("Products")
-        reference.document(product.barcode).delete().addOnCompleteListener() { task ->
-            if (task.isSuccessful) {
-                removeImage(product.barcode)
-                Util.exibirToast(requireContext(), "Deletado com Sucesso")
-                getProducts()
-            } else {
-                Util.exibirToast(requireContext(), "erro ao deletar no banco ${task.exception.toString()}")
+        product.barcode?.let {
+            reference.document(it).delete().addOnCompleteListener() { task ->
+                if (task.isSuccessful) {
+                    removeImage(product.barcode!!)
+                    Util.exibirToast(requireContext(), "Deletado com Sucesso")
+                    getProducts()
+                } else {
+                    Util.exibirToast(requireContext(), "erro ao deletar no banco ${task.exception.toString()}")
+                }
             }
         }
     }

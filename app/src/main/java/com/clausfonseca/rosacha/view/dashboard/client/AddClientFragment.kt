@@ -1,15 +1,18 @@
 package com.clausfonseca.rosacha.view.dashboard.client
 
+import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +33,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentClientAddBinding
+import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
 import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.utils.mask.DateMask
@@ -58,6 +62,11 @@ class AddClientFragment : Fragment() {
 
     var uriImagem: Uri? = null
     var dialog: BottomSheetDialog? = null
+    var dialogPermission: BottomSheetDialog? = null
+
+    companion object {
+        const val REQUEST_PERMISSION_CODE = 1
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -210,6 +219,7 @@ class AddClientFragment : Fragment() {
     }
     // ----------------------------------------------------------------------------------
 
+
     // FIRESTORE--------------------------------------------------------------------------
     private fun validateData(url: String) {
 
@@ -250,7 +260,7 @@ class AddClientFragment : Fragment() {
     }
 
     private fun insertClient() {
-        viewModel.db.collection("Clients").document(client.id)
+        viewModel.db.collection("Clients").document(client.id.toString())
             .set(client).addOnCompleteListener {
                 Toast.makeText(
                     requireContext(),
@@ -268,6 +278,73 @@ class AddClientFragment : Fragment() {
     // ----------------------------------------------------------------------------------
 
 
+    // Perdir Permissão para acessar a camera -------------------------------------------------------------------------
+    private fun checkPermissions() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_PERMISSION_CODE
+            )
+            return
+        }
+        obterImagemdaCamera()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSION_CODE) {
+            when (grantResults[0]) {
+                PackageManager.PERMISSION_GRANTED -> {
+                    when (grantResults[1]) {
+                        PackageManager.PERMISSION_GRANTED -> {
+                            checkPermissions()
+                        }
+                        PackageManager.PERMISSION_DENIED -> {
+                            dialog?.dismiss()
+                            showBottomSheetDialogPermission()
+                        }
+                    }
+                }
+
+                PackageManager.PERMISSION_DENIED -> {
+                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                        dialog?.dismiss()
+                        showBottomSheetDialogPermission()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showBottomSheetDialogPermission() {
+        dialogPermission = BottomSheetDialog(requireContext())
+        val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
+            ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
+
+        sheetBinding.btnCancel.setOnClickListener {
+            dialogPermission?.dismiss()
+        }
+
+        sheetBinding.btnConfig.setOnClickListener {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts("package", requireActivity().packageName, null)
+            intent.data = uri
+            requireContext().startActivity(intent)
+            dialogPermission?.dismiss()
+        }
+
+        dialogPermission?.setContentView(sheetBinding.root)
+        dialogPermission?.show()
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+
     private fun initListeners() {
         binding.btnAddClient.setOnClickListener {
             if (uriImagem != null) {
@@ -283,7 +360,7 @@ class AddClientFragment : Fragment() {
         }
 
         binding.imvPhotoClient.setOnClickListener {
-            if (binding.edtPhoneClient.text.isNotEmpty()) showBottomSheetDialog()
+            if (binding.edtPhoneClient.text.isNotEmpty()) showBottomSheetDialogCamera()
             else Util.exibirToast(requireContext(), "Preencher campo Telefone Primeiro")
         }
 
@@ -293,7 +370,6 @@ class AddClientFragment : Fragment() {
         }
     }
 
-
     // para corrigir problema de falta de imagem selecionada
     fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
@@ -302,17 +378,17 @@ class AddClientFragment : Fragment() {
         return Uri.parse(path.toString())
     }
 
-    private fun showBottomSheetDialog() {
+    private fun showBottomSheetDialogCamera() {
         dialog = BottomSheetDialog(requireContext())
 
         val sheetBinding: ItemCustomBottonSheetTakePictureBinding =
             ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
 
         sheetBinding.imvBottomPhoto.setOnClickListener {
-            obterImagemdaCamera()
+            checkPermissions()
         }
         sheetBinding.txtBottomPhoto.setOnClickListener {
-            obterImagemdaCamera()
+            checkPermissions()
         }
 
         sheetBinding.imvBottomGallery.setOnClickListener {

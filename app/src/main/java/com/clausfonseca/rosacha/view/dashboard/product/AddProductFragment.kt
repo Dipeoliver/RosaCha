@@ -1,16 +1,18 @@
 package com.clausfonseca.rosacha.view.dashboard.product
 
+import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
+import android.provider.Settings
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -31,8 +33,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductAddBinding
+import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
 import com.clausfonseca.rosacha.model.Product
+import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -63,6 +67,8 @@ class AddProductFragment : Fragment() {
 
     val dialogProgress = DialogProgress()
     var dialog: BottomSheetDialog? = null
+    var dialogPermission: BottomSheetDialog? = null
+
     var uriImagem: Uri? = null
 
     override fun onCreateView(
@@ -139,10 +145,7 @@ class AddProductFragment : Fragment() {
     @Suppress("DEPRECATION")
     private fun configureButton() {
         binding.btnScan.setOnClickListener {
-            val integrator: IntentIntegrator =
-                IntentIntegrator.forSupportFragment(this@AddProductFragment)
-            integrator.setPrompt("Scanner RosaCha Ativo")
-            integrator.initiateScan()
+            checkPermissions()
         }
     }
     // ----------------------------------------------------------------------------------
@@ -291,7 +294,7 @@ class AddProductFragment : Fragment() {
 
     // Inserir produto no Firestore
     private fun insertProduct() {
-        db.collection("Products").document(product.barcode)
+        db.collection("Products").document(product.barcode.toString())
             .set(product).addOnCompleteListener {
                 Toast.makeText(
                     requireContext(),
@@ -307,6 +310,83 @@ class AddProductFragment : Fragment() {
     }
 
     // ----------------------------------------------------------------------------------
+
+
+    // Perdir Permissão para acessar a camera -------------------------------------------------------------------------
+    private fun checkPermissions() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                AddClientFragment.REQUEST_PERMISSION_CODE
+            )
+            return
+        }
+        // verifica se quem foi pressionado foi o botão scanner
+        if (binding.btnScan.isPressed) {
+            val integrator: IntentIntegrator =
+                IntentIntegrator.forSupportFragment(this@AddProductFragment)
+            integrator.setPrompt("Scanner RosaCha Ativo")
+            integrator.initiateScan()
+        } else {
+            obterImagemdaCamera()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
+            when (grantResults[0]) {
+                PackageManager.PERMISSION_GRANTED -> {
+                    when (grantResults[1]) {
+                        PackageManager.PERMISSION_GRANTED -> {
+                            checkPermissions()
+                        }
+                        PackageManager.PERMISSION_DENIED -> {
+                            dialog?.dismiss()
+                            showBottomSheetDialogPermission()
+                        }
+                    }
+                }
+
+                PackageManager.PERMISSION_DENIED -> {
+                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                        dialog?.dismiss()
+                        showBottomSheetDialogPermission()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showBottomSheetDialogPermission() {
+        dialogPermission = BottomSheetDialog(requireContext())
+        val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
+            ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
+
+        sheetBinding.btnCancel.setOnClickListener {
+            dialogPermission?.dismiss()
+        }
+
+        sheetBinding.btnConfig.setOnClickListener {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts("package", requireActivity().packageName, null)
+            intent.data = uri
+            requireContext().startActivity(intent)
+            dialogPermission?.dismiss()
+        }
+
+        dialogPermission?.setContentView(sheetBinding.root)
+        dialogPermission?.show()
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+
 
     private fun initListeners() {
         binding.btnAddProduct.setOnClickListener {
@@ -358,10 +438,10 @@ class AddProductFragment : Fragment() {
             ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
 
         sheetBinding.imvBottomPhoto.setOnClickListener {
-            obterImagemdaCamera()
+            checkPermissions()
         }
         sheetBinding.txtBottomPhoto.setOnClickListener {
-            obterImagemdaCamera()
+            checkPermissions()
         }
 
         sheetBinding.imvBottomGallery.setOnClickListener {

@@ -1,12 +1,16 @@
 package com.clausfonseca.rosacha.view.dashboard.price
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.br.jafapps.bdfirestore.util.DialogProgress
@@ -18,6 +22,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentPriceBinding
+import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
+import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,6 +43,8 @@ class PriceFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
 
     private val db = FirebaseFirestore.getInstance()
+    var dialogPermission: BottomSheetDialog? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,14 +93,81 @@ class PriceFragment : Fragment() {
 
     @Suppress("DEPRECATION")
     private fun configureButton() {
+
         binding.btnScanPrice.setOnClickListener {
-            val integrator: IntentIntegrator =
-                IntentIntegrator.forSupportFragment(this@PriceFragment)
-            integrator.setPrompt("Scanner RosaCha Ativo")
-            integrator.initiateScan()
+            checkPermissions()
         }
     }
     // ----------------------------------------------------------------------------------
+
+    // Perdir Permissão para acessar a camera -------------------------------------------------------------------------
+    private fun checkPermissions() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                AddClientFragment.REQUEST_PERMISSION_CODE
+            )
+            return
+        }
+        val integrator: IntentIntegrator =
+            IntentIntegrator.forSupportFragment(this@PriceFragment)
+        integrator.setPrompt("Scanner RosaCha Ativo")
+        integrator.initiateScan()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
+            when (grantResults[0]) {
+                PackageManager.PERMISSION_GRANTED -> {
+                    when (grantResults[1]) {
+                        PackageManager.PERMISSION_GRANTED -> {
+                            checkPermissions()
+                        }
+                        PackageManager.PERMISSION_DENIED -> {
+                            showBottomSheetDialogPermission()
+                        }
+                    }
+                }
+
+                PackageManager.PERMISSION_DENIED -> {
+                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                        showBottomSheetDialogPermission()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showBottomSheetDialogPermission() {
+        dialogPermission = BottomSheetDialog(requireContext())
+        val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
+            ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
+
+        sheetBinding.btnCancel.setOnClickListener {
+            dialogPermission?.dismiss()
+        }
+
+        sheetBinding.btnConfig.setOnClickListener {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts("package", requireActivity().packageName, null)
+            intent.data = uri
+            requireContext().startActivity(intent)
+            dialogPermission?.dismiss()
+        }
+
+        dialogPermission?.setContentView(sheetBinding.root)
+        dialogPermission?.show()
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+
 
     // FIRESTORE-------------------------------------------------------------------------
 
