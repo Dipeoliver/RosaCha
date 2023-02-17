@@ -128,15 +128,15 @@ class AddProductFragment : Fragment() {
 
             if (result != null) {
                 if (result.contents != null) {
-                    binding.edtBarcodeProduct.setText(result.contents)
+                    binding.edtBarcode.setText(result.contents)
                     binding.edtReferenceProduct.requestFocus()
 
                 } else {
-                    binding.edtBarcodeProduct.setText("scan failed")
+                    binding.edtBarcode.setText("scan failed")
                 }
             } else {
                 super.onActivityResult(requestCode, resultCode, data)
-                binding.edtBarcodeProduct.requestFocus()
+                binding.edtBarcode.requestFocus()
             }
         }
     }
@@ -188,7 +188,7 @@ class AddProductFragment : Fragment() {
     // com recurso para diminuir a imagem
     fun uploadImagem() {
 
-        pictureName = binding.edtBarcodeProduct.text.toString()
+        pictureName = binding.edtBarcode.text.toString()
         activity?.let {
             Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.baseline_image_not_supported_24)
                 .apply(RequestOptions.overrideOf(800, 480)).listener(object : RequestListener<Bitmap> {
@@ -246,7 +246,7 @@ class AddProductFragment : Fragment() {
     // FIRESTORE--------------------------------------------------------------------------
     private fun validateData(url: String) {
 
-        val barcode = binding.edtBarcodeProduct.text.toString().trim()
+        val barcode = binding.edtBarcode.text.toString().trim()
         val referenceProduct = binding.edtReferenceProduct.text.toString().trim()
         val description = binding.edtDescriptionProduct.text.toString().trim()
         val brand = binding.edtBrandProduct.text.toString().trim()
@@ -416,7 +416,7 @@ class AddProductFragment : Fragment() {
         }
 
         binding.imvPhoto.setOnClickListener {
-            if (binding.edtBarcodeProduct.text.isNotEmpty()) showBottomSheetDialog()
+            if (binding.edtBarcode.text.isNotEmpty()) showBottomSheetDialog()
             else Util.exibirToast(requireContext(), "Preencher campo Barcode Primeiro")
         }
     }
@@ -456,7 +456,7 @@ class AddProductFragment : Fragment() {
 
     private fun cleaner() {
         binding.apply {
-            edtBarcodeProduct.text.clear()
+            edtBarcode.text.clear()
             edtReferenceProduct.text.clear()
             edtDescriptionProduct.text.clear()
             edtBrandProduct.text.clear()
@@ -465,7 +465,7 @@ class AddProductFragment : Fragment() {
             edtColorProduct.text.clear()
             edtCostProduct.text.clear()
             edtSalesProduct.text.clear()
-            edtBarcodeProduct.requestFocus()
+            edtBarcode.requestFocus()
             binding.imvPhoto.setImageResource(R.drawable.no_image)
             binding.imvPlus.visibility = VISIBLE
         }

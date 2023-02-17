@@ -260,7 +260,7 @@ class AddClientFragment : Fragment() {
     }
 
     private fun insertClient() {
-        viewModel.db.collection("Clients").document(client.id.toString())
+        viewModel.db.collection("Clients").document(client.phone.toString())
             .set(client).addOnCompleteListener {
                 Toast.makeText(
                     requireContext(),

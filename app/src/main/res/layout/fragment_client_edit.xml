@@ -112,6 +112,7 @@
         android:background="@drawable/bg_edit"
         android:ems="10"
         android:hint="Phone"
+        android:enabled="false"
         android:inputType="phone"
         android:padding="14dp"
         android:textSize="14sp"

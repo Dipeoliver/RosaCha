@@ -160,7 +160,7 @@ class EditProductFragment : Fragment() {
     // com recurso para diminuir a imagem
     private fun uploadImagem() {
 
-        pictureName = binding.edtBarcodeProduct.text.toString()
+        pictureName = binding.edtBarcode.text.toString()
         activity?.let {
             Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.no_image)
                 .apply(RequestOptions.overrideOf(800, 480)).listener(object : RequestListener<Bitmap> {
@@ -228,7 +228,7 @@ class EditProductFragment : Fragment() {
     // FIRESTORE--------------------------------------------------------------------------
     private fun validateData(url: String) {
 
-        val barcode = binding.edtBarcodeProduct.text.toString().trim()
+        val barcode = binding.edtBarcode.text.toString().trim()
         val referenceProduct = binding.edtReferenceProduct.text.toString().trim()
         val description = binding.edtDescriptionProduct.text.toString().trim()
         val brand = binding.edtBrandProduct.text.toString().trim()
@@ -392,7 +392,7 @@ class EditProductFragment : Fragment() {
         }
 
         binding.imvPhoto.setOnClickListener {
-            if (binding.edtBarcodeProduct.text.isNotEmpty()) showBottomSheetDialog()
+            if (binding.edtBarcode.text.isNotEmpty()) showBottomSheetDialog()
             else Util.exibirToast(requireContext(), "Preencher campo Telefone Primeiro")
         }
 
@@ -453,7 +453,7 @@ class EditProductFragment : Fragment() {
     }
 
     private fun recoverProduct() {
-        binding.edtBarcodeProduct.setText(selectedProduct?.barcode.toString())
+        binding.edtBarcode.setText(selectedProduct?.barcode.toString())
         binding.edtReferenceProduct.setText(selectedProduct?.reference.toString())
         binding.edtDescriptionProduct.setText(selectedProduct?.description.toString())
         binding.edtBrandProduct.setText(selectedProduct?.brand.toString())

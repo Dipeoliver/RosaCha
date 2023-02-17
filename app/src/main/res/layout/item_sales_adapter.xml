@@ -2,29 +2,30 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView_client"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="4dp"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:padding="8dp"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
 
 
             <TextView
-                android:id="@+id/txt_name"
+                android:id="@+id/txt_barcode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
@@ -35,7 +36,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/txt_name2"
+                android:id="@+id/txt_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="POMADA NEBACETIN DE 250UI/G"
@@ -43,42 +44,42 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/txt_name"
-                app:layout_constraintTop_toBottomOf="@+id/txt_name" />
+                app:layout_constraintStart_toStartOf="@+id/txt_barcode"
+                app:layout_constraintTop_toBottomOf="@+id/txt_barcode" />
+
 
             <TextView
-                android:id="@+id/txt_value"
+                android:id="@+id/txt_sales_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="16dp"
                 android:text="2500,90"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/txt_name"
-                app:layout_constraintStart_toEndOf="@+id/txt_currency"
-                app:layout_constraintTop_toTopOf="@+id/txt_name"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintEnd_toStartOf="@+id/btn_delete_iten"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/txt_currency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginEnd="72dp"
                 android:text="R$"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/txt_name"
-                app:layout_constraintStart_toEndOf="@+id/txt_name"
-                app:layout_constraintTop_toTopOf="@+id/txt_name"
-                app:layout_constraintVertical_bias="0.0" />
-
+                app:layout_constraintBottom_toBottomOf="@+id/txt_sales_price"
+                app:layout_constraintEnd_toStartOf="@+id/btn_delete_iten"
+                app:layout_constraintTop_toTopOf="@+id/txt_sales_price" />
 
             <ImageButton
-                android:id="@+id/btn_client_delete2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="70dp"
+                android:id="@+id/btn_delete_iten"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/white"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/txt_currency"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/ic_delete_forever_24" />
 
 

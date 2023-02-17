@@ -278,13 +278,12 @@ class EditClientFragment : Fragment() {
             val client = hashMapOf(
                 // posso fazer update de apenas 1 campo se necessário
                 "name" to selectedClient.name,
-                "phone" to selectedClient.phone,
                 "email" to selectedClient.email,
                 "birthday" to selectedClient.birthday,
                 "clientDate" to selectedClient.clientDate,
                 "urlImagem" to selectedClient.urlImagem
             )
-            reference.document(selectedClient.id.toString()).update(client as Map<String, Any>).addOnSuccessListener {
+            reference.document(selectedClient.phone.toString()).update(client as Map<String, Any>).addOnSuccessListener {
                 Util.exibirToast(requireContext(), "Update com Sucesso ao salvar os dados")
                 dialogProgress.dismiss()
                 val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")

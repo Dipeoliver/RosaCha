@@ -33,8 +33,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 class PriceFragment : Fragment() {
 

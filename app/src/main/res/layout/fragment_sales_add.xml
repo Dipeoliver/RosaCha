@@ -6,72 +6,341 @@
     android:layout_height="match_parent"
     tools:context=".view.dashboard.sales.AddSalesFragment">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/barcode"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/edt_barcode_product"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="90dp"
-        android:background="@drawable/bg_edit"
-        android:ems="10"
-        android:hint="@string/barcode"
-        android:inputType="number"
-        android:nextFocusDown="@id/edt_reference_product"
-        android:padding="14dp"
-        android:textSize="14sp"
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/btn_scan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/white"
-        android:src="@drawable/ic_baseline_qr_code_scanner_24"
-        app:layout_constraintBottom_toBottomOf="@+id/edt_barcode_product"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/edt_barcode_product"
-        app:layout_constraintTop_toTopOf="@+id/edt_barcode_product" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
 
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/barcode"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
+            <EditText
+                android:id="@+id/edt_barcode"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_edit"
+                android:ems="10"
+                android:hint="@string/barcode"
+                android:inputType="number"
+                android:padding="14dp"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            <ImageButton
+                android:id="@+id/btn_scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/ic_baseline_qr_code_scanner_24"
+                app:layout_constraintBottom_toBottomOf="@+id/edt_barcode"
+                app:layout_constraintStart_toEndOf="@+id/edt_barcode"
+                app:layout_constraintTop_toTopOf="@+id/edt_barcode" />
 
 
+            <ImageButton
+                android:id="@+id/btn_price_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/ic_baseline_search_24"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_scan"
+                app:layout_constraintStart_toEndOf="@+id/btn_scan"
+                app:layout_constraintTop_toTopOf="@+id/btn_scan" />
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:text="Itens"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView25"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_sales_adapter" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Total"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/txt_total_price"
+                app:layout_constraintStart_toStartOf="@+id/txt_total_price"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+
+            <TextView
+                android:id="@+id/textView32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="R$"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/txt_final_price"
+                app:layout_constraintEnd_toStartOf="@+id/txt_final_price"
+                app:layout_constraintTop_toTopOf="@+id/txt_final_price" />
+
+            <TextView
+                android:id="@+id/textView34"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="R$"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/txt_total_price"
+                app:layout_constraintEnd_toStartOf="@+id/txt_total_price"
+                app:layout_constraintTop_toTopOf="@+id/txt_total_price"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <TextView
+                android:id="@+id/txtPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Total Final"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/txt_final_price"
+                app:layout_constraintStart_toStartOf="@+id/txt_final_price"
+                app:layout_constraintTop_toBottomOf="@+id/txt_total_price" />
 
 
+            <TextView
+                android:id="@+id/txt_total_price"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_edit"
+                android:text="0.00"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.9"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
 
+            <TextView
+                android:id="@+id/txt_final_price"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_edit"
+                android:text="0.00"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@+id/txt_total_price"
+                app:layout_constraintTop_toBottomOf="@+id/txtPrice" />
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="Nº Parcelas"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toTopOf="@+id/seekBar"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:text="Desconto"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+
+            <TextView
+                android:id="@+id/txt_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="0%"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/seekBar2"
+                app:layout_constraintStart_toEndOf="@+id/seekBar2"
+                app:layout_constraintTop_toTopOf="@+id/seekBar2"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:max="10"
+                android:min="1"
+                android:progress="1"
+                android:progressTint="#FC2390"
+                android:thumb="@drawable/baseline_arrow_circle_right_24"
+                app:layout_constraintBottom_toBottomOf="@+id/txt_final_price"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txt_final_price" />
 
 
+            <TextView
+                android:id="@+id/txt_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="1x"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/seekBar"
+                app:layout_constraintHorizontal_bias="0.333"
+                app:layout_constraintStart_toStartOf="@+id/seekBar"
+                app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="R$"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toEndOf="@+id/txt_quantity"
+                app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+            <TextView
+                android:id="@+id/txt_parcel_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="0.00"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/textView26"
+                app:layout_constraintStart_toEndOf="@+id/textView26"
+                app:layout_constraintTop_toTopOf="@+id/textView26" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:text="Client:"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView26" />
+
+            <EditText
+                android:id="@+id/edt_phone_client"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_edit"
+                android:ems="10"
+                android:hint="Busca com Telefone"
+                android:inputType="phone"
+                android:padding="8dp"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+            <ImageButton
+                android:id="@+id/btn_search_client"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/ic_baseline_search_24"
+                app:layout_constraintBottom_toBottomOf="@+id/edt_phone_client"
+                app:layout_constraintStart_toEndOf="@+id/edt_phone_client"
+                app:layout_constraintTop_toTopOf="@+id/edt_phone_client" />
 
 
+            <TextView
+                android:id="@+id/txt_client"
+                android:layout_width="0dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text=""
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/textView18"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView18"
+                app:layout_constraintTop_toTopOf="@+id/textView18" />
+
+            <Button
+                android:id="@+id/btn_sales"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:backgroundTint="@color/pink"
+                android:text="Finalizar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edt_phone_client" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="413dp" />
+
+            <SeekBar
+                android:id="@+id/seekBar2"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:max="25"
+
+                android:min="0"
+                android:progressTint="#FC2390"
+                android:thumb="@drawable/baseline_arrow_circle_right_24"
+                app:layout_constraintBottom_toBottomOf="@+id/txt_total_price"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txt_total_price" />
 
 
-
-
-
-
-
-
-
-
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

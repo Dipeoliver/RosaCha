@@ -90,7 +90,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/edt_barcode_product"
+                android:id="@+id/edt_barcode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -116,10 +116,10 @@
                 android:layout_marginEnd="32dp"
                 android:backgroundTint="@color/white"
                 android:src="@drawable/ic_baseline_qr_code_scanner_24"
-                app:layout_constraintBottom_toBottomOf="@+id/edt_barcode_product"
+                app:layout_constraintBottom_toBottomOf="@+id/edt_barcode"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/edt_barcode_product"
-                app:layout_constraintTop_toTopOf="@+id/edt_barcode_product" />
+                app:layout_constraintStart_toEndOf="@+id/edt_barcode"
+                app:layout_constraintTop_toTopOf="@+id/edt_barcode" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -130,7 +130,7 @@
                 android:text="@string/reference"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edt_barcode_product" />
+                app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
 
             <EditText
                 android:id="@+id/edt_reference_product"
@@ -410,7 +410,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/btn_scan"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/edt_reference_product"
-                app:layout_constraintTop_toBottomOf="@+id/edt_barcode_product" />
+                app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
 
             <ImageView
                 android:id="@+id/imv_plus"

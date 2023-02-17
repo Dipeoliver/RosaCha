@@ -85,10 +85,22 @@ Feitos
 08/02/23
 - controle de permissão ao acessar camera e arquivos
 - Correção de editar e não perder a foto
+
+15/02/23
+- Adicionar e remover itens so recyclerview
+- Soma dos valores conforme itens da lista
+- Ajustar layout sales para barra de baixo nao subir, botão finalizar ficar correto, colocar scroll
+
 -----------------------------------------------------------------------------
 
 A fazer
 
+- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto
+- ao carregar cliente com a lista vazia aparece 2x msg igual (desliguei on resume)
+- Possibilidade de ao efetuar uma venda compartilhar os itens em pdf pelo whats
+- Adicionar o desconto e fazer atualização preços.
+- adicionar busca de clientes (facil)
+- Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
 - inserir map no firebase (sales)
 
 - validação de campos

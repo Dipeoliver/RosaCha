@@ -61,7 +61,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
 
     override fun onResume() {
         super.onResume()
-        getClients()
+     //   getClients()
     }
 
     override fun clickClient(client: Client) {
@@ -97,14 +97,14 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
         binding.svClient.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d("Diego-onQueryTextSubmit", query.toString())
+//                Log.d("Diego-onQueryTextSubmit", query.toString())
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 isFilterOn = true
                 filterSearchClient(newText.toString())
-                Log.d("Diego-onQueryTextChange", newText.toString())
+//                Log.d("Diego-onQueryTextChange", newText.toString())
                 return true
             }
         })
@@ -169,7 +169,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
                 dialogProgress.dismiss()
                 Toast.makeText(
                     requireContext(),
-                    "Erro ao exibir o documento, ele não existe",
+                    "Não existem clientes para serem exibidos",
                     Toast.LENGTH_SHORT
                 ).show()
             }
