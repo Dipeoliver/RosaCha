@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +14,11 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.br.jafapps.bdfirestore.util.DialogProgress
-import com.br.jafapps.bdfirestore.util.Util
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentClientListBinding
 import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.utils.DialogProgress
+import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -239,7 +238,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
         //set message for alert dialog
 //        builder.setMessage(Html.fromHtml("<font color='#FB2391'>Realmente deseja excluir o cliente: ${client.name}</font>"));
         builder.setMessage("Realmente deseja excluir: ${client.name}")
-        builder.setIcon(R.drawable.ic_warning)
+        builder.setIcon(R.drawable.baseline_warning_24)
+        builder.setIcon(R.drawable.baseline_warning_24)
 
         //performing positive action
         builder.setPositiveButton("Yes") { dialogInterface, which ->
@@ -262,7 +262,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
 
     private fun deleteClient(client: Client) {
         val reference = db!!.collection("Clients")
-        client.id?.let {
+        client.phone?.let {
             reference.document(it).delete().addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
                     client.phone?.let { it1 -> removeImage(it1) }

@@ -1,4 +1,4 @@
-package com.br.jafapps.bdfirestore.util
+package com.clausfonseca.rosacha.utils
 
 import android.os.Bundle
 import android.view.LayoutInflater

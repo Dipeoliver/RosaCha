@@ -24,7 +24,6 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.br.jafapps.bdfirestore.util.Util
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -36,6 +35,7 @@ import com.clausfonseca.rosacha.databinding.FragmentClientAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
 import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.mask.DateMask
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType

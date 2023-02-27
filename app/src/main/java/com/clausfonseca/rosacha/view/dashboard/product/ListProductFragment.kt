@@ -15,14 +15,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.br.jafapps.bdfirestore.util.DialogProgress
-import com.br.jafapps.bdfirestore.util.Util
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductListBinding
-import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.model.Product
+import com.clausfonseca.rosacha.utils.DialogProgress
+import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.view.adapter.ProductAdapter
-import com.clausfonseca.rosacha.view.dashboard.client.ClientFragmentDirections
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -248,7 +246,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
 
         //set message for alert dialog
         builder.setMessage("Realmente deseja excluir: ${product.description}")
-        builder.setIcon(R.drawable.ic_warning)
+        builder.setIcon(R.drawable.baseline_warning_24)
 
         //performing positive action
         builder.setPositiveButton("Yes") { dialogInterface, which ->

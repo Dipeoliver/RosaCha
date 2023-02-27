@@ -16,14 +16,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.br.jafapps.bdfirestore.util.DialogProgress
-import com.br.jafapps.bdfirestore.util.Util
 import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.model.ItensSales
-import com.clausfonseca.rosacha.utils.mask.DateMask
+import com.clausfonseca.rosacha.utils.DialogProgress
+import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
+import com.clausfonseca.rosacha.utils.pdf.PDFConverter
+import com.clausfonseca.rosacha.utils.pdf.PdfDetails
 import com.clausfonseca.rosacha.view.adapter.ItensSalesAdapter
 import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -32,6 +33,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.lang.ref.WeakReference
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class AddSalesFragment : Fragment() {
@@ -47,13 +50,16 @@ class AddSalesFragment : Fragment() {
     var soma: Double = 0.0
     var qtyParcel: Int = 1
 
+    var lista = mutableListOf<String>()
 
     var MIN = 0
     var MAX = 25
     var STEP = 5
     var progress_custom: Int = 0
-    var discountValue: Double = 0.0
-    var somaFinal: Double = 0.0
+    var finalPrice: Double = 0.0
+
+
+    var clientName: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -113,6 +119,7 @@ class AddSalesFragment : Fragment() {
 
             }
         }
+
         binding.btnPriceSearch.setOnClickListener {
             if (binding.edtBarcode.text.toString().isNotEmpty()) {
                 getItem(binding.edtBarcode.text.toString())
@@ -153,27 +160,49 @@ class AddSalesFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
             }
         })
+
+        binding.btnAddSales.setOnClickListener {
+
+            val date = Calendar.getInstance().time
+            val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+            val actualDate = dateTimeFormat.format(date)
+
+            Log.d(
+                "Final_Sales",
+                "${clientName}, ${actualDate}, ${soma}, ${finalPrice}, ${soma - finalPrice}, ${itensSales.size}"
+            )
+
+            val invoiceNumber: String = "00001"
+
+            // chamada para gerar o PDF
+            val pdfDetails = PdfDetails(invoiceNumber, clientName, actualDate, soma, soma - finalPrice, finalPrice, itensSales)
+            val pdfConverter = PDFConverter()
+            pdfConverter.createPdf(requireContext(), pdfDetails, requireActivity())
+
+        }
     }
 
 
     private fun parcelCalc() {
         var parcel: Double = 0.0
-        parcel = discountValue / qtyParcel
+        parcel = finalPrice / qtyParcel
         binding.txtParcelValue.text = String.format("%.2f", parcel)
     }
 
     private fun discountCalc() {
-        discountValue = (soma - (soma * (progress_custom.toDouble() / 100)))
-        binding.txtFinalPrice.text = String.format("%.2f", discountValue)
+        finalPrice = (soma - (soma * (progress_custom.toDouble() / 100)))
+        binding.txtFinalPrice.text = String.format("%.2f", finalPrice)
     }
 
     private fun onBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
-                findNavController().navigate(uri)
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
+                    findNavController().navigate(uri)
+                }
+            })
     }
 
 
@@ -197,7 +226,11 @@ class AddSalesFragment : Fragment() {
         integrator.initiateScan()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
             when (grantResults[0]) {
@@ -262,11 +295,14 @@ class AddSalesFragment : Fragment() {
                 val item = task.toObject(ItensSales::class.java)
                 if (item != null) {
                     itensSales.add(item)
+                    lista.add(item.toString())
                     itensSalesAdapter.notifyDataSetChanged()
                     soma = 0.0
                     itensSales.forEach {
                         soma += it.salesPrice ?: 0.0
+
                     }
+
                     binding.txtTotalPrice.text = String.format("%.2f", soma)
                     discountCalc()
 
@@ -300,8 +336,8 @@ class AddSalesFragment : Fragment() {
                 val dados = task.data
                 val item = task.toObject(ItensSales::class.java)
                 if (item != null) {
-                    val nome = dados?.get("name").toString()
-                    binding.txtClient.text = nome
+                    clientName = dados?.get("name").toString()
+                    binding.txtClient.text = clientName
                 }
             } else {
                 Util.exibirToast(requireContext(), "Erro ao exibir o Cliente, ele não existe")

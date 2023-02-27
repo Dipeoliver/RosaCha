@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/txt_title"
+        style="@style/Base.Widget.MaterialComponents.TextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif"
+        android:text="Invoice Nº"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_student_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Costumer Name:"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_title" />
+
+    <TextView
+        android:id="@+id/txt_costumer_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/txt_student_name_label"
+        app:layout_constraintTop_toBottomOf="@id/txt_title" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/marks_label_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/border_less_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_student_name_label">
+
+        <TextView
+            android:id="@+id/txt_item"
+            android:layout_width="206dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Item"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Valeu"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/txt_item"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_item" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pdf_marks"
+        android:layout_width="380dp"
+        android:layout_height="551dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/marks_label_layout"
+        tools:listitem="@layout/recycler_marks" />
+
+    <TextView
+        android:id="@+id/total_marks_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginStart="32dp"
+        android:text="SubTotal:  R$"
+        android:textAlignment="textEnd"
+        android:textSize="12sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.402"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+
+    <TextView
+        android:id="@+id/txt_sub_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginStart="8dp"
+        android:text=""
+        android:textSize="12sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="@+id/total_marks_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.073"
+        app:layout_constraintStart_toEndOf="@+id/total_marks_label"
+        app:layout_constraintTop_toTopOf="@+id/total_marks_label" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="390dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pdf_marks" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Discount:  R$ "
+        android:textSize="12sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/total_marks_label"
+        app:layout_constraintTop_toBottomOf="@+id/total_marks_label" />
+
+    <TextView
+        android:id="@+id/txt_discount_pdf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView17"
+        app:layout_constraintEnd_toEndOf="@+id/txt_sub_total"
+        app:layout_constraintTop_toBottomOf="@+id/total_marks_label" />
+
+    <TextView
+        android:id="@+id/textView33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TOTAL    R$"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/textView17"
+        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+    <TextView
+        android:id="@+id/txt_total_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@+id/textView33"
+        app:layout_constraintEnd_toEndOf="@+id/txt_sub_total"
+        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+    <TextView
+        android:id="@+id/txt_invoice_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@+id/txt_title"
+        app:layout_constraintStart_toEndOf="@+id/txt_title"
+        app:layout_constraintTop_toTopOf="@+id/txt_title" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/marks_label_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_rosa_round" />
+
+    <TextView
+        android:id="@+id/textView37"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Date:"
+        app:layout_constraintStart_toStartOf="@+id/txt_student_name_label"
+        app:layout_constraintTop_toBottomOf="@+id/txt_student_name_label" />
+
+    <TextView
+        android:id="@+id/txt_date_pdf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@+id/textView37"
+        app:layout_constraintStart_toEndOf="@+id/textView37"
+        app:layout_constraintTop_toTopOf="@+id/textView37" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

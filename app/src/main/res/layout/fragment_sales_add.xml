@@ -35,7 +35,7 @@
 
             <EditText
                 android:id="@+id/edt_barcode"
-                android:layout_width="240dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
@@ -52,8 +52,7 @@
                 android:id="@+id/btn_scan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="24dp"
                 android:backgroundTint="@color/white"
                 android:src="@drawable/ic_baseline_qr_code_scanner_24"
                 app:layout_constraintBottom_toBottomOf="@+id/edt_barcode"
@@ -69,6 +68,7 @@
                 android:backgroundTint="@color/white"
                 android:src="@drawable/ic_baseline_search_24"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_scan"
+                app:layout_constraintEnd_toEndOf="@+id/txt_total_price"
                 app:layout_constraintStart_toEndOf="@+id/btn_scan"
                 app:layout_constraintTop_toTopOf="@+id/btn_scan" />
 
@@ -267,16 +267,18 @@
 
             <EditText
                 android:id="@+id/edt_phone_client"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
                 android:hint="Busca com Telefone"
                 android:inputType="phone"
                 android:padding="8dp"
                 android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
@@ -306,17 +308,17 @@
                 app:layout_constraintTop_toTopOf="@+id/textView18" />
 
             <Button
-                android:id="@+id/btn_sales"
-                android:layout_width="0dp"
+                android:id="@+id/btn_add_sales"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
                 android:backgroundTint="@color/pink"
                 android:text="Finalizar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edt_phone_client" />
+                app:layout_constraintBottom_toBottomOf="@+id/btn_search_client"
+                app:layout_constraintEnd_toEndOf="@+id/txt_total_price"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/btn_search_client"
+                app:layout_constraintTop_toTopOf="@+id/btn_search_client"
+                app:layout_constraintVertical_bias="0.6" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline4"
@@ -331,7 +333,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:max="25"
-
                 android:min="0"
                 android:progressTint="#FC2390"
                 android:thumb="@drawable/baseline_arrow_circle_right_24"

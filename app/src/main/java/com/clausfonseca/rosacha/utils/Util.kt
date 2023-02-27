@@ -1,18 +1,15 @@
-package com.br.jafapps.bdfirestore.util
+package com.clausfonseca.rosacha.utils
+
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.text.Html
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.clausfonseca.rosacha.R
-import com.clausfonseca.rosacha.model.Client
 
 
 @Suppress("DEPRECATION")

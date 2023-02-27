@@ -16,15 +16,12 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.br.jafapps.bdfirestore.util.DialogProgress
-import com.br.jafapps.bdfirestore.util.Util
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -35,14 +32,10 @@ import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductEditBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
-import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.model.Product
-import com.clausfonseca.rosacha.utils.mask.DateMask
-import com.clausfonseca.rosacha.utils.mask.PhoneMask
-import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
-import com.clausfonseca.rosacha.utils.mask.validateEmailRegex
+import com.clausfonseca.rosacha.utils.DialogProgress
+import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
-import com.clausfonseca.rosacha.view.dashboard.client.EditClientFragmentArgs
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -50,7 +43,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 
