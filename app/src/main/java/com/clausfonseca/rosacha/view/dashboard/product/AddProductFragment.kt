@@ -87,12 +87,14 @@ class AddProductFragment : Fragment() {
         initListeners()
 
         // ao clicar botão voltar abaixo
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
-                findNavController().navigate(uri)
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
+                    findNavController().navigate(uri)
+                }
+            })
     }
 
     // BARCODE  &&  IMAGEVIEW   --------------------------------------------------------
@@ -173,7 +175,8 @@ class AddProductFragment : Fragment() {
                 val nomeImagem = diretorio.path + "/Products" + System.currentTimeMillis() + ".jpg"
             }
             val file = File(nomeImagem)
-            uriImagem = activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
+            uriImagem =
+                activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
         startActivityForResult(intent, 22)
@@ -187,58 +190,72 @@ class AddProductFragment : Fragment() {
 
     // com recurso para diminuir a imagem
     fun uploadImagem() {
-
+        dialogProgress.show(childFragmentManager, "0")
         pictureName = binding.edtBarcode.text.toString()
-        activity?.let {
-            Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.baseline_image_not_supported_24)
-                .apply(RequestOptions.overrideOf(800, 480)).listener(object : RequestListener<Bitmap> {
+
+        val reference = db.collection("Products").document(pictureName.toString())
+        reference.get().addOnSuccessListener { item ->
+            if (item.exists()) {
+                Util.exibirToast(requireContext(), "ERRO, Produto ja Cadastrado")
+                dialogProgress.dismiss()
+                binding.edtBarcode.requestFocus()
+            } else {
+                activity?.let {
+                    Glide.with(it.baseContext).asBitmap().load(uriImagem)
+                        .error(R.drawable.baseline_image_not_supported_24)
+                        .apply(RequestOptions.overrideOf(800, 480))
+                        .listener(object : RequestListener<Bitmap> {
 
 
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Bitmap>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Util.exibirToast(requireContext(), "Erro ao diminuir imagem")
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        bitmap: Bitmap?,
-                        model: Any?,
-                        target: Target<Bitmap>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-
-                        val baos = ByteArrayOutputStream()
-                        bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                        val data = baos.toByteArray()
-                        val reference =
-                            firebaseStorage.reference
-                                .child("Products")
-                                .child(pictureName + ".jpg")
-                        val uploadTask = reference.putBytes(data)
-                        uploadTask.continueWithTask { task ->
-                            if (!task.isSuccessful) {
-                                task.exception.let {
-                                    throw it!!
-                                }
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Bitmap>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                Util.exibirToast(requireContext(), "Erro ao diminuir imagem")
+                                dialogProgress.dismiss()
+                                return false
                             }
-                            reference.downloadUrl
-                        }.addOnSuccessListener { task ->
-                            var url = task.toString()
-                            validateData(url)
-                        }.addOnFailureListener { error ->
-                            Util.exibirToast(
-                                requireContext(),
-                                "Erro ao realizar o upload da imagem: ${error.message.toString()}"
-                            )
-                        }
-                        return false
-                    }
-                }).submit()
+
+                            override fun onResourceReady(
+                                bitmap: Bitmap?,
+                                model: Any?,
+                                target: Target<Bitmap>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+
+                                val baos = ByteArrayOutputStream()
+                                bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                                val data = baos.toByteArray()
+                                val reference =
+                                    firebaseStorage.reference
+                                        .child("Products")
+                                        .child(pictureName + ".jpg")
+                                val uploadTask = reference.putBytes(data)
+                                uploadTask.continueWithTask { task ->
+                                    if (!task.isSuccessful) {
+                                        task.exception.let {
+                                            throw it!!
+                                        }
+                                    }
+                                    reference.downloadUrl
+                                }.addOnSuccessListener { task ->
+                                    var url = task.toString()
+                                    validateData(url)
+                                }.addOnFailureListener { error ->
+                                    Util.exibirToast(
+                                        requireContext(),
+                                        "Erro ao realizar o upload da imagem: ${error.message.toString()}"
+                                    )
+                                    dialogProgress.dismiss()
+                                }
+                                return false
+                            }
+                        }).submit()
+                }
+            }
         }
     }
     // ----------------------------------------------------------------------------------
@@ -256,40 +273,30 @@ class AddProductFragment : Fragment() {
         val costPrice = binding.edtCostProduct.text.toString().trim()
         val salesPrice = binding.edtSalesProduct.text.toString().trim()
 
-        if (barcode.isNotEmpty() && description.isNotEmpty() && size.isNotEmpty() && costPrice.isNotEmpty() && salesPrice.isNotEmpty()
-        ) {
-            dialogProgress.show(childFragmentManager, "0")
-            if (newTask) product = Product()
+        if (newTask) product = Product()
 
-            val date = Calendar.getInstance().time
-            val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-            val productDate = dateTimeFormat.format(date)
+        val date = Calendar.getInstance().time
+        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        val productDate = dateTimeFormat.format(date)
 
-            product.barcode = barcode
-            product.reference = referenceProduct
-            product.description = description.uppercase()
-            product.brand = brand.uppercase()
-            product.provider = provider.uppercase()
-            product.size = size
-            product.color = color.uppercase()
-            product.costPrice = costPrice.toDouble()
-            product.salesPrice = salesPrice.toDouble()
-            product.productDate = productDate
-            product.urlImagem = url
-            owner = if (statusOwner == 0) {
-                "Claudia"
-            } else {
-                "Claudenice"
-            }
-            product.owner = owner
-            insertProduct()
+        product.barcode = barcode
+        product.reference = referenceProduct
+        product.description = description.uppercase()
+        product.brand = brand.uppercase()
+        product.provider = provider.uppercase()
+        product.size = size
+        product.color = color.uppercase()
+        product.costPrice = costPrice.toDouble()
+        product.salesPrice = salesPrice.toDouble()
+        product.productDate = productDate
+        product.urlImagem = url
+        owner = if (statusOwner == 0) {
+            "Claudia"
         } else {
-            Toast.makeText(
-                requireContext(),
-                "Preencher os campos Obrigatórios",
-                Toast.LENGTH_LONG
-            ).show()
+            "Claudenice"
         }
+        product.owner = owner
+        insertProduct()
     }
 
     // Inserir produto no Firestore
@@ -306,6 +313,7 @@ class AddProductFragment : Fragment() {
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Erro ao salvar Produto", Toast.LENGTH_SHORT)
                     .show()
+                dialogProgress.dismiss()
             }
     }
 
@@ -337,7 +345,11 @@ class AddProductFragment : Fragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
             when (grantResults[0]) {
@@ -392,15 +404,29 @@ class AddProductFragment : Fragment() {
         binding.btnAddProduct.setOnClickListener {
             // verificar sinal de internet (FAZER)
 
-            if (uriImagem != null) {
-                uploadImagem()
-            } else {
 
-                // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
-                val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
-                val bitmap = drawable?.toBitmap()
-                uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
-                uploadImagem()
+            if (binding.edtBarcode.text.isNotEmpty() &&
+                binding.edtDescriptionProduct.text.isNotEmpty() &&
+                binding.edtSizeProduct.text.isNotEmpty() &&
+                binding.edtCostProduct.text.isNotEmpty() &&
+                binding.edtSalesProduct.text.isNotEmpty()
+            ) {
+                if (uriImagem != null) {
+                    uploadImagem()
+                } else {
+
+                    // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
+                    val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
+                    val bitmap = drawable?.toBitmap()
+                    uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
+                    uploadImagem()
+                }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Preencher os campos Obrigatórios",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
         binding.rgOwnerProduct.setOnCheckedChangeListener { _, id ->
@@ -426,7 +452,8 @@ class AddProductFragment : Fragment() {
     fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+        val path =
+            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
         return Uri.parse(path.toString())
     }
 

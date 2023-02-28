@@ -167,15 +167,30 @@ class AddSalesFragment : Fragment() {
             val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
             val actualDate = dateTimeFormat.format(date)
 
+            val invoiceNumber =
+                dateTimeFormat.format(date)
+                    .replace("/", "")
+                    .replace(":", "")
+                    .replace(" ", "")
+
+
             Log.d(
                 "Final_Sales",
                 "${clientName}, ${actualDate}, ${soma}, ${finalPrice}, ${soma - finalPrice}, ${itensSales.size}"
             )
 
-            val invoiceNumber: String = "00001"
+//            val invoiceNumber: String = "00001"
 
             // chamada para gerar o PDF
-            val pdfDetails = PdfDetails(invoiceNumber, clientName, actualDate, soma, soma - finalPrice, finalPrice, itensSales)
+            val pdfDetails = PdfDetails(
+                invoiceNumber,
+                clientName,
+                actualDate,
+                soma,
+                soma - finalPrice,
+                finalPrice,
+                itensSales
+            )
             val pdfConverter = PDFConverter()
             pdfConverter.createPdf(requireContext(), pdfDetails, requireActivity())
 

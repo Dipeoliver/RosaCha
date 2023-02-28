@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ import com.clausfonseca.rosacha.databinding.FragmentClientAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
 import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.mask.DateMask
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
@@ -61,8 +63,11 @@ class AddClientFragment : Fragment() {
     private var pictureName: String? = ""
 
     var uriImagem: Uri? = null
+    val dialogProgress = DialogProgress()
     var dialog: BottomSheetDialog? = null
     var dialogPermission: BottomSheetDialog? = null
+
+    var email: String = ""
 
     companion object {
         const val REQUEST_PERMISSION_CODE = 1
@@ -84,12 +89,14 @@ class AddClientFragment : Fragment() {
         configureComponents()
 
         // ao clicar botão voltar abaixo
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
-                findNavController().navigate(uri)
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
+                    findNavController().navigate(uri)
+                }
+            })
     }
 
 
@@ -149,7 +156,8 @@ class AddClientFragment : Fragment() {
                 val nomeImagem = diretorio.path + "/Clients" + System.currentTimeMillis() + ".jpg"
             }
             val file = File(nomeImagem)
-            uriImagem = activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
+            uriImagem =
+                activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
         startActivityForResult(intent, 22)
@@ -163,58 +171,70 @@ class AddClientFragment : Fragment() {
 
     // com recurso para diminuir a imagem
     fun uploadImagem() {
-
+        dialogProgress.show(childFragmentManager, "0")
         pictureName = binding.edtPhoneClient.text.toString()
-        activity?.let {
-            Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.no_image)
-                .apply(RequestOptions.overrideOf(800, 480)).listener(object : RequestListener<Bitmap> {
 
+        val reference = viewModel.db.collection("Clients").document(pictureName.toString())
+        reference.get().addOnSuccessListener { item ->
+            if (item.exists()) {
+                Util.exibirToast(requireContext(), "ERRO, Cliente ja Cadastrado")
+                dialogProgress.dismiss()
+                binding.edtPhoneClient.requestFocus()
+            } else {
+                activity?.let {
+                    Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.no_image)
+                        .apply(RequestOptions.overrideOf(800, 480))
+                        .listener(object : RequestListener<Bitmap> {
 
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Bitmap>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Util.exibirToast(requireContext(), "Erro ao diminuir imagem")
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        bitmap: Bitmap?,
-                        model: Any?,
-                        target: Target<Bitmap>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-
-                        val baos = ByteArrayOutputStream()
-                        bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                        val data = baos.toByteArray()
-                        val reference =
-                            firebaseStorage.reference
-                                .child("Clients")
-                                .child(pictureName + ".jpg")
-                        val uploadTask = reference.putBytes(data)
-                        uploadTask.continueWithTask { task ->
-                            if (!task.isSuccessful) {
-                                task.exception.let {
-                                    throw it!!
-                                }
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Bitmap>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                Util.exibirToast(requireContext(), "Erro ao diminuir imagem")
+                                dialogProgress.dismiss()
+                                return false
                             }
-                            reference.downloadUrl
-                        }.addOnSuccessListener { task ->
-                            var url = task.toString()
-                            validateData(url)
-                        }.addOnFailureListener { error ->
-                            Util.exibirToast(
-                                requireContext(),
-                                "Erro ao realizar o upload da imagem: ${error.message.toString()}"
-                            )
-                        }
-                        return false
-                    }
-                }).submit()
+
+                            override fun onResourceReady(
+                                bitmap: Bitmap?,
+                                model: Any?,
+                                target: Target<Bitmap>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+
+                                val baos = ByteArrayOutputStream()
+                                bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                                val data = baos.toByteArray()
+                                val reference =
+                                    firebaseStorage.reference
+                                        .child("Clients")
+                                        .child(pictureName + ".jpg")
+                                val uploadTask = reference.putBytes(data)
+                                uploadTask.continueWithTask { task ->
+                                    if (!task.isSuccessful) {
+                                        task.exception.let {
+                                            throw it!!
+                                        }
+                                    }
+                                    reference.downloadUrl
+                                }.addOnSuccessListener { task ->
+                                    var url = task.toString()
+                                    validateData(url)
+                                }.addOnFailureListener { error ->
+                                    Util.exibirToast(
+                                        requireContext(),
+                                        "Erro ao realizar o upload da imagem: ${error.message.toString()}"
+                                    )
+                                    dialogProgress.dismiss()
+                                }
+                                return false
+                            }
+                        }).submit()
+                }
+            }
         }
     }
     // ----------------------------------------------------------------------------------
@@ -228,34 +248,18 @@ class AddClientFragment : Fragment() {
         val birthday = binding.edtBirthdayClient.text.toString().trim()
         val email = binding.edtEmailClient.text.toString().trim().lowercase()
 
+        client = Client()
+        val date = Calendar.getInstance().time
+        val dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+        val clientDate = dateTimeFormat.format(date)
 
-        if (name.isNotEmpty() && phone.length > 13) {
-
-            if (email != "" && !email.validateEmailRegex(email)) {
-                Util.exibirToast(requireContext(), "Erro na validação do email")
-
-            } else {
-                client = Client()
-                val date = Calendar.getInstance().time
-                val dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
-                val clientDate = dateTimeFormat.format(date)
-
-                client.name = name.uppercase()
-                client.phone = phone
-                client.email = email
-                client.birthday = birthday
-                client.clientDate = clientDate
-                client.urlImagem = url
-
-                insertClient()
-            }
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "Preencher os campos Obrigatórios",
-                Toast.LENGTH_LONG
-            ).show()
-        }
+        client.name = name.uppercase()
+        client.phone = phone
+        client.email = email
+        client.birthday = birthday
+        client.clientDate = clientDate
+        client.urlImagem = url
+        insertClient()
 
     }
 
@@ -268,13 +272,13 @@ class AddClientFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
                 cleaner()
-//                binding.progressBar.isVisible = false
+                dialogProgress.dismiss()
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Erro ao salvar Cliente", Toast.LENGTH_SHORT)
                     .show()
+                dialogProgress.dismiss()
             }
     }
-
     // ----------------------------------------------------------------------------------
 
 
@@ -295,7 +299,11 @@ class AddClientFragment : Fragment() {
         obterImagemdaCamera()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_PERMISSION_CODE) {
             when (grantResults[0]) {
@@ -347,15 +355,32 @@ class AddClientFragment : Fragment() {
 
     private fun initListeners() {
         binding.btnAddClient.setOnClickListener {
-            if (uriImagem != null) {
-                uploadImagem()
-            } else {
 
-                // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
-                val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
-                val bitmap = drawable?.toBitmap()
-                uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
-                uploadImagem()
+            email = binding.edtEmailClient.text.toString().trim().lowercase()
+
+            if (binding.edtNameClient.text.isNotEmpty()
+                && binding.edtPhoneClient.text.length > 13
+            ) {
+                if (email != "" && !email.validateEmailRegex(email)) {
+                    Util.exibirToast(requireContext(), "Erro na validação do email")
+                } else {
+                    if (uriImagem != null) {
+                        uploadImagem()
+                    } else {
+                        // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
+                        val drawable =
+                            ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
+                        val bitmap = drawable?.toBitmap()
+                        uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
+                        uploadImagem()
+                    }
+                }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Preencher os campos Obrigatórios",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -374,7 +399,8 @@ class AddClientFragment : Fragment() {
     fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+        val path =
+            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
         return Uri.parse(path.toString())
     }
 
@@ -409,7 +435,12 @@ class AddClientFragment : Fragment() {
 //        binding.edtPhoneClient.addTextChangedListener(DateMask.mask(binding.edtPhoneClient, DateMask.FORMAT_FONE))
 
         //Mask to Date
-        binding.edtBirthdayClient.addTextChangedListener(DateMask.mask(binding.edtBirthdayClient, DateMask.FORMAT_DATE))
+        binding.edtBirthdayClient.addTextChangedListener(
+            DateMask.mask(
+                binding.edtBirthdayClient,
+                DateMask.FORMAT_DATE
+            )
+        )
     }
 
     private fun cleaner() {

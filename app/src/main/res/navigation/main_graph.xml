@@ -117,7 +117,7 @@
         android:name="com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment"
         android:label="fragment_add_client"
         tools:layout="@layout/fragment_client_add" >
-    <deepLink app:uri="android-app://com.clausfonseca.rosacha/addClient_Fragment" />
+        <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_add_client" />
     </fragment>
     <fragment
         android:id="@+id/addProduct_fragment"

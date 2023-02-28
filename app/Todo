@@ -91,15 +91,21 @@ Feitos
 - Soma dos valores conforme itens da lista
 - Ajustar layout sales para barra de baixo nao subir, botão finalizar ficar correto, colocar scroll
 
+27/02/23
+- Possibilidade de ao efetuar uma venda compartilhar os itens em pdf pelo whats
+- Adicionar o desconto e fazer atualização preços.
+- adicionar busca de clientes (facil)
+- colocar Dialog ao salvar item ja no insert da imagem e depois so dar o dismmis no erro ou no insert do firestore
+- Ao inserir um produto verificar se o mesmo ja não existe e mostrar msg
 -----------------------------------------------------------------------------
 
 A fazer
 
+- colocar msg de rodape depois de efetuar a venda( vender novamente / ir para lista / compartilhar PDF)
+
+
 - ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto
 - ao carregar cliente com a lista vazia aparece 2x msg igual (desliguei on resume)
-- Possibilidade de ao efetuar uma venda compartilhar os itens em pdf pelo whats
-- Adicionar o desconto e fazer atualização preços.
-- adicionar busca de clientes (facil)
 - Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
 - inserir map no firebase (sales)
 

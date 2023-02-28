@@ -26,7 +26,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
-class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, ClientAdapter.ClickClient {
+class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
+    ClientAdapter.ClickClient {
 
     private lateinit var binding: FragmentClientListBinding
     private lateinit var clientAdapter: ClientAdapter
@@ -60,7 +61,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
 
     override fun onResume() {
         super.onResume()
-     //   getClients()
+        //   getClients()
     }
 
     override fun clickClient(client: Client) {
@@ -69,7 +70,11 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
     }
 
     private fun selectedClient(client: Client) {
-        findNavController().navigate(ClientFragmentDirections.actionClientFragmentToEditClientFragment(client))
+        findNavController().navigate(
+            ClientFragmentDirections.actionClientFragmentToEditClientFragment(
+                client
+            )
+        )
 //        findNavController().navigate(ClientFragmentDirections.actionFragmentClientToFragmentEdit(client))
 
 //        val args = Bundle()
@@ -84,9 +89,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
 
     private fun initListeners() {
         binding.fabAddClient.setOnClickListener {
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/addClient_Fragment")
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/fragment_add_client")
             findNavController().navigate(uri)
-//            binding.root.removeAllViewsInLayout()
         }
     }
 
@@ -160,7 +164,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
                 }
                 // pegar ultimo item da query
                 val lastresult = results.documents[results.size() - 1]
-                nextquery = db!!.collection("Clients").orderBy("name").startAfter(lastresult).limit(10)
+                nextquery =
+                    db!!.collection("Clients").orderBy("name").startAfter(lastresult).limit(10)
 
                 clientAdapter.notifyDataSetChanged()
                 //initAdapter()
@@ -190,7 +195,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
                 // pegar ultimo item da query
                 val lastresult = results.documents[results.size() - 1]
 
-                nextquery = db!!.collection("Clients").orderBy("name").startAfter(lastresult).limit(10)
+                nextquery =
+                    db!!.collection("Clients").orderBy("name").startAfter(lastresult).limit(10)
 
                 for (result in results) {
                     val client = result.toObject(Client::class.java)
@@ -269,7 +275,10 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
                     Util.exibirToast(requireContext(), "Deletado com Sucesso")
                     getClients()
                 } else {
-                    Util.exibirToast(requireContext(), "erro ao deletar no banco ${task.exception.toString()}")
+                    Util.exibirToast(
+                        requireContext(),
+                        "erro ao deletar no banco ${task.exception.toString()}"
+                    )
                 }
             }
         }
@@ -279,17 +288,22 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView, Clien
         val reference = firebaseStorage.reference.child("Clients").child("${id}.jpg")
         reference.delete().addOnSuccessListener { task ->
         }.addOnFailureListener { error ->
-            Util.exibirToast(requireContext(), "Falha ao deletar a imagem ${error.message.toString()}")
+            Util.exibirToast(
+                requireContext(),
+                "Falha ao deletar a imagem ${error.message.toString()}"
+            )
         }
     }
 
     private fun onBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
-                findNavController().navigate(uri)
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
+                    findNavController().navigate(uri)
+                }
+            })
     }
     // END Delete Client -----------------------------------------------
 
