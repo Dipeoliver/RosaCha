@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_drag_handle_24" />
+
+    <ImageView
+        android:id="@+id/imv_bottom_new_sales"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView5"
+        app:srcCompat="@drawable/baseline_attach_money_24" />
+
+    <TextView
+        android:id="@+id/txt_bottom_new_sales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="Efetuar nova Venda"
+        android:textColor="@color/pink"
+        app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_new_sales"
+        app:layout_constraintStart_toEndOf="@+id/imv_bottom_new_sales"
+        app:layout_constraintTop_toTopOf="@+id/imv_bottom_new_sales" />
+
+    <ImageView
+        android:id="@+id/imv_bottom_list_sales"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imv_bottom_new_sales"
+        app:srcCompat="@drawable/baseline_format_list_bulleted_24" />
+
+    <TextView
+        android:id="@+id/txt_bottom_list_sales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="Exibir Vendas"
+        android:textColor="@color/pink"
+        app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_list_sales"
+        app:layout_constraintStart_toEndOf="@+id/imv_bottom_list_sales"
+        app:layout_constraintTop_toTopOf="@+id/imv_bottom_list_sales" />
+
+    <ImageView
+        android:id="@+id/imv_bottom_pdf_sales"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/imv_bottom_list_sales"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imv_bottom_list_sales"
+        app:srcCompat="@drawable/baseline_picture_as_pdf_24" />
+
+    <TextView
+        android:id="@+id/txt_bottom_pdf_sales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="Compartilhar comprovante"
+        android:textColor="@color/pink"
+        app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_pdf_sales"
+        app:layout_constraintStart_toEndOf="@+id/imv_bottom_pdf_sales"
+        app:layout_constraintTop_toTopOf="@+id/imv_bottom_pdf_sales" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

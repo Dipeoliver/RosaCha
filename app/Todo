@@ -97,11 +97,15 @@ Feitos
 - adicionar busca de clientes (facil)
 - colocar Dialog ao salvar item ja no insert da imagem e depois so dar o dismmis no erro ou no insert do firestore
 - Ao inserir um produto verificar se o mesmo ja não existe e mostrar msg
+- colocar msg de rodape depois de efetuar a venda( vender novamente / ir para lista / compartilhar PDF)
 -----------------------------------------------------------------------------
 
 A fazer
 
-- colocar msg de rodape depois de efetuar a venda( vender novamente / ir para lista / compartilhar PDF)
+- adicionar quantidade nos itens
+- adicionar para conseguir compartilhar com o Whats
+- adicionar para aparecer numero de parcelas e parzo dentro PDF
+- adiconar se deu algum valor de entrada. para abater no valor final
 
 
 - ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto

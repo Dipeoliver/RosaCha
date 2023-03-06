@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
+import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetAfterSalesBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.model.ItensSales
 import com.clausfonseca.rosacha.utils.DialogProgress
@@ -45,6 +45,7 @@ class AddSalesFragment : Fragment() {
     private lateinit var itensSalesAdapter: ItensSalesAdapter
     private val db = FirebaseFirestore.getInstance()
     val dialogProgress = DialogProgress()
+    var dialog: BottomSheetDialog? = null
     var dialogPermission: BottomSheetDialog? = null
     var barcode: String? = ""
     var soma: Double = 0.0
@@ -136,11 +137,9 @@ class AddSalesFragment : Fragment() {
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
-
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-
             }
         })
 
@@ -162,38 +161,11 @@ class AddSalesFragment : Fragment() {
         })
 
         binding.btnAddSales.setOnClickListener {
-
-            val date = Calendar.getInstance().time
-            val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-            val actualDate = dateTimeFormat.format(date)
-
-            val invoiceNumber =
-                dateTimeFormat.format(date)
-                    .replace("/", "")
-                    .replace(":", "")
-                    .replace(" ", "")
-
-
-            Log.d(
-                "Final_Sales",
-                "${clientName}, ${actualDate}, ${soma}, ${finalPrice}, ${soma - finalPrice}, ${itensSales.size}"
-            )
-
-//            val invoiceNumber: String = "00001"
-
-            // chamada para gerar o PDF
-            val pdfDetails = PdfDetails(
-                invoiceNumber,
-                clientName,
-                actualDate,
-                soma,
-                soma - finalPrice,
-                finalPrice,
-                itensSales
-            )
-            val pdfConverter = PDFConverter()
-            pdfConverter.createPdf(requireContext(), pdfDetails, requireActivity())
-
+            if (itensSales.size == 0) {
+                Util.exibirToast(requireContext(), "Adicionar pelo menos um item a ser vendido")
+            } else {
+                showBottomSheetDialogAfterSales()
+            }
         }
     }
 
@@ -387,5 +359,73 @@ class AddSalesFragment : Fragment() {
         val country = PhoneNumberFormatType.PT_BR // OR PhoneNumberFormatType.PT_BR
         val phoneFormatter = PhoneMask(WeakReference(binding.edtPhoneClient), country)
         binding.edtPhoneClient.addTextChangedListener(phoneFormatter)
+    }
+
+
+    private fun showBottomSheetDialogAfterSales() {
+        dialog = BottomSheetDialog(requireContext())
+
+        val sheetBinding: ItemCustomBottonSheetAfterSalesBinding =
+            ItemCustomBottonSheetAfterSalesBinding.inflate(layoutInflater, null, false)
+
+        sheetBinding.imvBottomNewSales.setOnClickListener {
+            dialog?.dismiss()
+        }
+        sheetBinding.txtBottomNewSales.setOnClickListener {
+            dialog?.dismiss()
+        }
+
+
+        sheetBinding.imvBottomListSales.setOnClickListener {
+            // link para lista de vendas
+            Util.exibirToast(requireContext(), "Ir para a lista de vendas")
+
+        }
+        sheetBinding.txtBottomListSales.setOnClickListener {
+            // link para lista de vendas
+            Util.exibirToast(requireContext(), "Ir para a lista de vendas")
+        }
+
+        sheetBinding.imvBottomPdfSales.setOnClickListener {
+            creatPdf()
+            dialog?.dismiss()
+        }
+        sheetBinding.txtBottomPdfSales.setOnClickListener {
+            creatPdf()
+            dialog?.dismiss()
+        }
+        dialog?.setContentView(sheetBinding.root)
+        dialog?.show()
+    }
+
+    private fun creatPdf() {
+        // para salvar no bando tenho de migrar essa hora daqui
+
+        val date = Calendar.getInstance().time
+        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        val actualDate = dateTimeFormat.format(date)
+
+        val invoiceNumber =
+            dateTimeFormat.format(date)
+                .replace("/", "")
+                .replace(":", "")
+                .replace(" ", "")
+//            Log.d(
+//                "Final_Sales",
+//                "${clientName}, ${actualDate}, ${soma}, ${finalPrice}, ${soma - finalPrice}, ${itensSales.size}"
+//            )
+
+        // chamada para gerar o PDF
+        val pdfDetails = PdfDetails(
+            invoiceNumber,
+            clientName,
+            actualDate,
+            soma,
+            soma - finalPrice,
+            finalPrice,
+            itensSales
+        )
+        val pdfConverter = PDFConverter()
+        pdfConverter.createPdf(requireContext(), pdfDetails, requireActivity())
     }
 }
