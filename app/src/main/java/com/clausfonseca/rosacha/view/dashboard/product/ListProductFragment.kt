@@ -36,6 +36,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
     private lateinit var productAdapter: ProductAdapter
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var auth: FirebaseAuth
+    private var dbProducts: String = ""
 
     private val productlist = mutableListOf<Product>()
     var db: FirebaseFirestore? = null
@@ -55,6 +56,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
         db = FirebaseFirestore.getInstance()
         firebaseStorage = Firebase.storage
         auth = Firebase.auth
+        dbProducts = getString(R.string.db_product).toString()
         onBackPressed()
         initListeners()
         initAdapter()
@@ -62,10 +64,10 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
         searchProduct()
     }
 
-    override fun onResume() {
-        super.onResume()
-        getProducts()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        getProducts()
+//    }
 
     override fun clickProduto(product: Product) {
         selectedProduct(product)
@@ -131,7 +133,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
 
     // Firestore DataBase -----------------------------------------------
     private fun filterSearchProduct(newText: String) {
-        db!!.collection("Products").orderBy("description").startAt(newText)
+        db!!.collection(dbProducts).orderBy("description").startAt(newText)
             .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
                 if (results.size() > 0) {
                     productlist.clear()
@@ -155,7 +157,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
 
-        db!!.collection("Products").orderBy("description").limit(10).get().addOnSuccessListener { results ->
+        db!!.collection(dbProducts).orderBy("description").limit(10).get().addOnSuccessListener { results ->
             dialogProgress.dismiss()
 
 
@@ -169,7 +171,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
                 }
                 // pegar ultimo item da query
                 val lastresult = results.documents[results.size() - 1]
-                nextquery = db!!.collection("Products").orderBy("description").startAfter(lastresult).limit(10)
+                nextquery = db!!.collection(dbProducts).orderBy("description").startAfter(lastresult).limit(10)
 
                 productAdapter.notifyDataSetChanged()
 //                initAdapter()
@@ -177,7 +179,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
                 dialogProgress.dismiss()
                 Toast.makeText(
                     requireContext(),
-                    "Erro ao exibir o documento, ele não existe",
+                    "Não existem produtos para serem exibidos",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -199,7 +201,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
                 // pegar ultimo item da query
                 val lastresult = results.documents[results.size() - 1]
 
-                nextquery = db!!.collection("Products").orderBy("description").startAfter(lastresult).limit(10)
+                nextquery = db!!.collection(dbProducts).orderBy("description").startAfter(lastresult).limit(10)
 
                 for (result in results) {
                     val product = result.toObject(Product::class.java)
@@ -268,7 +270,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
     }
 
     private fun deleteProduct(product: Product) {
-        val reference = db!!.collection("Products")
+        val reference = db!!.collection(dbProducts)
         product.barcode?.let {
             reference.document(it).delete().addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
@@ -283,7 +285,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
     }
 
     fun removeImage(barcode: String) {
-        val reference = firebaseStorage.reference.child("Products").child("${barcode}.jpg")
+        val reference = firebaseStorage.reference.child(dbProducts).child("${barcode}.jpg")
         reference.delete().addOnSuccessListener { task ->
         }.addOnFailureListener { error ->
             Util.exibirToast(requireContext(), "Falha ao deletar a imagem ${error.message.toString()}")

@@ -39,6 +39,7 @@ class PriceFragment : Fragment() {
     private lateinit var binding: FragmentPriceBinding
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var auth: FirebaseAuth
+    private var dbProducts: String = ""
 
     private val db = FirebaseFirestore.getInstance()
     var dialogPermission: BottomSheetDialog? = null
@@ -56,6 +57,7 @@ class PriceFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
         firebaseStorage = Firebase.storage
+        dbProducts = getString(R.string.db_product).toString()
         configureButton()
         iniclicks()
         onBackPressed()
@@ -173,7 +175,7 @@ class PriceFragment : Fragment() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
         if (barcode != null && barcode.isNotEmpty()) {
-            db.collection("Products").document(barcode.toString()).get()
+            db.collection(dbProducts).document(barcode.toString()).get()
                 .addOnSuccessListener { product ->
                     if (product != null && product.exists()) {
                         val price: Double = product.getDouble("salesPrice") ?: 0.0
@@ -220,7 +222,7 @@ class PriceFragment : Fragment() {
 
     // STORAGE---------------------------------------------------------------------------
     fun download_Image_Name(barcode: String) {
-        val reference = firebaseStorage.reference.child("Products").child(barcode + ".jpg")
+        val reference = firebaseStorage.reference.child(dbProducts).child(barcode + ".jpg")
 //        val reference =
 //            firebaseStorage!!.reference   // download de imagem adicionando usuario especifico
 //                .child("imagens")

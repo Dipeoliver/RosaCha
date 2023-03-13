@@ -58,10 +58,10 @@ class AddProductFragment : Fragment() {
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var auth: FirebaseAuth
     private lateinit var product: Product
+    private var dbProducts: String = ""
 
     private val db = FirebaseFirestore.getInstance()
     private var pictureName: String? = ""
-    private var newTask: Boolean = true
     private var statusOwner: Int = 0
     private var owner: String = ""
 
@@ -83,6 +83,7 @@ class AddProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         firebaseStorage = Firebase.storage
         auth = Firebase.auth
+        dbProducts = getString(R.string.db_product).toString()
         configureButton()
         initListeners()
 
@@ -193,7 +194,7 @@ class AddProductFragment : Fragment() {
         dialogProgress.show(childFragmentManager, "0")
         pictureName = binding.edtBarcode.text.toString()
 
-        val reference = db.collection("Products").document(pictureName.toString())
+        val reference = db.collection(dbProducts).document(pictureName.toString())
         reference.get().addOnSuccessListener { item ->
             if (item.exists()) {
                 Util.exibirToast(requireContext(), "ERRO, Produto ja Cadastrado")
@@ -231,7 +232,7 @@ class AddProductFragment : Fragment() {
                                 val data = baos.toByteArray()
                                 val reference =
                                     firebaseStorage.reference
-                                        .child("Products")
+                                        .child(dbProducts)
                                         .child(pictureName + ".jpg")
                                 val uploadTask = reference.putBytes(data)
                                 uploadTask.continueWithTask { task ->
@@ -301,7 +302,7 @@ class AddProductFragment : Fragment() {
 
     // Inserir produto no Firestore
     private fun insertProduct() {
-        db.collection("Products").document(product.barcode.toString())
+        db.collection(dbProducts).document(product.barcode.toString())
             .set(product).addOnCompleteListener {
                 Toast.makeText(
                     requireContext(),

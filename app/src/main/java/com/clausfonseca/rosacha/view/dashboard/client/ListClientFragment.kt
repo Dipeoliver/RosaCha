@@ -37,6 +37,9 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     var nextquery: Query? = null
     var isFilterOn = false
 
+    private var dbClients: String = ""
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,6 +54,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = FirebaseFirestore.getInstance()
+        dbClients = getString(R.string.db_client).toString()
         firebaseStorage = Firebase.storage
         initListeners()
         initAdapter()
@@ -59,10 +63,10 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         onBackPressed()
     }
 
-    override fun onResume() {
-        super.onResume()
-        //   getClients()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        getClients()
+//    }
 
     override fun clickClient(client: Client) {
         super.clickClient(client)
@@ -127,7 +131,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
     // Firestore DataBase -----------------------------------------------
     private fun filterSearchClient(newText: String) {
-        db!!.collection("Clients").orderBy("name").startAt(newText)
+        db!!.collection(dbClients).orderBy("name").startAt(newText)
             .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
                 if (results.size() > 0) {
                     clientlist.clear()
@@ -150,7 +154,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
 
-        db!!.collection("Clients").orderBy("name").limit(10).get().addOnSuccessListener { results ->
+        db!!.collection(dbClients).orderBy("name").limit(10).get().addOnSuccessListener { results ->
             dialogProgress.dismiss()
 
             if (results.size() > 0) {
@@ -165,7 +169,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                 // pegar ultimo item da query
                 val lastresult = results.documents[results.size() - 1]
                 nextquery =
-                    db!!.collection("Clients").orderBy("name").startAfter(lastresult).limit(10)
+                    db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
 
                 clientAdapter.notifyDataSetChanged()
                 //initAdapter()
@@ -196,7 +200,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                 val lastresult = results.documents[results.size() - 1]
 
                 nextquery =
-                    db!!.collection("Clients").orderBy("name").startAfter(lastresult).limit(10)
+                    db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
 
                 for (result in results) {
                     val client = result.toObject(Client::class.java)
@@ -267,7 +271,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     }
 
     private fun deleteClient(client: Client) {
-        val reference = db!!.collection("Clients")
+        val reference = db!!.collection(dbClients)
         client.phone?.let {
             reference.document(it).delete().addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
@@ -285,7 +289,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     }
 
     fun removeImage(id: String) {
-        val reference = firebaseStorage.reference.child("Clients").child("${id}.jpg")
+        val reference = firebaseStorage.reference.child(dbClients).child("${id}.jpg")
         reference.delete().addOnSuccessListener { task ->
         }.addOnFailureListener { error ->
             Util.exibirToast(

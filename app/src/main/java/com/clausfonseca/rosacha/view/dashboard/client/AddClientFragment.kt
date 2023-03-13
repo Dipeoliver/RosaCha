@@ -59,6 +59,7 @@ class AddClientFragment : Fragment() {
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var client: Client
 
+    private var dbClients: String = ""
     private val viewModel: AddClientViewModel by viewModels()
     private var pictureName: String? = ""
 
@@ -68,6 +69,7 @@ class AddClientFragment : Fragment() {
     var dialogPermission: BottomSheetDialog? = null
 
     var email: String = ""
+
 
     companion object {
         const val REQUEST_PERMISSION_CODE = 1
@@ -85,6 +87,7 @@ class AddClientFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.edtNameClient.requestFocus()
         firebaseStorage = Firebase.storage
+        dbClients = getString(R.string.db_client).toString()
         initListeners()
         configureComponents()
 
@@ -149,9 +152,9 @@ class AddClientFragment : Fragment() {
             val diretorio =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
             val path = diretorio.path ?: ""
-            val nomeImagem = path + "/Clients" + pictureName + ".jpg"
-            if (nomeImagem == "/Clients.jpg") {
-                val nomeImagem = diretorio.path + "/Clients" + System.currentTimeMillis() + ".jpg"
+            val nomeImagem = path + "/" + dbClients + pictureName + ".jpg"
+            if (nomeImagem == "/" + dbClients + ".jpg") {
+                val nomeImagem = diretorio.path + "/" + dbClients + System.currentTimeMillis() + ".jpg"
             }
             val file = File(nomeImagem)
             uriImagem =
@@ -172,7 +175,7 @@ class AddClientFragment : Fragment() {
         dialogProgress.show(childFragmentManager, "0")
         pictureName = binding.edtPhoneClient.text.toString()
 
-        val reference = viewModel.db.collection("Clients").document(pictureName.toString())
+        val reference = viewModel.db.collection("@string/").document(pictureName.toString())
         reference.get().addOnSuccessListener { item ->
             if (item.exists()) {
                 Util.exibirToast(requireContext(), "ERRO, Cliente ja Cadastrado")
@@ -208,7 +211,7 @@ class AddClientFragment : Fragment() {
                                 val data = baos.toByteArray()
                                 val reference =
                                     firebaseStorage.reference
-                                        .child("Clients")
+                                        .child(dbClients)
                                         .child(pictureName + ".jpg")
                                 val uploadTask = reference.putBytes(data)
                                 uploadTask.continueWithTask { task ->
@@ -262,7 +265,7 @@ class AddClientFragment : Fragment() {
     }
 
     private fun insertClient() {
-        viewModel.db.collection("Clients").document(client.phone.toString())
+        viewModel.db.collection(dbClients).document(client.phone.toString())
             .set(client).addOnCompleteListener {
                 Toast.makeText(
                     requireContext(),

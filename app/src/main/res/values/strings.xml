@@ -70,4 +70,14 @@
     <string name="strong_password_register_fragment">The given password is invalid.</string>
     <string name="error_generic">Have one problem, try again later.</string>
 
+
+    <!--    DB Firebase -->
+    // Production (Clients / Products / Price / Sales)
+    // Test (ClientsTest / ProductsTest / PriceTest / SalesTest)
+    <string name="db_client">ClientsTest</string>
+    <string name="db_product">ProductsTest</string>
+    <string name="db_sales">Sales</string>
+    <string name="db_price">Price</string>
+
+
 </resources>

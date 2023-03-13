@@ -68,6 +68,8 @@ class EditClientFragment : Fragment() {
     var oldId: String? = null
     var oldUrl: String = ""
 
+    private var dbClients: String = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,7 +88,7 @@ class EditClientFragment : Fragment() {
 //        selectedClient = requireArguments().getParcelable<Client>("client")
 
         firebaseStorage = Firebase.storage
-
+        dbClients = getString(R.string.db_client)
         recoverClient()
         onBackPressed()
         initListeners()
@@ -141,9 +143,9 @@ class EditClientFragment : Fragment() {
             val diretorio =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
             val path = diretorio.path ?: ""
-            val nomeImagem = path + "/Clients" + pictureName + ".jpg"
-            if (nomeImagem == "/Clients.jpg") {
-                val nomeImagem = diretorio.path + "/Clients" + System.currentTimeMillis() + ".jpg"
+            val nomeImagem = path + "/" + dbClients + pictureName + ".jpg"
+            if (nomeImagem == "/" + dbClients + ".jpg") {
+                val nomeImagem = diretorio.path + "/" + dbClients + System.currentTimeMillis() + ".jpg"
             }
             val file = File(nomeImagem)
             uriImagem = activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
@@ -190,7 +192,7 @@ class EditClientFragment : Fragment() {
                         val data = baos.toByteArray()
                         val reference =
                             firebaseStorage.reference
-                                .child("Clients")
+                                .child(dbClients)
                                 .child(pictureName + ".jpg")
                         val uploadTask = reference.putBytes(data)
                         uploadTask.continueWithTask { task ->
@@ -217,7 +219,7 @@ class EditClientFragment : Fragment() {
 
     //remover imagem antiga da galeria
     private fun removeImage(id: String) {
-        val reference = firebaseStorage.reference.child("Clients").child("${id}.jpg")
+        val reference = firebaseStorage.reference.child(dbClients).child("${id}.jpg")
         reference.delete().addOnSuccessListener { task ->
         }.addOnFailureListener { error ->
             Util.exibirToast(requireContext(), "Falha ao deletar a imagem Antiga${error.message.toString()}")
@@ -273,7 +275,7 @@ class EditClientFragment : Fragment() {
         dialogProgress.show(childFragmentManager, "0")
         if (selectedClient != null) {
 
-            val reference = db!!.collection("Clients")
+            val reference = db!!.collection(dbClients)
 
             val client = hashMapOf(
                 // posso fazer update de apenas 1 campo se necessário

@@ -52,6 +52,8 @@ class EditProductFragment : Fragment() {
     private lateinit var firebaseStorage: FirebaseStorage
     private var selectedProduct: Product? = null
     private var pictureName: String? = ""
+    private var dbProducts: String = ""
+
     var uriImagem: Uri? = null
     var dialog: BottomSheetDialog? = null
     var dialogPermission: BottomSheetDialog? = null
@@ -79,7 +81,7 @@ class EditProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         selectedProduct = EditProductFragmentArgs.fromBundle(requireArguments()).selectedProduct
         firebaseStorage = Firebase.storage
-
+        dbProducts = getString(R.string.db_product).toString()
         recoverProduct()
         onBackPressed()
         initListeners()
@@ -181,7 +183,7 @@ class EditProductFragment : Fragment() {
                         val data = baos.toByteArray()
                         val reference =
                             firebaseStorage.reference
-                                .child("Products")
+                                .child(dbProducts)
                                 .child(pictureName + ".jpg")
                         val uploadTask = reference.putBytes(data)
                         uploadTask.continueWithTask { task ->
@@ -208,7 +210,7 @@ class EditProductFragment : Fragment() {
 
     //remover imagem antiga da galeria
     private fun removeImage(id: String) {
-        val reference = firebaseStorage.reference.child("Products").child("${id}.jpg")
+        val reference = firebaseStorage.reference.child(dbProducts).child("${id}.jpg")
         reference.delete().addOnSuccessListener { task ->
         }.addOnFailureListener { error ->
             Util.exibirToast(requireContext(), "Falha ao deletar a imagem Antiga${error.message.toString()}")
@@ -268,7 +270,7 @@ class EditProductFragment : Fragment() {
 
         if (selectedProduct != null) {
 
-            val reference = db!!.collection("Products")
+            val reference = db!!.collection(dbProducts)
 
             val client = hashMapOf(
                 // posso fazer update de apenas 1 campo se necessário
@@ -376,9 +378,9 @@ class EditProductFragment : Fragment() {
                 val bitmap = drawable?.toBitmap()
                 uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
                 uploadImagem()
-            } else  if (uriImagem != null){
+            } else if (uriImagem != null) {
                 uploadImagem()
-            }else{
+            } else {
                 validateData(oldUrl)
             }
         }
