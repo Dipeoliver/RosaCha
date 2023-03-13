@@ -72,12 +72,14 @@
 
 
     <!--    DB Firebase -->
-    // Production (Clients / Products / Price / Sales)
-    // Test (ClientsTest / ProductsTest / PriceTest / SalesTest)
+    // Production (Clients / Products / Sales)
+    // Test (ClientsTest / ProductsTest / SalesTest)
+
+    <string name="verifyTest">true</string>
+
     <string name="db_client">ClientsTest</string>
     <string name="db_product">ProductsTest</string>
-    <string name="db_sales">Sales</string>
-    <string name="db_price">Price</string>
+    <string name="db_sales">SalesTest</string>
 
 
 </resources>

@@ -160,7 +160,6 @@
         android:id="@+id/txt_value_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:inputType="numberDecimal"
         android:textColor="@color/white"
         android:textSize="70sp"
@@ -175,135 +174,77 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="481dp" />
+        app:layout_constraintGuide_begin="442dp" />
 
 
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:text="2X = R$"
-        android:textColor="@color/white"
-        android:textSize="20sp"
+    <ImageView
+        android:id="@+id/imv_product"
+        android:layout_width="212dp"
+        android:layout_height="209dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_value_price" />
+        app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
-    <TextView
-        android:id="@+id/textView21"
-        android:layout_width="wrap_content"
+    <SeekBar
+        android:id="@+id/seekBar3"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:text="@string/symbol_3x"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView18" />
+        android:max="10"
+        android:min="1"
+        android:progress="1"
+        android:progressTint="#FC2390"
 
-
-    <TextView
-        android:id="@+id/textView19"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:text="4X = R$"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView21" />
-
-    <TextView
-        android:id="@+id/textView23"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:text="5X = R$"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+        android:thumb="@drawable/baseline_arrow_circle_right_24"
+        app:layout_constraintEnd_toEndOf="@+id/imv_product"
+        app:layout_constraintStart_toStartOf="@+id/imv_product"
+        app:layout_constraintTop_toBottomOf="@+id/imv_product" />
 
     <TextView
         android:id="@+id/textView22"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:text="@string/symbol_6x"
+        android:layout_marginEnd="8dp"
+        android:text="R$"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView23" />
+        app:layout_constraintEnd_toStartOf="@+id/txt_parcel_value"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar3" />
 
     <TextView
-        android:id="@+id/txt_value_2x_price"
+        android:id="@+id/txt_parcel_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView18"
-        app:layout_constraintStart_toEndOf="@+id/textView21"
-        app:layout_constraintTop_toTopOf="@+id/textView18" />
-
-    <TextView
-        android:id="@+id/txt_value_3x_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView21"
-        app:layout_constraintStart_toEndOf="@+id/textView21"
-        app:layout_constraintTop_toTopOf="@+id/textView21" />
-
-    <TextView
-        android:id="@+id/txt_value_4x_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView19"
-        app:layout_constraintStart_toEndOf="@+id/textView21"
-        app:layout_constraintTop_toTopOf="@+id/textView19" />
-
-    <TextView
-        android:id="@+id/txt_value_5x_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView23"
-        app:layout_constraintStart_toEndOf="@+id/textView21"
-        app:layout_constraintTop_toTopOf="@+id/textView23" />
-
-    <TextView
-        android:id="@+id/txt_value_6x_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="0.00"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView22"
-        app:layout_constraintStart_toEndOf="@+id/textView22"
+        app:layout_constraintEnd_toEndOf="@+id/imv_product"
         app:layout_constraintTop_toTopOf="@+id/textView22"
         app:layout_constraintVertical_bias="1.0" />
 
-    <ImageView
-        android:id="@+id/imv_product"
-        android:layout_width="172dp"
-        android:layout_height="186dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/no_image"
-        app:layout_constraintBottom_toBottomOf="@+id/textView22"
-        app:layout_constraintEnd_toEndOf="@+id/edt_color_price"
-        app:layout_constraintTop_toTopOf="@+id/textView18" />
+    <TextView
+        android:id="@+id/txt_qty_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="8dp"
+        android:text="1X"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/imv_product"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="206dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

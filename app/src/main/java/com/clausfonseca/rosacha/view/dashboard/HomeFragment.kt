@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -18,6 +19,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var auth: FirebaseAuth
     private val viewModel by viewModels<DashboardViewModel>() // mudar valores o xml visivel
+    private var verifyTest: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,8 +33,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
+        verifyTest = getString(R.string.verifyTest).toString()
         initClicks()
         onBackPressed()
+        if (verifyTest == "true")
+            binding.viewPager.setBackgroundColor(resources.getColor(android.R.color.holo_orange_dark))
     }
 
     private fun onBackPressed() {

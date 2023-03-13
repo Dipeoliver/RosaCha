@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
@@ -41,6 +42,10 @@ class PriceFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private var dbProducts: String = ""
 
+    var price: Double = 0.00
+    var qtyParcel: Int = 1
+
+
     private val db = FirebaseFirestore.getInstance()
     var dialogPermission: BottomSheetDialog? = null
 
@@ -59,7 +64,7 @@ class PriceFragment : Fragment() {
         firebaseStorage = Firebase.storage
         dbProducts = getString(R.string.db_product).toString()
         configureButton()
-        iniclicks()
+        initListeners()
         onBackPressed()
     }
 
@@ -178,16 +183,12 @@ class PriceFragment : Fragment() {
             db.collection(dbProducts).document(barcode.toString()).get()
                 .addOnSuccessListener { product ->
                     if (product != null && product.exists()) {
-                        val price: Double = product.getDouble("salesPrice") ?: 0.0
+                        price = product.getDouble("salesPrice") ?: 0.0
                         binding.edtDescriptionPrice.setText(product.getString("description"))
                         binding.edtColorPrice.setText(product.getString("color"))
                         binding.edtSizePrice.setText(product.getString("size"))
                         binding.txtValuePrice.text = String.format("%.2f", price)
-                        binding.txtValue2xPrice.text = String.format("%.2f", price / 2)
-                        binding.txtValue3xPrice.text = String.format("%.2f", price / 3)
-                        binding.txtValue4xPrice.text = String.format("%.2f", price / 4)
-                        binding.txtValue5xPrice.text = String.format("%.2f", price / 5)
-                        binding.txtValue6xPrice.text = String.format("%.2f", price / 6)
+                        parcelCalc()
 
                         download_Image_Name(barcode)
                         dialogProgress.dismiss()
@@ -261,11 +262,32 @@ class PriceFragment : Fragment() {
 
     // ----------------------------------------------------------------------------------
 
-    private fun iniclicks() {
+    private fun initListeners() {
         binding.edtBarcodePrice.requestFocus()
         binding.btnSearchPrice.setOnClickListener {
             selectPrice(binding.edtBarcodePrice.text.toString())
         }
+
+        binding.seekBar3.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                binding.txtQtyValue.text = ("${i}x")
+                qtyParcel = i
+                parcelCalc()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+            }
+        })
+    }
+
+    private fun parcelCalc() {
+        var result: Double = 0.0
+        result = (price) / qtyParcel
+
+        binding.txtParcelValue.text = String.format("%.2f", result)
     }
 
     private fun onBackPressed() {
@@ -281,11 +303,6 @@ class PriceFragment : Fragment() {
     private fun cleaner() {
         binding.edtDescriptionPrice.setText("")
         binding.txtValuePrice.text = ""
-        binding.txtValue2xPrice.text = ""
-        binding.txtValue3xPrice.text = ""
-        binding.txtValue4xPrice.text = ""
-        binding.txtValue5xPrice.text = ""
-        binding.txtValue6xPrice.text = ""
         binding.edtSizePrice.setText("")
         binding.edtColorPrice.setText("")
         binding.edtBarcodePrice.requestFocus()

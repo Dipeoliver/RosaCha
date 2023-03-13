@@ -44,7 +44,6 @@ import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 @Suppress("UNNECESSARY_SAFE_CALL")
 class AddSalesFragment : Fragment() {
 
@@ -54,6 +53,11 @@ class AddSalesFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private val itensSales = mutableListOf<ItensSales>()
     private val db = FirebaseFirestore.getInstance()
+    private var dbClients: String = ""
+    private var dbProducts: String = ""
+    private var dbSales: String = ""
+
+
     var dialogAfterSales: BottomSheetDialog? = null
     var dialogPermission: BottomSheetDialog? = null
     val dialogProgress = DialogProgress()
@@ -64,6 +68,7 @@ class AddSalesFragment : Fragment() {
     var moneyPaid: Double = 0.0
 
     var client: String = ""
+
 
     var MIN = 0
     var MAX = 25
@@ -85,6 +90,10 @@ class AddSalesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
+        dbClients = getString(R.string.db_client).toString()
+        dbProducts = getString(R.string.db_product).toString()
+        dbSales = getString(R.string.db_sales).toString()
+
         onBackPressed()
         initListeners()
         initAdapter()
@@ -307,7 +316,7 @@ class AddSalesFragment : Fragment() {
         addSales.itens = itensSales
 
 
-        db.collection("Sales").document(invoiceNumber)
+        db.collection(dbSales).document(invoiceNumber)
             .set(addSales).addOnCompleteListener {
                 showBottomSheetDialogAfterSales()
                 dialogProgress.dismiss()
@@ -325,7 +334,7 @@ class AddSalesFragment : Fragment() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
 
-        db!!.collection("Products").document(barcode).get().addOnSuccessListener { task ->
+        db!!.collection(dbProducts).document(barcode).get().addOnSuccessListener { task ->
 
             dialogProgress.dismiss()
             if (task != null && task.exists()) {
@@ -366,7 +375,7 @@ class AddSalesFragment : Fragment() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
 
-        db!!.collection("Clients").document(client).get().addOnSuccessListener { task ->
+        db!!.collection(dbClients).document(client).get().addOnSuccessListener { task ->
 
             dialogProgress.dismiss()
             if (task != null && task.exists()) {
@@ -543,7 +552,7 @@ class AddSalesFragment : Fragment() {
             binding.txtClient.text.toString().uppercase(),
             actualDate,
             soma,
-            soma - finalPrice,
+            soma * (progress_custom.toDouble() / 100),
             finalPrice,
             moneyPaid,
             itensSales

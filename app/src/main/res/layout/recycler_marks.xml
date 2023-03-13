@@ -41,13 +41,24 @@
             tools:text="Description" />
 
         <TextView
-            android:id="@+id/txt_total_value_recy"
+            android:id="@+id/rs"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/txt_barcode_recy"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_barcode_recy"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="R$" />
+
+        <TextView
+            android:id="@+id/txt_total_value_recy"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.49"
+            app:layout_constraintStart_toEndOf="@+id/rs"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Valeu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
