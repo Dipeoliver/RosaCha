@@ -22,6 +22,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/txt_invoice_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@+id/txt_title"
+        app:layout_constraintStart_toEndOf="@+id/txt_title"
+        app:layout_constraintTop_toTopOf="@+id/txt_title" />
+
+    <TextView
         android:id="@+id/txt_student_name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,6 +49,36 @@
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/txt_student_name_label"
         app:layout_constraintTop_toBottomOf="@id/txt_title" />
+
+    <TextView
+        android:id="@+id/textView37"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Date:"
+        app:layout_constraintStart_toStartOf="@+id/txt_student_name_label"
+        app:layout_constraintTop_toBottomOf="@+id/txt_student_name_label" />
+
+    <TextView
+        android:id="@+id/txt_date_pdf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@+id/textView37"
+        app:layout_constraintStart_toEndOf="@+id/textView37"
+        app:layout_constraintTop_toTopOf="@+id/textView37" />
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/marks_label_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_rosa_round" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/marks_label_layout"
@@ -80,7 +120,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pdf_marks"
         android:layout_width="380dp"
-        android:layout_height="551dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -90,21 +130,28 @@
         app:layout_constraintTop_toBottomOf="@id/marks_label_layout"
         tools:listitem="@layout/recycler_marks" />
 
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="390dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pdf_marks" />
+
     <TextView
         android:id="@+id/total_marks_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:text="SubTotal:  R$"
         android:textAlignment="textEnd"
         android:textSize="12sp"
         android:textStyle="bold|italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.402"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2" />
-
+        app:layout_constraintBottom_toTopOf="@+id/textView17"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txt_sub_total"
@@ -121,24 +168,17 @@
         app:layout_constraintStart_toEndOf="@+id/total_marks_label"
         app:layout_constraintTop_toTopOf="@+id/total_marks_label" />
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="390dp"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pdf_marks" />
 
     <TextView
         android:id="@+id/textView17"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="Discount:  R$ "
         android:textSize="12sp"
         android:textStyle="bold|italic"
-        app:layout_constraintStart_toStartOf="@+id/total_marks_label"
-        app:layout_constraintTop_toBottomOf="@+id/total_marks_label" />
+        app:layout_constraintBottom_toTopOf="@+id/textView30"
+        app:layout_constraintStart_toStartOf="@+id/total_marks_label" />
 
     <TextView
         android:id="@+id/txt_discount_pdf"
@@ -148,16 +188,38 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView17"
         app:layout_constraintEnd_toEndOf="@+id/txt_sub_total"
-        app:layout_constraintTop_toBottomOf="@+id/total_marks_label" />
+        app:layout_constraintTop_toTopOf="@+id/textView17" />
+
+    <TextView
+        android:id="@+id/textView30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Paid:         R$"
+        android:textSize="12sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toTopOf="@+id/textView33"
+        app:layout_constraintStart_toStartOf="@+id/textView17" />
+
+    <TextView
+        android:id="@+id/txt_paid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView30"
+        app:layout_constraintEnd_toEndOf="@+id/txt_sub_total"
+        app:layout_constraintTop_toTopOf="@+id/textView30" />
 
     <TextView
         android:id="@+id/textView33"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="TOTAL    R$"
         android:textStyle="bold|italic"
-        app:layout_constraintStart_toStartOf="@+id/textView17"
-        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView17" />
 
     <TextView
         android:id="@+id/txt_total_value"
@@ -166,45 +228,26 @@
         android:text=""
         app:layout_constraintBottom_toBottomOf="@+id/textView33"
         app:layout_constraintEnd_toEndOf="@+id/txt_sub_total"
-        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+        app:layout_constraintTop_toTopOf="@+id/textView33" />
 
     <TextView
-        android:id="@+id/txt_invoice_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="@+id/txt_title"
-        app:layout_constraintStart_toEndOf="@+id/txt_title"
-        app:layout_constraintTop_toTopOf="@+id/txt_title" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:id="@+id/textView41"
+        android:layout_width="199dp"
+        android:layout_height="33dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/marks_label_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_rosa_round" />
+        android:layout_marginBottom="32dp"
+        android:text="Parcelado em 3x, vencimento a cada dia 20 do mês sequente."
+        app:layout_constraintBottom_toTopOf="@+id/textView42"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/textView37"
+        android:id="@+id/textView42"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Date:"
-        app:layout_constraintStart_toStartOf="@+id/txt_student_name_label"
-        app:layout_constraintTop_toBottomOf="@+id/txt_student_name_label" />
+        android:layout_height="33dp"
+        android:layout_marginEnd="8dp"
+        android:text="Rosá Cha agradece a Preferência"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_date_pdf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="@+id/textView37"
-        app:layout_constraintStart_toEndOf="@+id/textView37"
-        app:layout_constraintTop_toTopOf="@+id/textView37" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

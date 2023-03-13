@@ -11,5 +11,6 @@ data class PdfDetails(
     val subTotal: Double,
     val discount: Double,
     val total: Double,
+    val moneyPaid:Double,
     val itemDetailsList: List<ItensSales>
 )

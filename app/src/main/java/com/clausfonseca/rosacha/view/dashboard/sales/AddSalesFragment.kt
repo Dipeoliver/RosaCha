@@ -1,23 +1,29 @@
 package com.clausfonseca.rosacha.view.dashboard.sales
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Html
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
+import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetAfterSalesBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
+import com.clausfonseca.rosacha.model.AddSales
 import com.clausfonseca.rosacha.model.ItensSales
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
@@ -28,8 +34,10 @@ import com.clausfonseca.rosacha.utils.pdf.PdfDetails
 import com.clausfonseca.rosacha.view.adapter.ItensSalesAdapter
 import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.lang.ref.WeakReference
@@ -37,21 +45,25 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+@Suppress("UNNECESSARY_SAFE_CALL")
 class AddSalesFragment : Fragment() {
 
     private lateinit var binding: FragmentSalesAddBinding
-    private lateinit var firebaseStorage: FirebaseStorage
-    private val itensSales = mutableListOf<ItensSales>()
+    private lateinit var addSales: AddSales
     private lateinit var itensSalesAdapter: ItensSalesAdapter
+    private lateinit var auth: FirebaseAuth
+    private val itensSales = mutableListOf<ItensSales>()
     private val db = FirebaseFirestore.getInstance()
-    val dialogProgress = DialogProgress()
-    var dialog: BottomSheetDialog? = null
+    var dialogAfterSales: BottomSheetDialog? = null
     var dialogPermission: BottomSheetDialog? = null
+    val dialogProgress = DialogProgress()
     var barcode: String? = ""
     var soma: Double = 0.0
     var qtyParcel: Int = 1
+    var paid = ""
+    var moneyPaid: Double = 0.0
 
-    var lista = mutableListOf<String>()
+    var client: String = ""
 
     var MIN = 0
     var MAX = 25
@@ -59,8 +71,8 @@ class AddSalesFragment : Fragment() {
     var progress_custom: Int = 0
     var finalPrice: Double = 0.0
 
-
-    var clientName: String = ""
+    var actualDate: String = ""
+    var invoiceNumber: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,38 +84,16 @@ class AddSalesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        auth = Firebase.auth
         onBackPressed()
         initListeners()
         initAdapter()
-        configureComponents()
     }
 
-    // BARCODE     --------------------------------------------------------
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        // BARCODE
-        var result: IntentResult? =
-            IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-
-        if (result != null) {
-            if (result.contents != null) {
-                barcode = result.contents
-                getItem(barcode.toString())
-            } else {
-                // criar um dialog aqui
-                binding.edtBarcode.setText("scan failed")
-                binding.edtBarcode.requestFocus()
-                binding.edtBarcode.selectAll()
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-            // criar um dialog aqui
-            binding.edtBarcode.requestFocus()
-            binding.edtBarcode.selectAll()
-        }
+    override fun onResume() {
+        super.onResume()
+        cleanner()
     }
-    // --------------------------------------------------------------------
-
 
     private fun initListeners() {
         binding.edtBarcode.requestFocus()
@@ -113,12 +103,7 @@ class AddSalesFragment : Fragment() {
         }
 
         binding.btnSearchClient.setOnClickListener {
-            if (binding.edtPhoneClient.text.toString().isNotEmpty()) {
-                getClient(binding.edtPhoneClient.text.toString())
-            } else {
-                Util.exibirToast(requireContext(), "Campo Telefone não pode estar em Branco")
-
-            }
+            getUserDialog()
         }
 
         binding.btnPriceSearch.setOnClickListener {
@@ -162,25 +147,56 @@ class AddSalesFragment : Fragment() {
 
         binding.btnAddSales.setOnClickListener {
             if (itensSales.size == 0) {
+
                 Util.exibirToast(requireContext(), "Adicionar pelo menos um item a ser vendido")
             } else {
-                showBottomSheetDialogAfterSales()
+                if (finalPrice < 0) {
+                    Util.exibirToast(requireContext(), "O valor da venda tem de ser positivo, verificar valor Pago")
+                } else {
+
+                    informationDialog()
+                }
             }
         }
+
+        binding.edtPaid.setOnKeyListener(View.OnKeyListener { v, KeyCode, event ->
+            if (KeyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
+                valuePaid()
+                return@OnKeyListener true
+            }
+            false
+        })
     }
 
-
+    // calculo de variações de valores -----------------------------------------
     private fun parcelCalc() {
         var parcel: Double = 0.0
-        parcel = finalPrice / qtyParcel
+        parcel = (finalPrice) / qtyParcel
         binding.txtParcelValue.text = String.format("%.2f", parcel)
     }
 
     private fun discountCalc() {
-        finalPrice = (soma - (soma * (progress_custom.toDouble() / 100)))
+        finalPrice = (soma - (soma * (progress_custom.toDouble() / 100))) - moneyPaid
+        binding.txtDiscountValue.setText(String.format("%.2f", (soma * (progress_custom.toDouble() / 100))))
         binding.txtFinalPrice.text = String.format("%.2f", finalPrice)
     }
 
+    private fun valuePaid() {
+        paid = binding.edtPaid.text.toString()
+
+        fun String.fullTrim() = trim().replace("\uFEFF", "")
+        moneyPaid = paid.fullTrim().toDouble()
+
+        finalPrice = soma - moneyPaid
+
+        binding.txtFinalPrice.setText(finalPrice.toString())
+        discountCalc()
+        parcelCalc()
+
+        binding.btnAddSales.requestFocus()
+    }
+
+    // -------------------------------- -----------------------------------------
     private fun onBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -193,7 +209,7 @@ class AddSalesFragment : Fragment() {
     }
 
 
-    // Perdir Permissão para acessar a camera -------------------------------------------------------------------------
+    // CAMERA PERMISSION ---------------------
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
@@ -241,34 +257,70 @@ class AddSalesFragment : Fragment() {
         }
     }
 
-    private fun showBottomSheetDialogPermission() {
-        dialogPermission = BottomSheetDialog(requireContext())
-        val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
-            ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
 
-        sheetBinding.btnCancel.setOnClickListener {
-            dialogPermission?.dismiss()
+    // BARCODE     ------------------------------
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        // BARCODE
+        var result: IntentResult? =
+            IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+
+        if (result != null) {
+            if (result.contents != null) {
+                barcode = result.contents
+                getItem(barcode.toString())
+            } else {
+                // criar um dialog aqui
+                binding.edtBarcode.setText("scan failed")
+                binding.edtBarcode.requestFocus()
+                binding.edtBarcode.selectAll()
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+            // criar um dialog aqui
+            binding.edtBarcode.requestFocus()
+            binding.edtBarcode.selectAll()
         }
-
-        sheetBinding.btnConfig.setOnClickListener {
-            val intent = Intent()
-            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            val uri = Uri.fromParts("package", requireActivity().packageName, null)
-            intent.data = uri
-            requireContext().startActivity(intent)
-            dialogPermission?.dismiss()
-        }
-
-        dialogPermission?.setContentView(sheetBinding.root)
-        dialogPermission?.show()
     }
 
-// --------------------------------------------------------------------
+    private fun insertSales() {
+        dialogProgress.show(childFragmentManager, "0")
 
+        val date = Calendar.getInstance().time
+        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        actualDate = dateTimeFormat.format(date)
+
+        invoiceNumber =
+            dateTimeFormat.format(date)
+                .replace("/", "")
+                .replace(":", "")
+                .replace(" ", "")
+
+        addSales = AddSales()
+        addSales.id = invoiceNumber
+        addSales.price = soma
+        addSales.discount = soma - finalPrice
+        addSales.totalPrice = finalPrice
+        addSales.client = binding.txtClient.text.toString().uppercase()
+        addSales.salesOwner = auth.currentUser?.email
+        addSales.salesDate = actualDate
+        addSales.itens = itensSales
+
+
+        db.collection("Sales").document(invoiceNumber)
+            .set(addSales).addOnCompleteListener {
+                showBottomSheetDialogAfterSales()
+                dialogProgress.dismiss()
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Erro ao adicionar Venda", Toast.LENGTH_SHORT)
+                    .show()
+                dialogProgress.dismiss()
+            }
+    }
 
     // FIRESTORE ________________________________
 
-    fun getItem(barcode: String) {
+    private fun getItem(barcode: String) {
 
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
@@ -282,7 +334,6 @@ class AddSalesFragment : Fragment() {
                 val item = task.toObject(ItensSales::class.java)
                 if (item != null) {
                     itensSales.add(item)
-                    lista.add(item.toString())
                     itensSalesAdapter.notifyDataSetChanged()
                     soma = 0.0
                     itensSales.forEach {
@@ -310,7 +361,7 @@ class AddSalesFragment : Fragment() {
         }
     }
 
-    fun getClient(client: String) {
+    private fun getClient(client: String) {
 
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
@@ -323,8 +374,11 @@ class AddSalesFragment : Fragment() {
                 val dados = task.data
                 val item = task.toObject(ItensSales::class.java)
                 if (item != null) {
-                    clientName = dados?.get("name").toString()
-                    binding.txtClient.text = clientName
+
+                    this.client = dados?.get("name").toString()
+                    Log.d("GETCLIENT", this.client)
+//                    binding.txtClient.setText("")
+//                    binding.txtClient.setText(dados?.get("name").toString())
                 }
             } else {
                 Util.exibirToast(requireContext(), "Erro ao exibir o Cliente, ele não existe")
@@ -335,8 +389,7 @@ class AddSalesFragment : Fragment() {
         }
     }
 
-
-// --------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
     private fun initAdapter() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -354,32 +407,91 @@ class AddSalesFragment : Fragment() {
         binding.recyclerView.adapter = itensSalesAdapter
     }
 
-    private fun configureComponents() {
-        //Mask to Phone
-        val country = PhoneNumberFormatType.PT_BR // OR PhoneNumberFormatType.PT_BR
-        val phoneFormatter = PhoneMask(WeakReference(binding.edtPhoneClient), country)
-        binding.edtPhoneClient.addTextChangedListener(phoneFormatter)
+    private fun informationDialog() {
+
+        val builder = AlertDialog.Builder(requireContext())
+
+        //set title for alert dialog
+        builder.setTitle(Html.fromHtml("<font color='#FB2391'>Atenção</font>"));
+//        builder.setTitle("Atenção")
+
+        //set message for alert dialog
+        builder.setMessage("Realmente deseja Finalizar a Venda?")
+        builder.setIcon(R.drawable.ic_rosa_round)
+
+        //performing positive action
+        builder.setPositiveButton("Yes") { dialogInterface, which ->
+            insertSales()
+        }
+//        //performing cancel action
+//        builder.setNeutralButton("Cancel"){dialogInterface , which ->
+//            Toast.makeText(applicationContext,"clicked cancel\n operation cancel",Toast.LENGTH_LONG).show()
+//        }
+        //performing negative action
+        builder.setNegativeButton("No") { dialogInterface, which ->
+
+            // AÇÂO PARA O NÂO
+
+        }
+        // Create the AlertDialog
+        val alertDialog: AlertDialog = builder.create()
+        // Set other dialog properties
+        alertDialog.setCancelable(false)
+        alertDialog.show()
     }
 
+    private fun getUserDialog() {
+
+        val builder = AlertDialog.Builder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.item_dialog_get_client, null)
+//        dialogLayout.setBackgroundDrawable(ResourcesCompat.getDrawable(resources, R.color.rose, null))
+        val editText = dialogLayout.findViewById<EditText>(R.id.edt_client_phone)
+        var result = dialogLayout.findViewById<TextView>(R.id.txt_result)
+        val button = dialogLayout.findViewById<ImageButton>(R.id.btn_search1)
+
+        editText.requestFocus()
+        //Mask to Phone
+        val country = PhoneNumberFormatType.PT_BR // OR PhoneNumberFormatType.PT_BR
+        val phoneFormatter = PhoneMask(WeakReference(editText), country)
+        editText.addTextChangedListener(phoneFormatter)
+
+        button.setOnClickListener {
+            getClient(editText.text.toString())
+            result.text = this.client
+        }
+
+        with(builder) {
+            setTitle(Html.fromHtml("<font color='#FB2391'>Pesquisar Clientes</font>"));
+            setPositiveButton("OK") { dialog, which ->
+                binding.txtClient.setText(client)
+            }
+            setNegativeButton("Cancel") { dialog, which ->
+
+            }
+            setView(dialogLayout)
+            show()
+        }
+    }
 
     private fun showBottomSheetDialogAfterSales() {
-        dialog = BottomSheetDialog(requireContext())
+        dialogAfterSales = BottomSheetDialog(requireContext())
 
         val sheetBinding: ItemCustomBottonSheetAfterSalesBinding =
             ItemCustomBottonSheetAfterSalesBinding.inflate(layoutInflater, null, false)
 
         sheetBinding.imvBottomNewSales.setOnClickListener {
-            dialog?.dismiss()
+            dialogAfterSales?.dismiss()
+            cleanner()
         }
         sheetBinding.txtBottomNewSales.setOnClickListener {
-            dialog?.dismiss()
+            dialogAfterSales?.dismiss()
+            cleanner()
         }
-
 
         sheetBinding.imvBottomListSales.setOnClickListener {
             // link para lista de vendas
             Util.exibirToast(requireContext(), "Ir para a lista de vendas")
-
         }
         sheetBinding.txtBottomListSales.setOnClickListener {
             // link para lista de vendas
@@ -388,44 +500,68 @@ class AddSalesFragment : Fragment() {
 
         sheetBinding.imvBottomPdfSales.setOnClickListener {
             creatPdf()
-            dialog?.dismiss()
+            dialogAfterSales?.dismiss()
+            cleanner()
         }
         sheetBinding.txtBottomPdfSales.setOnClickListener {
             creatPdf()
-            dialog?.dismiss()
+            dialogAfterSales?.dismiss()
+            cleanner()
         }
-        dialog?.setContentView(sheetBinding.root)
-        dialog?.show()
+        dialogAfterSales?.setContentView(sheetBinding.root)
+        dialogAfterSales?.setCancelable(false)
+        dialogAfterSales?.show()
+    }
+
+    private fun showBottomSheetDialogPermission() {
+        dialogPermission = BottomSheetDialog(requireContext())
+        val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
+            ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
+
+        sheetBinding.btnCancel.setOnClickListener {
+            dialogPermission?.dismiss()
+        }
+
+        sheetBinding.btnConfig.setOnClickListener {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts("package", requireActivity().packageName, null)
+            intent.data = uri
+            requireContext().startActivity(intent)
+            dialogPermission?.dismiss()
+        }
+
+        dialogPermission?.setContentView(sheetBinding.root)
+        dialogPermission?.show()
     }
 
     private fun creatPdf() {
-        // para salvar no bando tenho de migrar essa hora daqui
-
-        val date = Calendar.getInstance().time
-        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-        val actualDate = dateTimeFormat.format(date)
-
-        val invoiceNumber =
-            dateTimeFormat.format(date)
-                .replace("/", "")
-                .replace(":", "")
-                .replace(" ", "")
-//            Log.d(
-//                "Final_Sales",
-//                "${clientName}, ${actualDate}, ${soma}, ${finalPrice}, ${soma - finalPrice}, ${itensSales.size}"
-//            )
-
         // chamada para gerar o PDF
+
         val pdfDetails = PdfDetails(
             invoiceNumber,
-            clientName,
+            binding.txtClient.text.toString().uppercase(),
             actualDate,
             soma,
             soma - finalPrice,
             finalPrice,
+            moneyPaid,
             itensSales
         )
         val pdfConverter = PDFConverter()
         pdfConverter.createPdf(requireContext(), pdfDetails, requireActivity())
+    }
+
+    private fun cleanner() {
+        binding.seekBar.progress = 0
+        binding.seekBar2.progress = 0
+        binding.edtPaid.setText("")
+        binding.txtTotalPrice.text = "0.00"
+        binding.txtFinalPrice.text = "0.00"
+        binding.txtParcelValue.text = "0.00"
+        binding.txtClient.setText("")
+        itensSales.clear()
+        itensSalesAdapter.notifyDataSetChanged()
+        binding.edtBarcode.requestFocus()
     }
 }

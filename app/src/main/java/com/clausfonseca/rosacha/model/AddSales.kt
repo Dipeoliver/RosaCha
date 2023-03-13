@@ -1,23 +1,12 @@
 package com.clausfonseca.rosacha.model
 
-import android.os.Parcelable
-import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-
-class AddSales(
-    var id: String = "",
-    var itens: String = "",  // list [iten, price]
-    var price: String = "",
-    var discount: String = "",
-    var totalPrice: String = "",
-    var client: String = "",
-//    val salesOwner: String  // pegar usuario logado Firebase.Auth
-//    var salesDate: String
-) : Parcelable {
-    //    gerar um id automático
-    init {
-        this.id = FirebaseHelper.getDatabase().push().key ?: ""
-    }
-}
+data class AddSales(
+    var id: String? = "",
+    var itens: MutableList<ItensSales>? = mutableListOf(),  // list [iten, price]
+    var price: Double = 0.0,
+    var discount: Double = 0.0,
+    var totalPrice: Double = 0.0,
+    var client: String? = "",
+    var salesOwner: String? = "",  // pegar usuario logado Firebase.Auth
+    var salesDate: String? = ""
+)

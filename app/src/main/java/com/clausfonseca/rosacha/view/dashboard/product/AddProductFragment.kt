@@ -273,7 +273,7 @@ class AddProductFragment : Fragment() {
         val costPrice = binding.edtCostProduct.text.toString().trim()
         val salesPrice = binding.edtSalesProduct.text.toString().trim()
 
-        if (newTask) product = Product()
+        product = Product()
 
         val date = Calendar.getInstance().time
         val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())

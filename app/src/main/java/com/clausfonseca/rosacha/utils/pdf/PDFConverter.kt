@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_SEND
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.pdf.PdfDocument
@@ -33,7 +34,9 @@ class PDFConverter {
         val subTotal = view.findViewById<TextView>(R.id.txt_sub_total)
         val discount = view.findViewById<TextView>(R.id.txt_discount_pdf)
         val total = view.findViewById<TextView>(R.id.txt_total_value)
+        val moneyPaid = view.findViewById<TextView>(R.id.txt_paid)
         val recyclerView = view.findViewById<RecyclerView>(R.id.pdf_marks)
+
 
         invoice.text = pdfDetails.invoiceNumber
         costumerName.text = pdfDetails.costumerName
@@ -41,8 +44,9 @@ class PDFConverter {
         subTotal.text = String.format("%.2f", pdfDetails.subTotal)
         discount.text = String.format("%.2f", pdfDetails.discount)
         total.text = String.format("%.2f", pdfDetails.total)
+        moneyPaid.text = String.format("%.2f", pdfDetails.moneyPaid)
         recyclerView.adapter = adapter
-        
+
         return createBitmap(context, view, activity)
     }
 
@@ -74,7 +78,7 @@ class PDFConverter {
 
         val canvas = Canvas(bitmap)
         view.draw(canvas)
-        return Bitmap.createScaledBitmap(bitmap, 595, 842, true)
+        return Bitmap.createScaledBitmap(bitmap, 600, 900, true)
     }
 
     private fun convertBitmapToPdf(bitmap: Bitmap, context: Context) {
@@ -109,14 +113,36 @@ class PDFConverter {
             context.applicationContext.packageName + ".provider",
             filePath
         )
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.setDataAndType(uri, "application/pdf")
+        // compartilhar geral mas nao aparece Whats
+        val intentPDF = Intent(Intent.ACTION_VIEW)
+        intentPDF.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intentPDF.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intentPDF.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intentPDF.setDataAndType(uri, "application/pdf")
+
+// compartilhar com o Whats
+//        val share = Intent();
+//        share.setAction(ACTION_SEND)
+//        share.setType("application/pdf")
+//        share.putExtra(Intent.EXTRA_STREAM, uri)
+//        share.setPackage("com.whatsapp")
+
+
+//        val shareIntent = Intent(Intent.ACTION_SEND)
+//        shareIntent.putExtra(Intent.EXTRA_STREAM,  uri)
+//        shareIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+//        shareIntent.type = "application/pdf"
+
+
+//        val intent = Intent(ACTION_SEND)
+//        intent.putExtra(Intent.EXTRA_TEXT, "PDF File")
+//        intent.putExtra(Intent.EXTRA_STREAM, Bitmap.createScaledBitmap(bitmap, 595, 842, true))
+//        intent.setType("text/plain")
+//        intent.setType("image/jpeg")
+//        intent.setPackage("com.whatsapp")
 
         try {
-            context.startActivity(intent)
+            context.startActivity(intentPDF)
         } catch (e: ActivityNotFoundException) {
 
         }

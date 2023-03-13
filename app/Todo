@@ -98,24 +98,41 @@ Feitos
 - colocar Dialog ao salvar item ja no insert da imagem e depois so dar o dismmis no erro ou no insert do firestore
 - Ao inserir um produto verificar se o mesmo ja não existe e mostrar msg
 - colocar msg de rodape depois de efetuar a venda( vender novamente / ir para lista / compartilhar PDF)
+
+07/03/2023
+- adicionar para conseguir compartilhar com o Whats
+- ao carregar cliente com a lista vazia aparece 2x msg igual (desliguei on resume)
+- inserir map no firebase (sales)
+
+
+09/03/2023
+- deixar a parte da venda sozinha, adionar as abas na HOME para exibir as vendas
+- Adicionar regras para dar um valor de entrada
+- mostrar na tela de venda o valor do desconto em frente a porcentagem
+
 -----------------------------------------------------------------------------
 
 A fazer
 
-- adicionar quantidade nos itens
-- adicionar para conseguir compartilhar com o Whats
-- adicionar para aparecer numero de parcelas e parzo dentro PDF
-- adiconar se deu algum valor de entrada. para abater no valor final
 
+- remodelar o PDF para aparecer as parcelas
+- remodelar o PDF para aparecer o valor de entrada
 
-- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto
-- ao carregar cliente com a lista vazia aparece 2x msg igual (desliguei on resume)
-- Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
-- inserir map no firebase (sales)
 
 - validação de campos
+- checar todos texto (portugues / ingles)
+- adiconar se deu algum valor de entrada. para abater no valor final
+- adicionar para aparecer numero de parcelas e prazo dentro PDF
+
+- customizar o bottonDialog para bordas arredondadas e colocar imagem de fundo
+- arrumar a cor de fundo do dialog do busca client
+
+- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto
+
+- Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
+- adicionar quantidade nos itens
 - biblioteca adionar grafico na (home)
 - mudar arquitetura  
-- checar todos texto (portugues / ingles)
+
 
 

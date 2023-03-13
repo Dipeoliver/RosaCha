@@ -114,7 +114,6 @@ class AddClientFragment : Fragment() {
                 if (requestCode == 11 && data != null) {  // galeria
                     uriImagem = data.data
 
-
                     binding.imvPhotoClient.setImageURI(uriImagem)
 
                 } else if (requestCode == 22 && uriImagem != null) {// camera
@@ -123,7 +122,6 @@ class AddClientFragment : Fragment() {
                 } else {
 
                 }
-
                 dialog?.dismiss()
             }
         } else {

@@ -14,7 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -38,13 +39,13 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
                 android:hint="@string/barcode"
                 android:inputType="number"
-                android:padding="14dp"
-                android:textSize="14sp"
+                android:padding="08dp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -68,7 +69,6 @@
                 android:backgroundTint="@color/white"
                 android:src="@drawable/ic_baseline_search_24"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_scan"
-                app:layout_constraintEnd_toEndOf="@+id/txt_total_price"
                 app:layout_constraintStart_toEndOf="@+id/btn_scan"
                 app:layout_constraintTop_toTopOf="@+id/btn_scan" />
 
@@ -81,19 +81,22 @@
                 android:text="Itens"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
+                app:layout_constraintTop_toBottomOf="@+id/txt_client" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="300dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline4"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/guideline4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView25"
+                app:layout_constraintVertical_bias="0.0"
                 tools:itemCount="5"
                 tools:listitem="@layout/item_sales_adapter" />
 
@@ -101,18 +104,52 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Total"
+                android:text="Sub Total"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="@+id/txt_total_price"
                 app:layout_constraintStart_toStartOf="@+id/txt_total_price"
                 app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
             <TextView
+                android:id="@+id/textView40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="2dp"
+                android:text="R$"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/txt_total_price"
+                app:layout_constraintEnd_toStartOf="@+id/txt_total_price"
+                app:layout_constraintTop_toTopOf="@+id/txt_total_price" />
+
+            <TextView
+                android:id="@+id/txt_total_price"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_edit"
+                android:text="0.00"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+
+            <TextView
+                android:id="@+id/txtPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Final"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/txt_final_price"
+                app:layout_constraintStart_toStartOf="@+id/txt_final_price"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+
+            <TextView
                 android:id="@+id/textView32"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="2dp"
                 android:text="R$"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/txt_final_price"
@@ -120,115 +157,90 @@
                 app:layout_constraintTop_toTopOf="@+id/txt_final_price" />
 
             <TextView
-                android:id="@+id/textView34"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="R$"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/txt_total_price"
-                app:layout_constraintEnd_toStartOf="@+id/txt_total_price"
-                app:layout_constraintTop_toTopOf="@+id/txt_total_price"
-                app:layout_constraintVertical_bias="1.0" />
-
-            <TextView
-                android:id="@+id/txtPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Total Final"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="@+id/txt_final_price"
-                app:layout_constraintStart_toStartOf="@+id/txt_final_price"
-                app:layout_constraintTop_toBottomOf="@+id/txt_total_price" />
-
-
-            <TextView
-                android:id="@+id/txt_total_price"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_edit"
-                android:text="0.00"
-                android:textAlignment="center"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.9"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-
-            <TextView
                 android:id="@+id/txt_final_price"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/bg_edit"
                 android:text="0.00"
                 android:textAlignment="center"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="@+id/txt_total_price"
+                app:layout_constraintStart_toEndOf="@+id/edt_paid"
                 app:layout_constraintTop_toBottomOf="@+id/txtPrice" />
+
+            <EditText
+                android:id="@+id/edt_paid"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_edit"
+                android:imeOptions="actionSend"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:hint="0.00"
+                android:nextFocusDown="@id/btn_add_sales"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/txt_total_price"
+                app:layout_constraintTop_toBottomOf="@+id/textView39" />
+
+            <TextView
+                android:id="@+id/textView39"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paid"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/edt_paid"
+                app:layout_constraintStart_toStartOf="@+id/edt_paid"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+
+            <TextView
+                android:id="@+id/textView34"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_marginEnd="2dp"
+                android:text="R$"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/edt_paid"
+                app:layout_constraintEnd_toStartOf="@+id/edt_paid"
+                app:layout_constraintTop_toTopOf="@+id/edt_paid" />
 
             <TextView
                 android:id="@+id/textView28"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 android:text="Nº Parcelas"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toTopOf="@+id/seekBar"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/textView27"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:text="Desconto"
-                android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
-
-            <TextView
-                android:id="@+id/txt_percentage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="0%"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/seekBar2"
-                app:layout_constraintStart_toEndOf="@+id/seekBar2"
-                app:layout_constraintTop_toTopOf="@+id/seekBar2"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
 
             <SeekBar
                 android:id="@+id/seekBar"
                 android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:max="10"
                 android:min="1"
                 android:progress="1"
                 android:progressTint="#FC2390"
                 android:thumb="@drawable/baseline_arrow_circle_right_24"
-                app:layout_constraintBottom_toBottomOf="@+id/txt_final_price"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/txt_final_price" />
+                app:layout_constraintStart_toStartOf="@+id/textView28"
+                app:layout_constraintTop_toBottomOf="@+id/textView28" />
 
 
             <TextView
                 android:id="@+id/txt_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="60dp"
                 android:text="1x"
                 android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="@+id/seekBar"
-                app:layout_constraintHorizontal_bias="0.333"
-                app:layout_constraintStart_toStartOf="@+id/seekBar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
             <TextView
@@ -236,21 +248,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:text="R$"
                 android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/txt_quantity"
-                app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+                app:layout_constraintTop_toTopOf="@+id/txt_quantity" />
 
             <TextView
                 android:id="@+id/txt_parcel_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:text="0.00"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/textView26"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView26"
                 app:layout_constraintTop_toTopOf="@+id/textView26" />
 
@@ -259,86 +271,116 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="Client:"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView26" />
+                app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
 
             <EditText
-                android:id="@+id/edt_phone_client"
-                android:layout_width="150dp"
+                android:id="@+id/txt_client"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
-                android:hint="Busca com Telefone"
-                android:inputType="phone"
+                android:inputType="textAutoComplete"
+                android:nextFocusDown="@id/edt_paid"
                 android:padding="8dp"
+                android:text=""
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/btn_scan"
+                app:layout_constraintStart_toStartOf="@+id/edt_barcode"
                 app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
 
             <ImageButton
                 android:id="@+id/btn_search_client"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:backgroundTint="@color/white"
                 android:src="@drawable/ic_baseline_search_24"
-                app:layout_constraintBottom_toBottomOf="@+id/edt_phone_client"
-                app:layout_constraintStart_toEndOf="@+id/edt_phone_client"
-                app:layout_constraintTop_toTopOf="@+id/edt_phone_client" />
-
-
-            <TextView
-                android:id="@+id/txt_client"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:text=""
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/textView18"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView18"
-                app:layout_constraintTop_toTopOf="@+id/textView18" />
+                app:layout_constraintBottom_toBottomOf="@+id/txt_client"
+                app:layout_constraintEnd_toEndOf="@+id/btn_price_search"
+                app:layout_constraintStart_toStartOf="@+id/btn_price_search"
+                app:layout_constraintTop_toTopOf="@+id/txt_client" />
 
             <Button
                 android:id="@+id/btn_add_sales"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/pink"
                 android:text="Finalizar"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_search_client"
-                app:layout_constraintEnd_toEndOf="@+id/txt_total_price"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/btn_search_client"
-                app:layout_constraintTop_toTopOf="@+id/btn_search_client"
-                app:layout_constraintVertical_bias="0.6" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="413dp" />
+                app:layout_constraintEnd_toStartOf="@+id/recyclerView"
+                app:layout_constraintGuide_begin="413dp"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <SeekBar
                 android:id="@+id/seekBar2"
-                android:layout_width="190dp"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:max="25"
                 android:min="0"
                 android:progressTint="#FC2390"
                 android:thumb="@drawable/baseline_arrow_circle_right_24"
-                app:layout_constraintBottom_toBottomOf="@+id/txt_total_price"
+                app:layout_constraintStart_toStartOf="@+id/textView27"
+                app:layout_constraintTop_toBottomOf="@+id/textView27" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:text="Desconto"
+                android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/txt_total_price" />
+                app:layout_constraintTop_toBottomOf="@+id/txt_total_price" />
+
+            <TextView
+                android:id="@+id/txt_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="0%"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/seekBar2"
+                app:layout_constraintStart_toEndOf="@+id/seekBar2"
+                app:layout_constraintTop_toTopOf="@+id/seekBar2" />
+
+            <TextView
+                android:id="@+id/textView38"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:text="R$"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/txt_percentage"
+                app:layout_constraintStart_toEndOf="@+id/seekBar2"
+                app:layout_constraintTop_toTopOf="@+id/txt_percentage" />
+
+            <TextView
+                android:id="@+id/txt_discount_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="0.00"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/textView38"
+                app:layout_constraintStart_toEndOf="@+id/textView38"
+                app:layout_constraintTop_toTopOf="@+id/textView38" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
