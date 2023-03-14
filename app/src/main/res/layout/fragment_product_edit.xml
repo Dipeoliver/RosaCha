@@ -95,17 +95,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
-                android:hint="@string/barcode"
                 android:enabled="false"
+                android:hint="@string/barcode"
                 android:inputType="number"
                 android:nextFocusDown="@id/edt_reference_product"
                 android:padding="14dp"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.079"
+                app:layout_constraintEnd_toStartOf="@+id/btn_copy"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -395,7 +394,6 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/no_image"
                 android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="@+id/edt_barcode"
                 app:layout_constraintStart_toEndOf="@+id/edt_reference_product"
                 app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
 
@@ -409,6 +407,16 @@
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/imv_photo"
                 app:layout_constraintEnd_toEndOf="@+id/imv_photo" />
+
+            <ImageButton
+                android:id="@+id/btn_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:src="@drawable/baseline_content_copy_24"
+                app:layout_constraintBottom_toBottomOf="@+id/edt_barcode"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/edt_barcode" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -78,6 +78,7 @@
         app:layout_constraintBottom_toTopOf="@+id/marks_label_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.187"
         app:srcCompat="@drawable/ic_rosa_round" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -231,14 +232,13 @@
         app:layout_constraintTop_toTopOf="@+id/textView33" />
 
     <TextView
-        android:id="@+id/textView41"
-        android:layout_width="199dp"
-        android:layout_height="33dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
-        android:text="Parcelado em 3x, vencimento a cada dia 20 do mês sequente."
-        app:layout_constraintBottom_toTopOf="@+id/textView42"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:id="@+id/txt_parcel_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="100dp"
+        android:text="Parcelado em :"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_sub_total" />
 
     <TextView
         android:id="@+id/textView42"
@@ -253,11 +253,39 @@
         android:id="@+id/textView19"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="60dp"
         android:text="Cupom não Fiscal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <TextView
+        android:id="@+id/txt_qty_parcel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/txt_parcel_day"
+        app:layout_constraintTop_toTopOf="@+id/txt_parcel_text" />
+
+    <TextView
+        android:id="@+id/txt_parcel_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Vencimento todo dia:"
+        app:layout_constraintStart_toStartOf="@+id/txt_parcel_text"
+        app:layout_constraintTop_toBottomOf="@+id/txt_parcel_text" />
+
+    <TextView
+        android:id="@+id/txt_parcel_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_parcel_text2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txt_parcel_text2"
+        app:layout_constraintTop_toTopOf="@+id/txt_parcel_text2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

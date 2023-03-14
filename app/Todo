@@ -110,19 +110,25 @@ Feitos
 - Adicionar regras para dar um valor de entrada
 - mostrar na tela de venda o valor do desconto em frente a porcentagem
 
+13/03/2023
+- remodelar o PDF para aparecer o valor de entrada
+- Adicionado botão para copiar codigo do barcode dentro de produtos
+- adicionar para aparecer numero de parcelas e prazo dentro PDF
+
+14/03/2023
+- Adicionado para salver qty parcelas/ data vencimento e valor entrada dentro de uma venda
+- arredondamento de casa decimais nos valores double da tabela vendas
 -----------------------------------------------------------------------------
 
 A fazer
 
-
-- remodelar o PDF para aparecer as parcelas
-- remodelar o PDF para aparecer o valor de entrada
-
+- adicionar o valor das parcelas em frete a quantidade de parcelas no PDF (passar mais 1 parametro)
+- colocar o discount dentro de uma variavel, esta espalhado em varios lugares.
 
 - validação de campos
 - checar todos texto (portugues / ingles)
-- adiconar se deu algum valor de entrada. para abater no valor final
-- adicionar para aparecer numero de parcelas e prazo dentro PDF
+
+***** Ao nao conseguir usar scanner dentro da venda está apagando todos itens do RecyclerView *************
 
 - customizar o bottonDialog para bordas arredondadas e colocar imagem de fundo
 - arrumar a cor de fundo do dialog do busca client

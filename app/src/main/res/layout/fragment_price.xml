@@ -130,7 +130,7 @@
 
     <EditText
         android:id="@+id/edt_color_price"
-        android:layout_width="140dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_edit"

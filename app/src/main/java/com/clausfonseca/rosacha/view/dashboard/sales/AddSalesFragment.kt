@@ -43,6 +43,7 @@ import com.google.zxing.integration.android.IntentResult
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 @Suppress("UNNECESSARY_SAFE_CALL")
 class AddSalesFragment : Fragment() {
@@ -307,13 +308,16 @@ class AddSalesFragment : Fragment() {
 
         addSales = AddSales()
         addSales.id = invoiceNumber
-        addSales.price = soma
-        addSales.discount = soma - finalPrice
-        addSales.totalPrice = finalPrice
+        addSales.price = (soma * 100.0).roundToInt() / 100.0
+        addSales.discount = ((soma * (progress_custom.toDouble() / 100)) * 100.0).roundToInt() / 100.0
+        addSales.paid = (moneyPaid * 100.0).roundToInt() / 100.0
+        addSales.totalPrice = (finalPrice * 100.0).roundToInt() / 100.0
         addSales.client = binding.txtClient.text.toString().uppercase()
         addSales.salesOwner = auth.currentUser?.email
         addSales.salesDate = actualDate
         addSales.itens = itensSales
+        addSales.qtyParcel = qtyParcel
+        addSales.parcelDate = actualDate.substring(0, 2)
 
 
         db.collection(dbSales).document(invoiceNumber)
@@ -552,9 +556,10 @@ class AddSalesFragment : Fragment() {
             binding.txtClient.text.toString().uppercase(),
             actualDate,
             soma,
-            soma * (progress_custom.toDouble() / 100),
+            (soma * (progress_custom.toDouble() / 100)),
             finalPrice,
             moneyPaid,
+            qtyParcel,
             itensSales
         )
         val pdfConverter = PDFConverter()

@@ -1,10 +1,10 @@
 package com.clausfonseca.rosacha.utils.pdf
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.ACTION_SEND
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.pdf.PdfDocument
@@ -21,6 +21,7 @@ import java.io.FileOutputStream
 
 class PDFConverter {
 
+    @SuppressLint("SetTextI18n")
     private fun createBitmapFromView(
         context: Context,
         view: View,
@@ -37,6 +38,11 @@ class PDFConverter {
         val moneyPaid = view.findViewById<TextView>(R.id.txt_paid)
         val recyclerView = view.findViewById<RecyclerView>(R.id.pdf_marks)
 
+        // texto rodapé
+        val qtyParcelFinal = view.findViewById<TextView>(R.id.txt_qty_parcel)
+        val parcelText = view.findViewById<TextView>(R.id.txt_parcel_text)
+        val parcelText2 = view.findViewById<TextView>(R.id.txt_parcel_text2)
+        val parcelDay = view.findViewById<TextView>(R.id.txt_parcel_day)
 
         invoice.text = pdfDetails.invoiceNumber
         costumerName.text = pdfDetails.costumerName
@@ -47,6 +53,19 @@ class PDFConverter {
         moneyPaid.text = String.format("%.2f", pdfDetails.moneyPaid)
         recyclerView.adapter = adapter
 
+        // texto rodapé
+        qtyParcelFinal.text = pdfDetails.qtyParcel.toString() + "X"
+        parcelDay.text = pdfDetails.date.substring(0, 2)
+
+        val checkParcel: Int = pdfDetails.qtyParcel
+        if (checkParcel > 1) {
+
+        } else {
+            parcelText.visibility = View.GONE
+            parcelText2.visibility = View.GONE
+            qtyParcelFinal.visibility = View.GONE
+            parcelDay.visibility = View.GONE
+        }
         return createBitmap(context, view, activity)
     }
 

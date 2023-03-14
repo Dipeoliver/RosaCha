@@ -2,9 +2,8 @@ package com.clausfonseca.rosacha.view.dashboard.product
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
+import android.content.*
+import android.content.Context.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -45,6 +44,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.core.content.ContextCompat.getSystemService as getSystemService1
 
 
 class EditProductFragment : Fragment() {
@@ -115,6 +115,19 @@ class EditProductFragment : Fragment() {
         }
     }
     // -----------------------------------------------------------------------
+
+
+    private fun copyBarcode() {
+        val textToCopy = binding.edtBarcode.text
+        val myClipboard: ClipboardManager = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val myClip: ClipData
+        val clipData = ClipData.newPlainText("text", textToCopy)
+        myClipboard.setPrimaryClip(clipData)
+
+        Util.exibirToast(requireContext(), "Barcode Copiado")
+//        Toast.makeText(this, "Text copied to clipboard", Toast.LENGTH_LONG).show()
+    }
+
 
     // STORAGE----------------------------------------------------------------------------
     //  Capturar imagem da Camera
@@ -403,6 +416,10 @@ class EditProductFragment : Fragment() {
                 R.id.claudia -> 0
                 else -> 1
             }
+        }
+
+        binding.btnCopy.setOnClickListener {
+            copyBarcode()
         }
     }
 

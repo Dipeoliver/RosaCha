@@ -29,7 +29,7 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Tempo da splah
-        Handler(Looper.getMainLooper()).postDelayed(this::checkAuth, 3000)
+        Handler(Looper.getMainLooper()).postDelayed(this::checkAuth, 2000)
     }
 
     override fun onDestroyView() {
