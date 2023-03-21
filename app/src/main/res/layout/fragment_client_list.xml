@@ -6,19 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".view.dashboard.client.ListClientFragment">
 
-
-<!--    <include-->
-<!--        android:id="@+id/include_toolbar"-->
-<!--        layout="@layout/toolbar_custom"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent">-->
-
-<!--    </include>-->
-
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -37,7 +24,7 @@
             android:id="@+id/sv_client"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Pesquisar"
+            android:queryHint="@string/research"
             tools:layout_editor_absoluteX="37dp"
             tools:layout_editor_absoluteY="5dp" />
 

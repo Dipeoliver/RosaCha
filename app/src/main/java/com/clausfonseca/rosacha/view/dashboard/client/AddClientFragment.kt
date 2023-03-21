@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,24 +51,19 @@ import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class AddClientFragment : Fragment() {
 
     private lateinit var binding: FragmentClientAddBinding
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var client: Client
-
     private var dbClients: String = ""
     private val viewModel: AddClientViewModel by viewModels()
     private var pictureName: String? = ""
-
     var uriImagem: Uri? = null
-    val dialogProgress = DialogProgress()
-    var dialog: BottomSheetDialog? = null
     var dialogPermission: BottomSheetDialog? = null
-
+    var dialog: BottomSheetDialog? = null
+    val dialogProgress = DialogProgress()
     var email: String = ""
-
 
     companion object {
         const val REQUEST_PERMISSION_CODE = 1
@@ -78,7 +72,7 @@ class AddClientFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentClientAddBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -87,7 +81,7 @@ class AddClientFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.edtNameClient.requestFocus()
         firebaseStorage = Firebase.storage
-        dbClients = getString(R.string.db_client).toString()
+        dbClients = getString(R.string.db_client)
         initListeners()
         configureComponents()
 
@@ -108,7 +102,6 @@ class AddClientFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         // setar a imagem na ImageView
-
         if (requestCode == 11 || requestCode == 22) {
             super.onActivityResult(requestCode, resultCode, data)
             if (resultCode == Activity.RESULT_OK) {
@@ -122,13 +115,9 @@ class AddClientFragment : Fragment() {
                 } else if (requestCode == 22 && uriImagem != null) {// camera
 
                     binding.imvPhotoClient.setImageURI(uriImagem)
-                } else {
-
                 }
                 dialog?.dismiss()
             }
-        } else {
-
         }
     }
     // -----------------------------------------------------------------------
@@ -148,17 +137,17 @@ class AddClientFragment : Fragment() {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
         } else { // versão antiga
-            val autorização = "com.clausfonseca.rosacha"
-            val diretorio =
+            val authorization = "com.clausfonseca.rosacha"
+            val directory =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val path = diretorio.path ?: ""
-            val nomeImagem = path + "/" + dbClients + pictureName + ".jpg"
-            if (nomeImagem == "/" + dbClients + ".jpg") {
-                val nomeImagem = diretorio.path + "/" + dbClients + System.currentTimeMillis() + ".jpg"
+            val path = directory.path ?: ""
+            val imageName = "$path/$dbClients$pictureName.jpg"
+            if (imageName == "/$dbClients.jpg") {
+                val imageName = directory.path + "/" + dbClients + System.currentTimeMillis() + ".jpg"
             }
-            val file = File(nomeImagem)
+            val file = File(imageName)
             uriImagem =
-                activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
+                activity?.let { FileProvider.getUriForFile(it.baseContext, authorization, file) }
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
         startActivityForResult(intent, 22)
@@ -167,7 +156,7 @@ class AddClientFragment : Fragment() {
     // selecionar imagem da galeria
     private fun obterImagemdaGaleria() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        startActivityForResult(Intent.createChooser(intent, "Escolha uma Imagem"), 11)
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), 11)
     }
 
     // com recurso para diminuir a imagem
@@ -178,7 +167,7 @@ class AddClientFragment : Fragment() {
         val reference = viewModel.db.collection("@string/").document(pictureName.toString())
         reference.get().addOnSuccessListener { item ->
             if (item.exists()) {
-                Util.exibirToast(requireContext(), "ERRO, Cliente ja Cadastrado")
+                Util.exibirToast(requireContext(), getString(R.string.error_already_registered_client))
                 dialogProgress.dismiss()
                 binding.edtPhoneClient.requestFocus()
             } else {
@@ -193,7 +182,7 @@ class AddClientFragment : Fragment() {
                                 target: Target<Bitmap>?,
                                 isFirstResource: Boolean
                             ): Boolean {
-                                Util.exibirToast(requireContext(), "Erro ao diminuir imagem")
+                                Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
                                 dialogProgress.dismiss()
                                 return false
                             }
@@ -212,22 +201,22 @@ class AddClientFragment : Fragment() {
                                 val reference =
                                     firebaseStorage.reference
                                         .child(dbClients)
-                                        .child(pictureName + ".jpg")
+                                        .child("$pictureName.jpg")
                                 val uploadTask = reference.putBytes(data)
                                 uploadTask.continueWithTask { task ->
                                     if (!task.isSuccessful) {
-                                        task.exception.let {
+                                        task.exception.let { it ->
                                             throw it!!
                                         }
                                     }
                                     reference.downloadUrl
                                 }.addOnSuccessListener { task ->
-                                    var url = task.toString()
+                                    val url = task.toString()
                                     validateData(url)
                                 }.addOnFailureListener { error ->
                                     Util.exibirToast(
                                         requireContext(),
-                                        "Erro ao realizar o upload da imagem: ${error.message.toString()}"
+                                        getString(R.string.error_upload_image) + ":" + error.message.toString()
                                     )
                                     dialogProgress.dismiss()
                                 }
@@ -251,7 +240,7 @@ class AddClientFragment : Fragment() {
 
         client = Client()
         val date = Calendar.getInstance().time
-        val dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+        val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         val clientDate = dateTimeFormat.format(date)
 
         client.name = name.uppercase()
@@ -261,22 +250,16 @@ class AddClientFragment : Fragment() {
         client.clientDate = clientDate
         client.urlImagem = url
         insertClient()
-
     }
 
     private fun insertClient() {
         viewModel.db.collection(dbClients).document(client.phone.toString())
             .set(client).addOnCompleteListener {
-                Toast.makeText(
-                    requireContext(),
-                    "Cliente adicionado com sucesso",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Util.exibirToast(requireContext(), getString(R.string.add_success_client))
                 cleaner()
                 dialogProgress.dismiss()
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Erro ao salvar Cliente", Toast.LENGTH_SHORT)
-                    .show()
+                Util.exibirToast(requireContext(), getString(R.string.error_save_client))
                 dialogProgress.dismiss()
             }
     }
@@ -363,7 +346,7 @@ class AddClientFragment : Fragment() {
                 && binding.edtPhoneClient.text.length > 13
             ) {
                 if (email != "" && !email.validateEmailRegex(email)) {
-                    Util.exibirToast(requireContext(), "Erro na validação do email")
+                    Util.exibirToast(requireContext(), getString(R.string.invalid_email_register_fragment))
                 } else {
                     if (uriImagem != null) {
                         uploadImagem()
@@ -377,17 +360,13 @@ class AddClientFragment : Fragment() {
                     }
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Preencher os campos Obrigatórios",
-                    Toast.LENGTH_LONG
-                ).show()
+                Util.exibirToast(requireContext(), getString(R.string.required_fields))
             }
         }
 
         binding.imvPhotoClient.setOnClickListener {
             if (binding.edtPhoneClient.text.isNotEmpty()) showBottomSheetDialogCamera()
-            else Util.exibirToast(requireContext(), "Preencher campo Telefone Primeiro")
+            else Util.exibirToast(requireContext(), getString(R.string.required_phone_client))
         }
 
         binding.btnBack.setOnClickListener {

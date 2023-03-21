@@ -44,7 +44,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.core.content.ContextCompat.getSystemService as getSystemService1
 
 
 class EditProductFragment : Fragment() {
@@ -123,8 +122,7 @@ class EditProductFragment : Fragment() {
         val myClip: ClipData
         val clipData = ClipData.newPlainText("text", textToCopy)
         myClipboard.setPrimaryClip(clipData)
-
-        Util.exibirToast(requireContext(), "Barcode Copiado")
+        Util.exibirToast(requireContext(), getString(R.string.copy_barcode_product))
 //        Toast.makeText(this, "Text copied to clipboard", Toast.LENGTH_LONG).show()
     }
 
@@ -143,16 +141,16 @@ class EditProductFragment : Fragment() {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
         } else { // versão antiga
-            val autorização = "com.clausfonseca.rosacha"
-            val diretorio =
+            val authority = "com.clausfonseca.rosacha"
+            val directory =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val path = diretorio.path ?: ""
-            val nomeImagem = path + "/Products" + pictureName + ".jpg"
-            if (nomeImagem == "/Products.jpg") {
-                val nomeImagem = diretorio.path + "/Products" + System.currentTimeMillis() + ".jpg"
+            val path = directory.path ?: ""
+            val imageName = "$path/Products$pictureName.jpg"
+            if (imageName == "/Products.jpg") {
+                val imageName = directory.path + "/Products" + System.currentTimeMillis() + ".jpg"
             }
-            val file = File(nomeImagem)
-            uriImagem = activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
+            val file = File(imageName)
+            uriImagem = activity?.let { FileProvider.getUriForFile(it.baseContext, authority, file) }
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
         startActivityForResult(intent, 22)
@@ -161,7 +159,7 @@ class EditProductFragment : Fragment() {
     // selecionar imagem da galeria
     private fun obterImagemdaGaleria() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        startActivityForResult(Intent.createChooser(intent, "Escolha uma Imagem"), 11)
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), 11)
     }
 
     // com recurso para diminuir a imagem
@@ -179,7 +177,7 @@ class EditProductFragment : Fragment() {
                         target: Target<Bitmap>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Util.exibirToast(requireContext(), "Erro ao diminuir imagem")
+                        Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
                         return false
                     }
 
@@ -197,22 +195,22 @@ class EditProductFragment : Fragment() {
                         val reference =
                             firebaseStorage.reference
                                 .child(dbProducts)
-                                .child(pictureName + ".jpg")
+                                .child("$pictureName.jpg")
                         val uploadTask = reference.putBytes(data)
                         uploadTask.continueWithTask { task ->
                             if (!task.isSuccessful) {
-                                task.exception.let {
+                                task.exception.let { it ->
                                     throw it!!
                                 }
                             }
                             reference.downloadUrl
                         }.addOnSuccessListener { task ->
-                            var url = task.toString()
+                            val url = task.toString()
                             validateData(url)
                         }.addOnFailureListener { error ->
                             Util.exibirToast(
                                 requireContext(),
-                                "Erro ao realizar o upload da imagem: ${error.message.toString()}"
+                                getString(R.string.error_upload_image) + ":" + error.message.toString()
                             )
                         }
                         return false
@@ -226,7 +224,7 @@ class EditProductFragment : Fragment() {
         val reference = firebaseStorage.reference.child(dbProducts).child("${id}.jpg")
         reference.delete().addOnSuccessListener { task ->
         }.addOnFailureListener { error ->
-            Util.exibirToast(requireContext(), "Falha ao deletar a imagem Antiga${error.message.toString()}")
+            Util.exibirToast(requireContext(), getString(R.string.error_delete_image) + error.message.toString())
         }
     }
     // ----------------------------------------------------------------------------------
@@ -251,7 +249,7 @@ class EditProductFragment : Fragment() {
             selectedProduct = Product()
 
             val date = Calendar.getInstance().time
-            val dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+            val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
             val productDate = dateTimeFormat.format(date)
 
             selectedProduct?.barcode = barcode
@@ -267,9 +265,9 @@ class EditProductFragment : Fragment() {
             selectedProduct?.urlImagem = url
             selectedProduct?.id = productId
             owner = if (statusOwner == 0) {
-                "Claudia"
+                getString(R.string.claudia)
             } else {
-                "Claudenice"
+                getString(R.string.claudenice)
             }
             selectedProduct?.owner = owner
 
@@ -301,13 +299,13 @@ class EditProductFragment : Fragment() {
                 "id" to selectedProduct.id
             )
             reference.document(selectedProduct.barcode.toString()).update(client as Map<String, Any>).addOnSuccessListener {
-                Util.exibirToast(requireContext(), "Update com Sucesso ao salvar os dados")
+                Util.exibirToast(requireContext(), getString(R.string.update_data))
                 dialogProgress.dismiss()
                 val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
                 findNavController().navigate(uri)
             }.addOnFailureListener { error ->
                 dialogProgress.dismiss()
-                Util.exibirToast(requireContext(), "erro ao Atualizar no banco ${error.message.toString()}")
+                Util.exibirToast(requireContext(), getString(R.string.error_update_data_product) + ":" + error.message.toString())
             }
         }
     }
@@ -400,16 +398,13 @@ class EditProductFragment : Fragment() {
 
         binding.imvPhoto.setOnClickListener {
             if (binding.edtBarcode.text.isNotEmpty()) showBottomSheetDialog()
-            else Util.exibirToast(requireContext(), "Preencher campo Telefone Primeiro")
+            else Util.exibirToast(requireContext(), getString(R.string.required_barcode_product))
         }
-
-
 
         binding.btnBackEdit.setOnClickListener {
             val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
             findNavController().navigate(uri)
         }
-
 
         binding.rgOwnerProduct.setOnCheckedChangeListener { _, id ->
             statusOwner = when (id) {
@@ -479,7 +474,7 @@ class EditProductFragment : Fragment() {
         oldUrl = selectedProduct?.urlImagem.toString()
 
 
-        if (selectedProduct?.owner == "Claudia") {
+        if (selectedProduct?.owner == getString(R.string.claudia)) {
             binding.claudia.isChecked = true
         } else {
             binding.claudenice.isChecked = true

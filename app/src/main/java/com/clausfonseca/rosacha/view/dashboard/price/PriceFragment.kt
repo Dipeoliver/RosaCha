@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.*
 import android.widget.SeekBar
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -83,7 +82,7 @@ class PriceFragment : Fragment() {
                 binding.edtBarcodePrice.selectAll()
                 selectPrice(Finalresult)
             } else {
-                binding.edtBarcodePrice.setText("scan failed")
+                binding.edtBarcodePrice.setText(getString(R.string.scan_failed))
                 cleaner()
                 binding.edtBarcodePrice.requestFocus()
 
@@ -121,7 +120,7 @@ class PriceFragment : Fragment() {
         }
         val integrator: IntentIntegrator =
             IntentIntegrator.forSupportFragment(this@PriceFragment)
-        integrator.setPrompt("Scanner RosaCha Ativo")
+        integrator.setPrompt(getString(R.string.scan_active))
         integrator.initiateScan()
     }
 
@@ -194,27 +193,15 @@ class PriceFragment : Fragment() {
                         dialogProgress.dismiss()
 
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Erro ao exibir o produto, ele não existe",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Util.exibirToast(requireContext(), getString(R.string.error_show_product))
                         dialogProgress.dismiss()
                         cleaner()
                     }
                 }.addOnFailureListener { error ->
-                    Toast.makeText(
-                        requireContext(),
-                        "Erro de comunicação com servidor ${error.message.toString()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Util.exibirToast(requireContext(), getString(R.string.error_show_product) + ":" + error.message.toString())
                 }
         } else {
-            Toast.makeText(
-                requireContext(),
-                "Campo Barcode não pode estar vazio",
-                Toast.LENGTH_SHORT
-            ).show()
+            Util.exibirToast(requireContext(), getString(R.string.required_barcode_product))
             dialogProgress.dismiss()
             binding.edtBarcodePrice.requestFocus()
         }
@@ -239,7 +226,7 @@ class PriceFragment : Fragment() {
                         target: Target<Bitmap>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Util.exibirToast(requireContext(), "Erro ao carregar a imagem: ${e.toString()}")
+                        Util.exibirToast(requireContext(), getString(R.string.error_upload_image) + ":" + e.toString())
                         return false
                     }
 
@@ -256,7 +243,7 @@ class PriceFragment : Fragment() {
                 }).into(binding.imvProduct)
 
         }.addOnFailureListener { error ->
-            Util.exibirToast(requireContext(), "Erro ao carregar imagem2 ${error.message.toString()}")
+            Util.exibirToast(requireContext(), getString(R.string.error_upload_image) + ":" + error.message.toString())
         }
     }
 
@@ -298,7 +285,6 @@ class PriceFragment : Fragment() {
             }
         })
     }
-
 
     private fun cleaner() {
         binding.edtDescriptionPrice.setText("")

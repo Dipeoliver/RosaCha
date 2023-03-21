@@ -121,7 +121,7 @@ Feitos
 -----------------------------------------------------------------------------
 
 A fazer
-
+- Mudar o progress bar do fragment creat account
 - adicionar o valor das parcelas em frete a quantidade de parcelas no PDF (passar mais 1 parametro)
 - colocar o discount dentro de uma variavel, esta espalhado em varios lugares.
 

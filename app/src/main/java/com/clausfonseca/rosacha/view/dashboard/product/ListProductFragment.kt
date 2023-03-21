@@ -177,19 +177,11 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
 //                initAdapter()
             } else {
                 dialogProgress.dismiss()
-                Toast.makeText(
-                    requireContext(),
-                    "Não existem produtos para serem exibidos",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Util.exibirToast(requireContext(), getString(R.string.no_list_product))
             }
         }.addOnFailureListener { error ->
             dialogProgress.dismiss()
-            Toast.makeText(
-                requireContext(),
-                "Error ${error.message.toString()}",
-                Toast.LENGTH_SHORT
-            ).show()
+            Util.exibirToast(requireContext(), getString(R.string.error_show_product) + ":"+error.message.toString())
         }
     }
 
@@ -244,14 +236,14 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
 
         //set title for alert dialog
 //        builder.setTitle("Atenção")
-        builder.setTitle(Html.fromHtml("<font color='#FB2391'>Atenção</font>"));
+        builder.setTitle(Html.fromHtml("<font color='#F92391'>" + getString(R.string.attention) + "</font>"));
 
         //set message for alert dialog
-        builder.setMessage("Realmente deseja excluir: ${product.description}")
+        builder.setMessage(getString(R.string.want_delete_client) + " " + product.description)
         builder.setIcon(R.drawable.baseline_warning_24)
 
         //performing positive action
-        builder.setPositiveButton("Yes") { dialogInterface, which ->
+        builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
             deleteProduct(product)
         }
 //        //performing cancel action
@@ -259,7 +251,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
 //            Toast.makeText(applicationContext,"clicked cancel\n operation cancel",Toast.LENGTH_LONG).show()
 //        }
         //performing negative action
-        builder.setNegativeButton("No") { dialogInterface, which ->
+        builder.setNegativeButton(getString(R.string.no)) { dialogInterface, _ ->
             dialogInterface.dismiss()
         }
         // Create the AlertDialog
@@ -275,10 +267,10 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
             reference.document(it).delete().addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
                     removeImage(product.barcode!!)
-                    Util.exibirToast(requireContext(), "Deletado com Sucesso")
+                    Util.exibirToast(requireContext(), getString(R.string.information_delete_product))
                     getProducts()
                 } else {
-                    Util.exibirToast(requireContext(), "erro ao deletar no banco ${task.exception.toString()}")
+                    Util.exibirToast(requireContext(), getString(R.string.error_delete_product) + ":" + task.exception.toString())
                 }
             }
         }
@@ -288,7 +280,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
         val reference = firebaseStorage.reference.child(dbProducts).child("${barcode}.jpg")
         reference.delete().addOnSuccessListener { task ->
         }.addOnFailureListener { error ->
-            Util.exibirToast(requireContext(), "Falha ao deletar a imagem ${error.message.toString()}")
+            Util.exibirToast(requireContext(), getString(R.string.error_delete_image) + ":" + error.message.toString())
         }
     }
 // END Delete Product ----------------------------------------------------

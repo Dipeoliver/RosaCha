@@ -15,12 +15,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-
 class RecoverFragment : Fragment() {
     private lateinit var binding: FragmentRecoverBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var receivedArgs: String
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +36,6 @@ class RecoverFragment : Fragment() {
         receivedArgs = requireArguments().get("email").toString()
         binding.edtEmail.setText(receivedArgs)
         configureComponents()
-
     }
 
     private fun configureComponents() {

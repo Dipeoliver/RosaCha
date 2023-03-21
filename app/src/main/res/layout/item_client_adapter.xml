@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Name"
+                android:text="@string/name"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/imv_client"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="xxxxxxxxxxxxxxxxxxxxxxx"
+                android:text="@string/symbol_xxx"
                 app:layout_constraintStart_toStartOf="@+id/textView13"
                 app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="E-mail"
+                android:text="@string/email"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/txt_name"
                 app:layout_constraintTop_toBottomOf="@+id/txt_name" />
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
-                android:text="Client@client.com.br"
+                android:text="@string/email_example"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/txtemail"
@@ -82,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:text="Phone"
+                android:text="@string/phone"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/txt_phone"
                 app:layout_constraintStart_toStartOf="@+id/txt_phone" />
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="8dp"
-                android:text="+(55)12991111111"
+                android:text="@string/phone_example"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />

@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Barcode"
+                android:text="@string/barcode"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/imv_produto"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Description"
+                android:text="@string/description"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/txt_barcode"
                 app:layout_constraintTop_toBottomOf="@+id/txt_barcode" />
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="144dp"
                 android:layout_marginTop="8dp"
-                android:text="Sales Price"
+                android:text="@string/sales_price"
                 android:textStyle="bold"
 
                 app:layout_constraintStart_toEndOf="@+id/imv_produto"
@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="R$"
+                android:text="@string/rs"
                 app:layout_constraintStart_toStartOf="@+id/textView29"
                 app:layout_constraintTop_toBottomOf="@+id/textView29" />
 

@@ -16,7 +16,6 @@ import android.provider.Settings
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -135,7 +134,7 @@ class AddProductFragment : Fragment() {
                     binding.edtReferenceProduct.requestFocus()
 
                 } else {
-                    binding.edtBarcode.setText("scan failed")
+                    binding.edtBarcode.setText(getString(R.string.scan_failed))
                 }
             } else {
                 super.onActivityResult(requestCode, resultCode, data)
@@ -167,17 +166,17 @@ class AddProductFragment : Fragment() {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
         } else { // versão antiga
-            val autorização = "com.clausfonseca.rosacha"
-            val diretorio =
+            val authority = "com.clausfonseca.rosacha"
+            val directory =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val path = diretorio.path ?: ""
-            val nomeImagem = path + "/Products" + pictureName + ".jpg"
-            if (nomeImagem == "/Products.jpg") {
-                val nomeImagem = diretorio.path + "/Products" + System.currentTimeMillis() + ".jpg"
+            val path = directory.path ?: ""
+            val imageName = "$path/Products$pictureName.jpg"
+            if (imageName == "/Products.jpg") {
+                val imageName = directory.path + "/Products" + System.currentTimeMillis() + ".jpg"
             }
-            val file = File(nomeImagem)
+            val file = File(imageName)
             uriImagem =
-                activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
+                activity?.let { FileProvider.getUriForFile(it.baseContext, authority, file) }
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
         startActivityForResult(intent, 22)
@@ -186,7 +185,7 @@ class AddProductFragment : Fragment() {
     // selecionar imagem da galeria
     private fun obterImagemdaGaleria() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        startActivityForResult(Intent.createChooser(intent, "Escolha uma Imagem"), 11)
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), 11)
     }
 
     // com recurso para diminuir a imagem
@@ -197,7 +196,7 @@ class AddProductFragment : Fragment() {
         val reference = db.collection(dbProducts).document(pictureName.toString())
         reference.get().addOnSuccessListener { item ->
             if (item.exists()) {
-                Util.exibirToast(requireContext(), "ERRO, Produto ja Cadastrado")
+                Util.exibirToast(requireContext(), getString(R.string.error_already_registered_product))
                 dialogProgress.dismiss()
                 binding.edtBarcode.requestFocus()
             } else {
@@ -214,7 +213,7 @@ class AddProductFragment : Fragment() {
                                 target: Target<Bitmap>?,
                                 isFirstResource: Boolean
                             ): Boolean {
-                                Util.exibirToast(requireContext(), "Erro ao diminuir imagem")
+                                Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
                                 dialogProgress.dismiss()
                                 return false
                             }
@@ -233,7 +232,7 @@ class AddProductFragment : Fragment() {
                                 val reference =
                                     firebaseStorage.reference
                                         .child(dbProducts)
-                                        .child(pictureName + ".jpg")
+                                        .child("$pictureName.jpg")
                                 val uploadTask = reference.putBytes(data)
                                 uploadTask.continueWithTask { task ->
                                     if (!task.isSuccessful) {
@@ -248,7 +247,7 @@ class AddProductFragment : Fragment() {
                                 }.addOnFailureListener { error ->
                                     Util.exibirToast(
                                         requireContext(),
-                                        "Erro ao realizar o upload da imagem: ${error.message.toString()}"
+                                        getString(R.string.error_upload_image) + ":" + error.message.toString()
                                     )
                                     dialogProgress.dismiss()
                                 }
@@ -277,7 +276,7 @@ class AddProductFragment : Fragment() {
         product = Product()
 
         val date = Calendar.getInstance().time
-        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         val productDate = dateTimeFormat.format(date)
 
         product.barcode = barcode
@@ -292,9 +291,9 @@ class AddProductFragment : Fragment() {
         product.productDate = productDate
         product.urlImagem = url
         owner = if (statusOwner == 0) {
-            "Claudia"
+            getString(R.string.claudia)
         } else {
-            "Claudenice"
+            getString(R.string.claudenice)
         }
         product.owner = owner
         insertProduct()
@@ -304,16 +303,11 @@ class AddProductFragment : Fragment() {
     private fun insertProduct() {
         db.collection(dbProducts).document(product.barcode.toString())
             .set(product).addOnCompleteListener {
-                Toast.makeText(
-                    requireContext(),
-                    "Produto adicionado com sucesso",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Util.exibirToast(requireContext(), getString(R.string.add_success_product))
                 cleaner()
                 dialogProgress.dismiss()
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Erro ao salvar Produto", Toast.LENGTH_SHORT)
-                    .show()
+                Util.exibirToast(requireContext(), getString(R.string.error_save_product))
                 dialogProgress.dismiss()
             }
     }
@@ -339,7 +333,7 @@ class AddProductFragment : Fragment() {
         if (binding.btnScan.isPressed) {
             val integrator: IntentIntegrator =
                 IntentIntegrator.forSupportFragment(this@AddProductFragment)
-            integrator.setPrompt("Scanner RosaCha Ativo")
+            integrator.setPrompt(getString(R.string.scan_active))
             integrator.initiateScan()
         } else {
             obterImagemdaCamera()
@@ -405,7 +399,6 @@ class AddProductFragment : Fragment() {
         binding.btnAddProduct.setOnClickListener {
             // verificar sinal de internet (FAZER)
 
-
             if (binding.edtBarcode.text.isNotEmpty() &&
                 binding.edtDescriptionProduct.text.isNotEmpty() &&
                 binding.edtSizeProduct.text.isNotEmpty() &&
@@ -423,11 +416,7 @@ class AddProductFragment : Fragment() {
                     uploadImagem()
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Preencher os campos Obrigatórios",
-                    Toast.LENGTH_LONG
-                ).show()
+                Util.exibirToast(requireContext(), getString(R.string.required_fields))
             }
         }
         binding.rgOwnerProduct.setOnCheckedChangeListener { _, id ->
@@ -444,7 +433,7 @@ class AddProductFragment : Fragment() {
 
         binding.imvPhoto.setOnClickListener {
             if (binding.edtBarcode.text.isNotEmpty()) showBottomSheetDialog()
-            else Util.exibirToast(requireContext(), "Preencher campo Barcode Primeiro")
+            else Util.exibirToast(requireContext(), getString(R.string.required_barcode_product))
         }
     }
 

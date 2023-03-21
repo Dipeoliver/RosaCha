@@ -16,7 +16,6 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -51,30 +50,25 @@ import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class EditClientFragment : Fragment() {
 
     private lateinit var binding: FragmentClientEditBinding
     private lateinit var firebaseStorage: FirebaseStorage
     private var selectedClient: Client? = null
     private var pictureName: String? = ""
+    private val db = FirebaseFirestore.getInstance()
+    private var dbClients: String = ""
     var uriImagem: Uri? = null
     var dialog: BottomSheetDialog? = null
     var dialogPermission: BottomSheetDialog? = null
-
-    private val db = FirebaseFirestore.getInstance()
-
     var clientId: String? = null
     var oldId: String? = null
     var oldUrl: String = ""
 
-    private var dbClients: String = ""
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentClientEditBinding.inflate(inflater, container, false)
         return binding.root
@@ -114,12 +108,9 @@ class EditClientFragment : Fragment() {
                 } else if (requestCode == 22 && uriImagem != null) {// camera
 
                     binding.imvPhotoClientEdit.setImageURI(uriImagem)
-                } else {
-
                 }
                 dialog?.dismiss()
             }
-        } else {
         }
     }
     // -----------------------------------------------------------------------
@@ -139,16 +130,16 @@ class EditClientFragment : Fragment() {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
         } else { // versão antiga
-            val autorização = "com.clausfonseca.rosacha"
-            val diretorio =
+            val authorisation = "com.clausfonseca.rosacha"
+            val directory =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val path = diretorio.path ?: ""
-            val nomeImagem = path + "/" + dbClients + pictureName + ".jpg"
-            if (nomeImagem == "/" + dbClients + ".jpg") {
-                val nomeImagem = diretorio.path + "/" + dbClients + System.currentTimeMillis() + ".jpg"
+            val path = directory.path ?: ""
+            val imageName = path + "/" + dbClients + pictureName + ".jpg"
+            if (imageName == "/" + dbClients + ".jpg") {
+                val imageName = directory.path + "/" + dbClients + System.currentTimeMillis() + ".jpg"
             }
-            val file = File(nomeImagem)
-            uriImagem = activity?.let { FileProvider.getUriForFile(it.baseContext, autorização, file) }
+            val file = File(imageName)
+            uriImagem = activity?.let { FileProvider.getUriForFile(it.baseContext, authorisation, file) }
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
         startActivityForResult(intent, 22)
@@ -157,7 +148,7 @@ class EditClientFragment : Fragment() {
     // selecionar imagem da galeria
     private fun obterImagemdaGaleria() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        startActivityForResult(Intent.createChooser(intent, "Escolha uma Imagem"), 11)
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), 11)
     }
 
     // com recurso para diminuir a imagem
@@ -175,7 +166,7 @@ class EditClientFragment : Fragment() {
                         target: Target<Bitmap>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Util.exibirToast(requireContext(), "Erro ao diminuir imagem")
+                        Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
                         return false
                     }
 
@@ -193,22 +184,22 @@ class EditClientFragment : Fragment() {
                         val reference =
                             firebaseStorage.reference
                                 .child(dbClients)
-                                .child(pictureName + ".jpg")
+                                .child("$pictureName.jpg")
                         val uploadTask = reference.putBytes(data)
                         uploadTask.continueWithTask { task ->
                             if (!task.isSuccessful) {
-                                task.exception.let {
+                                task.exception.let { it ->
                                     throw it!!
                                 }
                             }
                             reference.downloadUrl
                         }.addOnSuccessListener { task ->
-                            var url = task.toString()
+                            val url = task.toString()
                             validateData(url)
                         }.addOnFailureListener { error ->
                             Util.exibirToast(
                                 requireContext(),
-                                "Erro ao realizar o upload da imagem: ${error.message.toString()}"
+                                getString(R.string.error_upload_image) + ":" + error.message.toString()
                             )
                         }
                         return false
@@ -222,7 +213,7 @@ class EditClientFragment : Fragment() {
         val reference = firebaseStorage.reference.child(dbClients).child("${id}.jpg")
         reference.delete().addOnSuccessListener { task ->
         }.addOnFailureListener { error ->
-            Util.exibirToast(requireContext(), "Falha ao deletar a imagem Antiga${error.message.toString()}")
+            Util.exibirToast(requireContext(), getString(R.string.error_delete_image) + error.message.toString())
         }
     }
     // ----------------------------------------------------------------------------------
@@ -238,12 +229,12 @@ class EditClientFragment : Fragment() {
         if (name.isNotEmpty() && phone.length > 13) {
 
             if (email != "" && !email.validateEmailRegex(email)) {
-                Util.exibirToast(requireContext(), "Erro na validação do email")
+                Util.exibirToast(requireContext(), getString(R.string.invalid_email_register_fragment))
 
             } else {
                 selectedClient = Client()
                 val date = Calendar.getInstance().time
-                val dateTimeFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+                val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
                 val clientDate = dateTimeFormat.format(date)
 
                 selectedClient?.name = name.uppercase()
@@ -261,11 +252,7 @@ class EditClientFragment : Fragment() {
                 updateClient(selectedClient!!)
             }
         } else {
-            Toast.makeText(
-                requireContext(),
-                "Preencher os campos Obrigatórios",
-                Toast.LENGTH_LONG
-            ).show()
+            Util.exibirToast(requireContext(), getString(R.string.required_fields))
         }
 
     }
@@ -286,13 +273,13 @@ class EditClientFragment : Fragment() {
                 "urlImagem" to selectedClient.urlImagem
             )
             reference.document(selectedClient.phone.toString()).update(client as Map<String, Any>).addOnSuccessListener {
-                Util.exibirToast(requireContext(), "Update com Sucesso ao salvar os dados")
+                Util.exibirToast(requireContext(), getString(R.string.update_data))
                 dialogProgress.dismiss()
                 val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
                 findNavController().navigate(uri)
             }.addOnFailureListener { error ->
                 dialogProgress.dismiss()
-                Util.exibirToast(requireContext(), "erro ao salvar no banco ${error.message.toString()}")
+                Util.exibirToast(requireContext(), getString(R.string.error_update_data_client) + ":" + error.message.toString())
             }
         }
     }
@@ -371,7 +358,7 @@ class EditClientFragment : Fragment() {
     private fun initListeners() {
         binding.btnUpdateClient.setOnClickListener {
 
-            if (uriImagem == null && binding.imvPhotoClientEdit.getBackground() != null) {
+            if (uriImagem == null && binding.imvPhotoClientEdit.background != null) {
                 // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
                 val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
                 val bitmap = drawable?.toBitmap()
@@ -387,7 +374,7 @@ class EditClientFragment : Fragment() {
 
         binding.imvPhotoClientEdit.setOnClickListener {
             if (binding.edtPhoneClientEdit.text.isNotEmpty()) showBottomSheetDialog()
-            else Util.exibirToast(requireContext(), "Preencher campo Telefone Primeiro")
+            else Util.exibirToast(requireContext(), getString(R.string.required_phone_client))
         }
 
         binding.btnBackEdit.setOnClickListener {
@@ -445,7 +432,7 @@ class EditClientFragment : Fragment() {
 
         oldId = selectedClient?.phone.toString()
 
-        var url = selectedClient?.urlImagem
+        val url = selectedClient?.urlImagem
         oldUrl = selectedClient?.urlImagem.toString()
 
         if (url == "" || url == null) Glide.with(requireContext()).load(R.drawable.no_image)
@@ -485,6 +472,11 @@ class EditClientFragment : Fragment() {
 //        binding.edtPhoneClient.addTextChangedListener(DateMask.mask(binding.edtPhoneClient, DateMask.FORMAT_FONE))
 
         //Mask to Date
-        binding.edtBirthdayClientEdit.addTextChangedListener(DateMask.mask(binding.edtBirthdayClientEdit, DateMask.FORMAT_DATE))
+        binding.edtBirthdayClientEdit.addTextChangedListener(
+            DateMask.mask(
+                binding.edtBirthdayClientEdit,
+                DateMask.FORMAT_DATE
+            )
+        )
     }
 }

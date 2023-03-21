@@ -1,8 +1,6 @@
 package com.clausfonseca.rosacha.utils.pdf
 
 import com.clausfonseca.rosacha.model.ItensSales
-import java.util.Date
-
 
 data class PdfDetails(
     val invoiceNumber: String,

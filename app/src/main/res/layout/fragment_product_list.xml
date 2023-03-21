@@ -23,7 +23,7 @@
             android:id="@+id/sv_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Pesquisar"
+            android:queryHint="@string/research"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteX="37dp"

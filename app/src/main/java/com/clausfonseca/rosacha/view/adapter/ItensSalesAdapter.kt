@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.databinding.ItemSalesAdapterBinding
-import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.model.ItensSales
 
 class ItensSalesAdapter(

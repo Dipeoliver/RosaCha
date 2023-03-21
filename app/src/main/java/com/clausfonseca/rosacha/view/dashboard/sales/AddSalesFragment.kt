@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Html
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -50,18 +49,17 @@ class AddSalesFragment : Fragment() {
 
     private lateinit var binding: FragmentSalesAddBinding
     private lateinit var addSales: AddSales
-    private lateinit var itensSalesAdapter: ItensSalesAdapter
+    private lateinit var itemsSalesAdapter: ItensSalesAdapter
     private lateinit var auth: FirebaseAuth
-    private val itensSales = mutableListOf<ItensSales>()
+    private val itemsSales = mutableListOf<ItensSales>()
     private val db = FirebaseFirestore.getInstance()
     private var dbClients: String = ""
     private var dbProducts: String = ""
     private var dbSales: String = ""
 
-
+    private val dialogProgress = DialogProgress()
     var dialogAfterSales: BottomSheetDialog? = null
     var dialogPermission: BottomSheetDialog? = null
-    val dialogProgress = DialogProgress()
     var barcode: String? = ""
     var soma: Double = 0.0
     var qtyParcel: Int = 1
@@ -70,11 +68,10 @@ class AddSalesFragment : Fragment() {
 
     var client: String = ""
 
-
-    var MIN = 0
-    var MAX = 25
-    var STEP = 5
-    var progress_custom: Int = 0
+    var seekMin = 0
+    var seekMax = 25
+    var seekStep = 5
+    var progressCustom: Int = 0
     var finalPrice: Double = 0.0
 
     var actualDate: String = ""
@@ -83,7 +80,7 @@ class AddSalesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSalesAddBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -102,7 +99,7 @@ class AddSalesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        cleanner()
+        cleaner()
     }
 
     private fun initListeners() {
@@ -120,7 +117,7 @@ class AddSalesFragment : Fragment() {
             if (binding.edtBarcode.text.toString().isNotEmpty()) {
                 getItem(binding.edtBarcode.text.toString())
             } else {
-                Util.exibirToast(requireContext(), "Campo Barcode não pode estar em Branco")
+                Util.exibirToast(requireContext(), getString(R.string.required_barcode_product))
             }
         }
 
@@ -139,15 +136,14 @@ class AddSalesFragment : Fragment() {
         })
 
         // mudar o step de 5 em 5
-        binding.seekBar2.max = (MAX - MIN) / STEP
+        binding.seekBar2.max = (seekMax - seekMin) / seekStep
         binding.seekBar2.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                progress_custom = MIN + (i * STEP)
-                binding.txtPercentage.text = ("$progress_custom%")
+                progressCustom = seekMin + (i * seekStep)
+                binding.txtPercentage.text = ("$progressCustom%")
                 discountCalc()
                 parcelCalc()
             }
-
             override fun onStartTrackingTouch(seekBar: SeekBar) {
             }
 
@@ -156,12 +152,12 @@ class AddSalesFragment : Fragment() {
         })
 
         binding.btnAddSales.setOnClickListener {
-            if (itensSales.size == 0) {
+            if (itemsSales.size == 0) {
 
-                Util.exibirToast(requireContext(), "Adicionar pelo menos um item a ser vendido")
+                Util.exibirToast(requireContext(), getString(R.string.add_item_sales))
             } else {
                 if (finalPrice < 0) {
-                    Util.exibirToast(requireContext(), "O valor da venda tem de ser positivo, verificar valor Pago")
+                    Util.exibirToast(requireContext(), getString(R.string.check_value_sales))
                 } else {
 
                     informationDialog()
@@ -169,7 +165,7 @@ class AddSalesFragment : Fragment() {
             }
         }
 
-        binding.edtPaid.setOnKeyListener(View.OnKeyListener { v, KeyCode, event ->
+        binding.edtPaid.setOnKeyListener(View.OnKeyListener { _, KeyCode, event ->
             if (KeyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
                 valuePaid()
                 return@OnKeyListener true
@@ -186,8 +182,8 @@ class AddSalesFragment : Fragment() {
     }
 
     private fun discountCalc() {
-        finalPrice = (soma - (soma * (progress_custom.toDouble() / 100))) - moneyPaid
-        binding.txtDiscountValue.setText(String.format("%.2f", (soma * (progress_custom.toDouble() / 100))))
+        finalPrice = (soma - (soma * (progressCustom.toDouble() / 100))) - moneyPaid
+        binding.txtDiscountValue.text = String.format("%.2f", (soma * (progressCustom.toDouble() / 100)))
         binding.txtFinalPrice.text = String.format("%.2f", finalPrice)
     }
 
@@ -202,7 +198,6 @@ class AddSalesFragment : Fragment() {
         binding.txtFinalPrice.setText(finalPrice.toString())
         discountCalc()
         parcelCalc()
-
         binding.btnAddSales.requestFocus()
     }
 
@@ -217,7 +212,6 @@ class AddSalesFragment : Fragment() {
                 }
             })
     }
-
 
     // CAMERA PERMISSION ---------------------
     private fun checkPermissions() {
@@ -235,7 +229,7 @@ class AddSalesFragment : Fragment() {
         }
         val integrator: IntentIntegrator =
             IntentIntegrator.forSupportFragment(this@AddSalesFragment)
-        integrator.setPrompt("Scanner RosaCha Ativo")
+        integrator.setPrompt(getString(R.string.scan_active))
         integrator.initiateScan()
     }
 
@@ -272,7 +266,7 @@ class AddSalesFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         // BARCODE
-        var result: IntentResult? =
+        val result: IntentResult? =
             IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
 
         if (result != null) {
@@ -281,7 +275,7 @@ class AddSalesFragment : Fragment() {
                 getItem(barcode.toString())
             } else {
                 // criar um dialog aqui
-                binding.edtBarcode.setText("scan failed")
+                binding.edtBarcode.setText(getString(R.string.scan_failed))
                 binding.edtBarcode.requestFocus()
                 binding.edtBarcode.selectAll()
             }
@@ -297,7 +291,7 @@ class AddSalesFragment : Fragment() {
         dialogProgress.show(childFragmentManager, "0")
 
         val date = Calendar.getInstance().time
-        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         actualDate = dateTimeFormat.format(date)
 
         invoiceNumber =
@@ -309,24 +303,22 @@ class AddSalesFragment : Fragment() {
         addSales = AddSales()
         addSales.id = invoiceNumber
         addSales.price = (soma * 100.0).roundToInt() / 100.0
-        addSales.discount = ((soma * (progress_custom.toDouble() / 100)) * 100.0).roundToInt() / 100.0
+        addSales.discount = ((soma * (progressCustom.toDouble() / 100)) * 100.0).roundToInt() / 100.0
         addSales.paid = (moneyPaid * 100.0).roundToInt() / 100.0
         addSales.totalPrice = (finalPrice * 100.0).roundToInt() / 100.0
         addSales.client = binding.txtClient.text.toString().uppercase()
         addSales.salesOwner = auth.currentUser?.email
         addSales.salesDate = actualDate
-        addSales.itens = itensSales
+        addSales.itens = itemsSales
         addSales.qtyParcel = qtyParcel
         addSales.parcelDate = actualDate.substring(0, 2)
-
 
         db.collection(dbSales).document(invoiceNumber)
             .set(addSales).addOnCompleteListener {
                 showBottomSheetDialogAfterSales()
                 dialogProgress.dismiss()
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Erro ao adicionar Venda", Toast.LENGTH_SHORT)
-                    .show()
+                Util.exibirToast(requireContext(), getString(R.string.error_add_sales))
                 dialogProgress.dismiss()
             }
     }
@@ -338,7 +330,7 @@ class AddSalesFragment : Fragment() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
 
-        db!!.collection(dbProducts).document(barcode).get().addOnSuccessListener { task ->
+        db.collection(dbProducts).document(barcode).get().addOnSuccessListener { task ->
 
             dialogProgress.dismiss()
             if (task != null && task.exists()) {
@@ -346,12 +338,11 @@ class AddSalesFragment : Fragment() {
                 val dados = task.data
                 val item = task.toObject(ItensSales::class.java)
                 if (item != null) {
-                    itensSales.add(item)
-                    itensSalesAdapter.notifyDataSetChanged()
+                    itemsSales.add(item)
+                    itemsSalesAdapter.notifyDataSetChanged()
                     soma = 0.0
-                    itensSales.forEach {
+                    itemsSales.forEach {
                         soma += it.salesPrice ?: 0.0
-
                     }
 
                     binding.txtTotalPrice.text = String.format("%.2f", soma)
@@ -366,11 +357,11 @@ class AddSalesFragment : Fragment() {
                 binding.edtBarcode.requestFocus()
                 binding.edtBarcode.selectAll()
 
-                Util.exibirToast(requireContext(), "Erro ao exibir o Item, ele não existe")
+                Util.exibirToast(requireContext(), getString(R.string.error_show_product))
             }
         }.addOnFailureListener { error ->
             dialogProgress.dismiss()
-            "Erro de comunicação com servidor ${error.message.toString()}"
+            Util.exibirToast(requireContext(), getString(R.string.error_show_product) + ":" + error.message.toString())
         }
     }
 
@@ -379,7 +370,7 @@ class AddSalesFragment : Fragment() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
 
-        db!!.collection(dbClients).document(client).get().addOnSuccessListener { task ->
+        db.collection(dbClients).document(client).get().addOnSuccessListener { task ->
 
             dialogProgress.dismiss()
             if (task != null && task.exists()) {
@@ -389,16 +380,16 @@ class AddSalesFragment : Fragment() {
                 if (item != null) {
 
                     this.client = dados?.get("name").toString()
-                    Log.d("GETCLIENT", this.client)
+//                    Log.d("GETCLIENT", this.client)
 //                    binding.txtClient.setText("")
 //                    binding.txtClient.setText(dados?.get("name").toString())
                 }
             } else {
-                Util.exibirToast(requireContext(), "Erro ao exibir o Cliente, ele não existe")
+                Util.exibirToast(requireContext(), getString(R.string.error_show_client))
             }
         }.addOnFailureListener { error ->
             dialogProgress.dismiss()
-            "Erro de comunicação com servidor ${error.message.toString()}"
+            getString(R.string.error_show_client) + ":" + error.message.toString()
         }
     }
 
@@ -407,7 +398,7 @@ class AddSalesFragment : Fragment() {
     private fun initAdapter() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.setHasFixedSize(true)
-        itensSalesAdapter = ItensSalesAdapter(requireContext(), itensSales) { item ->
+        itemsSalesAdapter = ItensSalesAdapter(requireContext(), itemsSales) { item ->
             // ao apagar um item da lista executa abaixo
             soma = 0.0
             item.forEach {
@@ -417,7 +408,7 @@ class AddSalesFragment : Fragment() {
             discountCalc()
             parcelCalc()
         }
-        binding.recyclerView.adapter = itensSalesAdapter
+        binding.recyclerView.adapter = itemsSalesAdapter
     }
 
     private fun informationDialog() {
@@ -425,15 +416,15 @@ class AddSalesFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
 
         //set title for alert dialog
-        builder.setTitle(Html.fromHtml("<font color='#FB2391'>Atenção</font>"));
+        builder.setTitle(Html.fromHtml("<font color='#F92391'>" + getString(R.string.attention) + "</font>"));
 //        builder.setTitle("Atenção")
 
         //set message for alert dialog
-        builder.setMessage("Realmente deseja Finalizar a Venda?")
+        builder.setMessage(getString(R.string.finalize_sales))
         builder.setIcon(R.drawable.ic_rosa_round)
 
         //performing positive action
-        builder.setPositiveButton("Yes") { dialogInterface, which ->
+        builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
             insertSales()
         }
 //        //performing cancel action
@@ -441,10 +432,8 @@ class AddSalesFragment : Fragment() {
 //            Toast.makeText(applicationContext,"clicked cancel\n operation cancel",Toast.LENGTH_LONG).show()
 //        }
         //performing negative action
-        builder.setNegativeButton("No") { dialogInterface, which ->
-
+        builder.setNegativeButton(getString(R.string.no)) { _, _ ->
             // AÇÂO PARA O NÂO
-
         }
         // Create the AlertDialog
         val alertDialog: AlertDialog = builder.create()
@@ -460,7 +449,7 @@ class AddSalesFragment : Fragment() {
         val dialogLayout = inflater.inflate(R.layout.item_dialog_get_client, null)
 //        dialogLayout.setBackgroundDrawable(ResourcesCompat.getDrawable(resources, R.color.rose, null))
         val editText = dialogLayout.findViewById<EditText>(R.id.edt_client_phone)
-        var result = dialogLayout.findViewById<TextView>(R.id.txt_result)
+        val result = dialogLayout.findViewById<TextView>(R.id.txt_result)
         val button = dialogLayout.findViewById<ImageButton>(R.id.btn_search1)
 
         editText.requestFocus()
@@ -475,11 +464,11 @@ class AddSalesFragment : Fragment() {
         }
 
         with(builder) {
-            setTitle(Html.fromHtml("<font color='#FB2391'>Pesquisar Clientes</font>"));
-            setPositiveButton("OK") { dialog, which ->
+            setTitle(Html.fromHtml("<font color='#F92391'>" + getString(R.string.search_customer_sales) + "</font>"));
+            setPositiveButton(getString(R.string.ok)) { _, _ ->
                 binding.txtClient.setText(client)
             }
-            setNegativeButton("Cancel") { dialog, which ->
+            setNegativeButton(getString(R.string.cancel)) { _, _ ->
 
             }
             setView(dialogLayout)
@@ -495,31 +484,31 @@ class AddSalesFragment : Fragment() {
 
         sheetBinding.imvBottomNewSales.setOnClickListener {
             dialogAfterSales?.dismiss()
-            cleanner()
+            cleaner()
         }
         sheetBinding.txtBottomNewSales.setOnClickListener {
             dialogAfterSales?.dismiss()
-            cleanner()
+            cleaner()
         }
 
         sheetBinding.imvBottomListSales.setOnClickListener {
             // link para lista de vendas
-            Util.exibirToast(requireContext(), "Ir para a lista de vendas")
+            Util.exibirToast(requireContext(), getString(R.string.go_list_sales))
         }
         sheetBinding.txtBottomListSales.setOnClickListener {
             // link para lista de vendas
-            Util.exibirToast(requireContext(), "Ir para a lista de vendas")
+            Util.exibirToast(requireContext(), getString(R.string.go_list_sales))
         }
 
         sheetBinding.imvBottomPdfSales.setOnClickListener {
-            creatPdf()
+            createPdf()
             dialogAfterSales?.dismiss()
-            cleanner()
+            cleaner()
         }
         sheetBinding.txtBottomPdfSales.setOnClickListener {
-            creatPdf()
+            createPdf()
             dialogAfterSales?.dismiss()
-            cleanner()
+            cleaner()
         }
         dialogAfterSales?.setContentView(sheetBinding.root)
         dialogAfterSales?.setCancelable(false)
@@ -548,7 +537,7 @@ class AddSalesFragment : Fragment() {
         dialogPermission?.show()
     }
 
-    private fun creatPdf() {
+    private fun createPdf() {
         // chamada para gerar o PDF
 
         val pdfDetails = PdfDetails(
@@ -556,26 +545,26 @@ class AddSalesFragment : Fragment() {
             binding.txtClient.text.toString().uppercase(),
             actualDate,
             soma,
-            (soma * (progress_custom.toDouble() / 100)),
+            (soma * (progressCustom.toDouble() / 100)),
             finalPrice,
             moneyPaid,
             qtyParcel,
-            itensSales
+            itemsSales
         )
         val pdfConverter = PDFConverter()
         pdfConverter.createPdf(requireContext(), pdfDetails, requireActivity())
     }
 
-    private fun cleanner() {
+    private fun cleaner() {
         binding.seekBar.progress = 0
         binding.seekBar2.progress = 0
         binding.edtPaid.setText("")
-        binding.txtTotalPrice.text = "0.00"
-        binding.txtFinalPrice.text = "0.00"
-        binding.txtParcelValue.text = "0.00"
+        binding.txtTotalPrice.text = getString(R.string.symbol_000)
+        binding.txtFinalPrice.text = getString(R.string.symbol_000)
+        binding.txtParcelValue.text = getString(R.string.symbol_000)
         binding.txtClient.setText("")
-        itensSales.clear()
-        itensSalesAdapter.notifyDataSetChanged()
+        itemsSales.clear()
+        itemsSalesAdapter.notifyDataSetChanged()
         binding.edtBarcode.requestFocus()
     }
 }

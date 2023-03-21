@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentRegisterBinding
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
+import com.clausfonseca.rosacha.utils.DialogProgress
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -19,8 +20,8 @@ import com.google.firebase.ktx.Firebase
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
-
     private lateinit var auth: FirebaseAuth
+    private val dialogProgress = DialogProgress()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,7 +69,7 @@ class RegisterFragment : Fragment() {
 
         if (email.isNotEmpty() && password.isNotEmpty() && password2.isNotEmpty()) {
             if (password == password2) {
-                binding.progressBar.isVisible = true
+                dialogProgress.show(childFragmentManager, "0")
                 registerUser(email, password)
             } else {
                 Toast.makeText(
@@ -91,7 +92,7 @@ class RegisterFragment : Fragment() {
                 if (task.isSuccessful) {
                     findNavController().navigate(R.id.action_global_homeFragment)
                 } else {
-                    binding.progressBar.isVisible = false
+                    dialogProgress.dismiss()
 //                    Log.i("INFOTEST", "loginUser: ${task.exception?.message}")
                     Toast.makeText(
                         requireContext(),

@@ -47,7 +47,7 @@
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/txt_barcode_recy"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="R$" />
+            tools:text="@string/rs" />
 
         <TextView
             android:id="@+id/txt_total_value_recy"

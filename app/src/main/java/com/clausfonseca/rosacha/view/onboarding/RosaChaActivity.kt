@@ -10,7 +10,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.ActivityMainBinding
 
-
 class RosaChaActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

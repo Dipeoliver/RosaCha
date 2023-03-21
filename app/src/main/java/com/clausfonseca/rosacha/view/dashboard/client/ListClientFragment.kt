@@ -1,5 +1,6 @@
 package com.clausfonseca.rosacha.view.dashboard.client
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
@@ -33,12 +34,10 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     private lateinit var clientAdapter: ClientAdapter
     private lateinit var firebaseStorage: FirebaseStorage
     private val clientlist = mutableListOf<Client>()
+    private var dbClients: String = ""
     var db: FirebaseFirestore? = null
     var nextquery: Query? = null
     var isFilterOn = false
-
-    private var dbClients: String = ""
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +53,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = FirebaseFirestore.getInstance()
-        dbClients = getString(R.string.db_client).toString()
+        dbClients = getString(R.string.db_client)
         firebaseStorage = Firebase.storage
         initListeners()
         initAdapter()
@@ -128,8 +127,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         })
     }
 
-
     // Firestore DataBase -----------------------------------------------
+    @SuppressLint("NotifyDataSetChanged")
     private fun filterSearchClient(newText: String) {
         db!!.collection(dbClients).orderBy("name").startAt(newText)
             .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
@@ -150,6 +149,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun getClients() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
@@ -175,22 +175,16 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                 //initAdapter()
             } else {
                 dialogProgress.dismiss()
-                Toast.makeText(
-                    requireContext(),
-                    "Não existem clientes para serem exibidos",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Util.exibirToast(requireContext(), getString(R.string.no_list_client))
             }
         }.addOnFailureListener { error ->
             dialogProgress.dismiss()
-            Toast.makeText(
-                requireContext(),
-                "Error ${error.message.toString()}",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            Util.exibirToast(requireContext(), getString(R.string.error_show_client) + ":" + error.message.toString())
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun getMoreClients() {
         nextquery?.get()?.addOnSuccessListener { results ->
 
@@ -243,16 +237,15 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
         //set title for alert dialog
 //        builder.setTitle("Atenção")
-        builder.setTitle(Html.fromHtml("<font color='#FB2391'>Atenção</font>"));
+        builder.setTitle(Html.fromHtml("<font color='#F92391'>" + getString(R.string.attention) + "</font>"));
 
         //set message for alert dialog
 //        builder.setMessage(Html.fromHtml("<font color='#FB2391'>Realmente deseja excluir o cliente: ${client.name}</font>"));
-        builder.setMessage("Realmente deseja excluir: ${client.name}")
-        builder.setIcon(R.drawable.baseline_warning_24)
+        builder.setMessage(getString(R.string.want_delete_client) + " " + client.name)
         builder.setIcon(R.drawable.baseline_warning_24)
 
         //performing positive action
-        builder.setPositiveButton("Yes") { dialogInterface, which ->
+        builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
             deleteClient(client)
         }
 //        //performing cancel action
@@ -260,7 +253,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 //            Toast.makeText(applicationContext,"clicked cancel\n operation cancel",Toast.LENGTH_LONG).show()
 //        }
         //performing negative action
-        builder.setNegativeButton("No") { dialogInterface, which ->
+        builder.setNegativeButton(getString(R.string.no)) { dialogInterface, _ ->
             dialogInterface.dismiss()
         }
         // Create the AlertDialog
@@ -276,12 +269,12 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             reference.document(it).delete().addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
                     client.phone?.let { it1 -> removeImage(it1) }
-                    Util.exibirToast(requireContext(), "Deletado com Sucesso")
+                    Util.exibirToast(requireContext(), getString(R.string.information_delete_client))
                     getClients()
                 } else {
                     Util.exibirToast(
                         requireContext(),
-                        "erro ao deletar no banco ${task.exception.toString()}"
+                        getString(R.string.error_delete_client) + ":" + task.exception.toString()
                     )
                 }
             }
@@ -294,7 +287,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         }.addOnFailureListener { error ->
             Util.exibirToast(
                 requireContext(),
-                "Falha ao deletar a imagem ${error.message.toString()}"
+                getString(R.string.error_delete_image) + ":" + error.message.toString()
             )
         }
     }

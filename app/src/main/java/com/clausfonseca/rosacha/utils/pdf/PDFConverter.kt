@@ -125,7 +125,6 @@ class PDFConverter {
         convertBitmapToPdf(bitmap, activity)
     }
 
-
     private fun renderPdf(context: Context, filePath: File) {
         val uri = FileProvider.getUriForFile(
             context,
@@ -138,27 +137,6 @@ class PDFConverter {
         intentPDF.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intentPDF.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intentPDF.setDataAndType(uri, "application/pdf")
-
-// compartilhar com o Whats
-//        val share = Intent();
-//        share.setAction(ACTION_SEND)
-//        share.setType("application/pdf")
-//        share.putExtra(Intent.EXTRA_STREAM, uri)
-//        share.setPackage("com.whatsapp")
-
-
-//        val shareIntent = Intent(Intent.ACTION_SEND)
-//        shareIntent.putExtra(Intent.EXTRA_STREAM,  uri)
-//        shareIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-//        shareIntent.type = "application/pdf"
-
-
-//        val intent = Intent(ACTION_SEND)
-//        intent.putExtra(Intent.EXTRA_TEXT, "PDF File")
-//        intent.putExtra(Intent.EXTRA_STREAM, Bitmap.createScaledBitmap(bitmap, 595, 842, true))
-//        intent.setType("text/plain")
-//        intent.setType("image/jpeg")
-//        intent.setPackage("com.whatsapp")
 
         try {
             context.startActivity(intentPDF)

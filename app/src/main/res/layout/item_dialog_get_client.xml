@@ -17,7 +17,7 @@
         android:background="@drawable/bg_edit"
         android:backgroundTint="#B6B2B4"
         android:ems="10"
-        android:hint="Busca com Telefone"
+        android:hint="@string/enter_phone"
         android:inputType="phone"
         android:padding="8dp"
         android:textSize="12sp"

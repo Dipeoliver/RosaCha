@@ -15,7 +15,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:fontFamily="sans-serif"
-        android:text="Invoice Nº"
+        android:text="@string/invoice_pdf"
         android:textAlignment="center"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Date:"
+        android:text="@string/date_pdf"
         app:layout_constraintStart_toStartOf="@+id/txt_student_name_label"
         app:layout_constraintTop_toBottomOf="@+id/txt_student_name_label" />
 
@@ -98,7 +98,7 @@
             android:layout_width="206dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Item"
+            android:text="@string/item_pdf"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -109,7 +109,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Valeu"
+            android:text="@string/value_pdf"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@+id/txt_item"
@@ -147,7 +147,7 @@
         android:layout_margin="5dp"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        android:text="SubTotal:  R$"
+        android:text="@string/subtotal_pdf"
         android:textAlignment="textEnd"
         android:textSize="12sp"
         android:textStyle="bold|italic"
@@ -175,7 +175,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Discount:  R$ "
+        android:text="@string/discount_pdf"
         android:textSize="12sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toTopOf="@+id/textView30"
@@ -196,7 +196,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Paid:         R$"
+        android:text="@string/paid_pdf"
         android:textSize="12sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toTopOf="@+id/textView33"
@@ -217,7 +217,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="TOTAL   R$"
+        android:text="@string/total_pdf"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textView17" />
@@ -236,7 +236,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="100dp"
-        android:text="Parcelado em :"
+        android:text="@string/installed_pdf"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_sub_total" />
 
@@ -245,7 +245,7 @@
         android:layout_width="wrap_content"
         android:layout_height="33dp"
         android:layout_marginEnd="8dp"
-        android:text="Rosá Cha agradece a Preferência"
+        android:text="@string/msg_thanks_pdf"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -254,7 +254,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="60dp"
-        android:text="Cupom não Fiscal"
+        android:text="@string/text_pdf"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
@@ -272,7 +272,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Vencimento todo dia:"
+        android:text="@string/expiration_day_pdf"
         app:layout_constraintStart_toStartOf="@+id/txt_parcel_text"
         app:layout_constraintTop_toBottomOf="@+id/txt_parcel_text" />
 
