@@ -56,26 +56,24 @@ class AddSalesFragment : Fragment() {
     private var dbClients: String = ""
     private var dbProducts: String = ""
     private var dbSales: String = ""
-
+    private var soma: Double = 0.0
+    private var qtyParcel: Int = 1
+    private var paid = ""
+    private var moneyPaid: Double = 0.0
+    private var discount: Double = 0.00
+    private var parcelValue: Double = 0.00
+    private var seekMin = 0
+    private var seekMax = 25
+    private var seekStep = 5
+    private var progressCustom: Int = 0
+    private var finalPrice: Double = 0.0
+    private var actualDate: String = ""
+    private var invoiceNumber: String = ""
+    private var barcode: String? = ""
+    private var client: String = ""
     private val dialogProgress = DialogProgress()
-    var dialogAfterSales: BottomSheetDialog? = null
-    var dialogPermission: BottomSheetDialog? = null
-    var barcode: String? = ""
-    var soma: Double = 0.0
-    var qtyParcel: Int = 1
-    var paid = ""
-    var moneyPaid: Double = 0.0
-
-    var client: String = ""
-
-    var seekMin = 0
-    var seekMax = 25
-    var seekStep = 5
-    var progressCustom: Int = 0
-    var finalPrice: Double = 0.0
-
-    var actualDate: String = ""
-    var invoiceNumber: String = ""
+    private var dialogAfterSales: BottomSheetDialog? = null
+    private var dialogPermission: BottomSheetDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -95,11 +93,6 @@ class AddSalesFragment : Fragment() {
         onBackPressed()
         initListeners()
         initAdapter()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        cleaner()
     }
 
     private fun initListeners() {
@@ -144,6 +137,7 @@ class AddSalesFragment : Fragment() {
                 discountCalc()
                 parcelCalc()
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar) {
             }
 
@@ -176,14 +170,14 @@ class AddSalesFragment : Fragment() {
 
     // calculo de variações de valores -----------------------------------------
     private fun parcelCalc() {
-        var parcel: Double = 0.0
-        parcel = (finalPrice) / qtyParcel
-        binding.txtParcelValue.text = String.format("%.2f", parcel)
+        parcelValue = (finalPrice) / qtyParcel
+        binding.txtParcelValue.text = String.format("%.2f", parcelValue)
     }
 
     private fun discountCalc() {
-        finalPrice = (soma - (soma * (progressCustom.toDouble() / 100))) - moneyPaid
-        binding.txtDiscountValue.text = String.format("%.2f", (soma * (progressCustom.toDouble() / 100)))
+        discount = (soma * (progressCustom.toDouble() / 100))
+        finalPrice = (soma - discount) - moneyPaid
+        binding.txtDiscountValue.text = String.format("%.2f", discount)
         binding.txtFinalPrice.text = String.format("%.2f", finalPrice)
     }
 
@@ -303,7 +297,7 @@ class AddSalesFragment : Fragment() {
         addSales = AddSales()
         addSales.id = invoiceNumber
         addSales.price = (soma * 100.0).roundToInt() / 100.0
-        addSales.discount = ((soma * (progressCustom.toDouble() / 100)) * 100.0).roundToInt() / 100.0
+        addSales.discount = ((discount) * 100.0).roundToInt() / 100.0
         addSales.paid = (moneyPaid * 100.0).roundToInt() / 100.0
         addSales.totalPrice = (finalPrice * 100.0).roundToInt() / 100.0
         addSales.client = binding.txtClient.text.toString().uppercase()
@@ -545,10 +539,11 @@ class AddSalesFragment : Fragment() {
             binding.txtClient.text.toString().uppercase(),
             actualDate,
             soma,
-            (soma * (progressCustom.toDouble() / 100)),
+            discount,
             finalPrice,
             moneyPaid,
             qtyParcel,
+            parcelValue,
             itemsSales
         )
         val pdfConverter = PDFConverter()

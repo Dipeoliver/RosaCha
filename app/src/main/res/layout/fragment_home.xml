@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
+
         <variable
             name="xmlViewModel"
             type="com.clausfonseca.rosacha.view.dashboard.DashboardViewModel" />
@@ -40,18 +42,6 @@
                     app:tabIndicatorColor="@color/white"
                     app:tabTextAppearance="@style/CustomTabLayout"
                     app:tabTextColor="@color/white" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:foregroundTint="@color/white"
-                    android:text="@string/home"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/tabs"
-                    app:layout_constraintStart_toStartOf="@+id/tabs"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                </TextView>
 
                 <ImageButton
                     android:id="@+id/ib_logout"

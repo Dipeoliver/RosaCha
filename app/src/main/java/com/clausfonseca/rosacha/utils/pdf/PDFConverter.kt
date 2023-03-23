@@ -43,6 +43,7 @@ class PDFConverter {
         val parcelText = view.findViewById<TextView>(R.id.txt_parcel_text)
         val parcelText2 = view.findViewById<TextView>(R.id.txt_parcel_text2)
         val parcelDay = view.findViewById<TextView>(R.id.txt_parcel_day)
+        val parcelValue = view.findViewById<TextView>(R.id.txt_parcel_value)
 
         invoice.text = pdfDetails.invoiceNumber
         costumerName.text = pdfDetails.costumerName
@@ -52,19 +53,21 @@ class PDFConverter {
         total.text = String.format("%.2f", pdfDetails.total)
         moneyPaid.text = String.format("%.2f", pdfDetails.moneyPaid)
         recyclerView.adapter = adapter
+        parcelValue.text = String.format("%.2f", pdfDetails.parcelValue)
 
         // texto rodapé
         qtyParcelFinal.text = pdfDetails.qtyParcel.toString() + "X"
         parcelDay.text = pdfDetails.date.substring(0, 2)
 
         val checkParcel: Int = pdfDetails.qtyParcel
-        if (checkParcel > 1) {
-
-        } else {
-            parcelText.visibility = View.GONE
+        if (checkParcel == 1) {
+            parcelText.text = "cash sale!!"
             parcelText2.visibility = View.GONE
             qtyParcelFinal.visibility = View.GONE
             parcelDay.visibility = View.GONE
+            parcelValue.visibility = View.GONE
+        } else {
+
         }
         return createBitmap(context, view, activity)
     }

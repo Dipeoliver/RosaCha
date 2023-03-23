@@ -274,7 +274,7 @@ class PriceFragment : Fragment() {
         var result: Double = 0.0
         result = (price) / qtyParcel
 
-        binding.txtParcelValue.text = String.format("%.2f", result)
+        binding.txtParcelPriceValue.text = String.format("%.2f", result)
     }
 
     private fun onBackPressed() {

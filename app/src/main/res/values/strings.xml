@@ -14,6 +14,8 @@
     <string name="description_require">* Description</string>
     <string name="description">Description</string>
     <string name="sales_price">Sales Price $</string>
+    <string name="price">Price</string>
+    <string name="search">Search</string>
     <string name="size_require">* Size</string>
     <string name="size">Size</string>
     <string name="color">Color</string>
@@ -66,6 +68,7 @@
 
     <!-- Home Fragment-->
     <string name="home">Home</string>
+    <string name="title_home">Monthly Sales</string>
 
     <!-- Client Fragment-->
     <!--    layout -->
@@ -89,6 +92,7 @@
 
     <!-- Product Fragment-->
     <!--    layout -->
+    <string name="product">Product</string>
     <string name="add_product">Add Product</string>
     <string name="list_product">List of Products</string>
     <string name="edit_product">Edit Product</string>
@@ -114,6 +118,7 @@
 
     <!-- Sales Fragment-->
     <!--    layout -->
+    <string name="sales">Sales</string>
     <string name="client">Client</string>
     <string name="client_help">Type the name or cLick in the button</string>
     <string name="list_items">List of items</string>
@@ -134,12 +139,6 @@
     <string name="finalize_sales">Do you really want to Finalize the Sales?</string>
     <string name="search_customer_sales">Search Customers</string>
     <string name="go_list_sales">Go to sales list</string>
-
-
-
-
-
-
 
 
     <!-- bottom Sheet after Sales Fragment-->
@@ -185,6 +184,7 @@ Enable camera access in your device settings</string>
     <string name="installed_pdf">Installed in:</string>
     <string name="expiration_day_pdf">Expiration every day:</string>
     <string name="msg_thanks_pdf">Rosa Cha thanks the preference</string>
+    <string name="cash_sales_pdf">Cash sale</string>
 
     <!-- errors Firebase Authentication-->
     <string name="account_not_registered_register_fragment">There is no user record corresponding to this identifier.</string>
@@ -198,9 +198,7 @@ Enable camera access in your device settings</string>
     // Production (Clients / Products / Sales)
     // Test (ClientsTest / ProductsTest / SalesTest)
 
-
-    <string name="verifyTest">true</string>
-
+    <string name="verifyTest">false</string>
     <string name="db_client">ClientsTest</string>
     <string name="db_product">ProductsTest</string>
     <string name="db_sales">SalesTest</string>

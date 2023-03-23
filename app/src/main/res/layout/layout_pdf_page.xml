@@ -235,7 +235,7 @@
         android:id="@+id/txt_parcel_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="120dp"
         android:text="@string/installed_pdf"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_sub_total" />
@@ -262,9 +262,10 @@
         android:id="@+id/txt_qty_parcel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:layout_marginStart="8dp"
+        android:text="10X"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/txt_parcel_day"
+        app:layout_constraintStart_toEndOf="@+id/txt_parcel_text"
         app:layout_constraintTop_toTopOf="@+id/txt_parcel_text" />
 
     <TextView
@@ -286,6 +287,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/txt_parcel_text2"
         app:layout_constraintTop_toTopOf="@+id/txt_parcel_text2" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/rs"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_qty_parcel"
+        app:layout_constraintStart_toEndOf="@+id/txt_qty_parcel"
+        app:layout_constraintTop_toTopOf="@+id/txt_qty_parcel" />
+
+    <TextView
+        android:id="@+id/txt_parcel_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView21"
+        app:layout_constraintStart_toEndOf="@+id/textView21"
+        app:layout_constraintTop_toTopOf="@+id/textView21" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

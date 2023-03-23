@@ -211,11 +211,11 @@
         android:text="@string/rs"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/txt_parcel_value"
+        app:layout_constraintEnd_toStartOf="@+id/txt_parcel_price_value"
         app:layout_constraintTop_toBottomOf="@+id/seekBar3" />
 
     <TextView
-        android:id="@+id/txt_parcel_value"
+        android:id="@+id/txt_parcel_price_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

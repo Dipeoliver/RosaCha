@@ -118,23 +118,30 @@ Feitos
 14/03/2023
 - Adicionado para salver qty parcelas/ data vencimento e valor entrada dentro de uma venda
 - arredondamento de casa decimais nos valores double da tabela vendas
+
+21/03/2023
+- Mudar o progress bar do fragment creat account
+- checar todos texto (portugues / ingles)
+
+23/03/2023
+- Ao nao conseguir usar scanner dentro da venda está apagando todos itens do RecyclerView
+- quando venda for 1x colocar mensagem (Venda a Vista)
+- colocar o discount dentro de uma variavel, esta espalhado em varios lugares.
+- adicionar o valor das parcelas em frete a quantidade de parcelas no PDF (passar mais 1 parametro)
 -----------------------------------------------------------------------------
 
 A fazer
-- Mudar o progress bar do fragment creat account
-- adicionar o valor das parcelas em frete a quantidade de parcelas no PDF (passar mais 1 parametro)
-- colocar o discount dentro de uma variavel, esta espalhado em varios lugares.
+- dentro Pdf.kt mudar texto para a string
+- mostrar dentro PDF o $ de dinheiro
 
-- validação de campos
-- checar todos texto (portugues / ingles)
-
-***** Ao nao conseguir usar scanner dentro da venda está apagando todos itens do RecyclerView *************
+- botão para copiar um produto para nao precisar digitar tudo novamente (as vezes muda so tamanho)
 
 - customizar o bottonDialog para bordas arredondadas e colocar imagem de fundo
 - arrumar a cor de fundo do dialog do busca client
 
-- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto
+- validação de campos
 
+- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto
 - Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
 - adicionar quantidade nos itens
 - biblioteca adionar grafico na (home)
