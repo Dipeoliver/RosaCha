@@ -23,6 +23,7 @@ import com.clausfonseca.rosacha.databinding.FragmentPriceBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
+import com.clausfonseca.rosacha.utils.extencionFunctions.hideKeyboard
 import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
@@ -253,6 +254,7 @@ class PriceFragment : Fragment() {
         binding.edtBarcodePrice.requestFocus()
         binding.btnSearchPrice.setOnClickListener {
             selectPrice(binding.edtBarcodePrice.text.toString())
+            binding.btnSearchPrice.hideKeyboard()
         }
 
         binding.seekBar3.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

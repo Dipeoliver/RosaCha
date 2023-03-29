@@ -61,7 +61,7 @@ class PDFConverter {
 
         val checkParcel: Int = pdfDetails.qtyParcel
         if (checkParcel == 1) {
-            parcelText.text = "cash sale!!"
+            parcelText.text = context.getString(R.string.cash_sales_pdf)
             parcelText2.visibility = View.GONE
             qtyParcelFinal.visibility = View.GONE
             parcelDay.visibility = View.GONE

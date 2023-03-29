@@ -128,24 +128,30 @@ Feitos
 - quando venda for 1x colocar mensagem (Venda a Vista)
 - colocar o discount dentro de uma variavel, esta espalhado em varios lugares.
 - adicionar o valor das parcelas em frete a quantidade de parcelas no PDF (passar mais 1 parametro)
+- biblioteca adionar grafico na (home)
+
+29/03/2023
+- ao deletar o cliente e voltar inserir o mesmo dentro do banco novamente e também a foto
+- Ao retornar client na lista o ultimo aparece 2 vezes
+- dentro Pdf.kt mudar texto para a string
+- mostrar dentro PDF o $ de dinheiro
+- ao clicar em buscar produto em price fechar o teclado (fica em cima da tela)
 -----------------------------------------------------------------------------
 
 A fazer
-- dentro Pdf.kt mudar texto para a string
-- mostrar dentro PDF o $ de dinheiro
+
+- Fazer o grafico se tornar dinamico
+- Adicionar campo Ano dentro de uma venda 
+- Adicioanr campo mês dentro de uma venda
 
 - botão para copiar um produto para nao precisar digitar tudo novamente (as vezes muda so tamanho)
-
 - customizar o bottonDialog para bordas arredondadas e colocar imagem de fundo
 - arrumar a cor de fundo do dialog do busca client
-
 - validação de campos
-
-- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto
 - Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
 - adicionar quantidade nos itens
-- biblioteca adionar grafico na (home)
 - mudar arquitetura  
 
-
-
+erros
+- Ao retornar client na lista o ultimo aparece 2 vezes
+- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto

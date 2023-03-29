@@ -36,6 +36,7 @@ class ClientAdapter(
     inner class MyViewHolder(val binding: ItemClientAdapterBinding) :
         RecyclerView.ViewHolder(binding.root)
 
+
     override fun getItemCount() = clientList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -44,13 +45,14 @@ class ClientAdapter(
         holder.binding.txtPhone.text = client.phone
         holder.binding.txtEmail.text = client.email
 
+
         if (client.urlImagem == "") {
             Glide.with(context).load(R.drawable.no_image).into(holder.binding.imvClient)
         } else Glide.with(context).load(client.urlImagem).into(holder.binding.imvClient)
 
-        holder.binding.btnClientDelete.setOnClickListener {
-            clientSelected(client, SELECT_REMOVE)
-        }
+//        holder.binding.btnClientDelete.setOnClickListener {
+//            clientSelected(client, SELECT_REMOVE)
+//        }
 
         holder.binding.cardViewClient1.setOnClickListener {
             clickClient.clickClient(client)

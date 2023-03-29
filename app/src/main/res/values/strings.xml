@@ -13,7 +13,7 @@
     <string name="barcode">Barcode</string>
     <string name="description_require">* Description</string>
     <string name="description">Description</string>
-    <string name="sales_price">Sales Price $</string>
+    <string name="sales_price">Sales Price</string>
     <string name="price">Price</string>
     <string name="search">Search</string>
     <string name="size_require">* Size</string>
@@ -77,6 +77,8 @@
     <string name="name_client">* Name</string>
     <string name="phone_client">* Phone</string>
     <string name="birthday_client">Birthday</string>
+    <string name="item_deleted_client">Item Deleted</string>
+    <string name="undo_client">UNDO</string>
     <!--    Code -->
     <string name="error_already_registered_client">Error, customer already registered</string>
     <string name="error_update_data_client">Error when updating customers</string>
@@ -167,7 +169,7 @@ Enable camera access in your device settings</string>
 
     <!-- item dialog-->
     <!--    layout -->
-    <string name="dialog_progress_title">Wait...</string>
+    <string name="dialog_progress_title">Wait…</string>
 
     <!-- Pdf Layout-->
     <!--    layout -->
@@ -197,6 +199,7 @@ Enable camera access in your device settings</string>
     <!-- DB Firebase -->
     // Production (Clients / Products / Sales)
     // Test (ClientsTest / ProductsTest / SalesTest)
+
 
     <string name="verifyTest">false</string>
     <string name="db_client">ClientsTest</string>

@@ -58,11 +58,12 @@
                 android:id="@+id/txtemail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="80dp"
                 android:text="@string/email"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/txt_name"
-                app:layout_constraintTop_toBottomOf="@+id/txt_name" />
+                app:layout_constraintBottom_toBottomOf="@+id/textView24"
+                app:layout_constraintStart_toEndOf="@+id/textView24"
+                app:layout_constraintTop_toTopOf="@+id/textView24" />
 
             <TextView
                 android:id="@+id/txt_email"
@@ -81,32 +82,21 @@
                 android:id="@+id/textView24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
                 android:text="@string/phone"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/txt_phone"
-                app:layout_constraintStart_toStartOf="@+id/txt_phone" />
+                app:layout_constraintStart_toStartOf="@+id/txt_name"
+                app:layout_constraintTop_toBottomOf="@+id/txt_name" />
 
             <TextView
                 android:id="@+id/txt_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
                 android:text="@string/phone_example"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <ImageButton
-                android:id="@+id/btn_client_delete"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:backgroundTint="@color/white"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_delete_forever_24" />
+                app:layout_constraintStart_toStartOf="@+id/textView24"
+                app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

@@ -12,28 +12,40 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentClientListBinding
 import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.utils.DialogProgress
+import com.clausfonseca.rosacha.utils.Swipe.SwipeGesture
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     ClientAdapter.ClickClient {
 
     private lateinit var binding: FragmentClientListBinding
     private lateinit var clientAdapter: ClientAdapter
-    private lateinit var firebaseStorage: FirebaseStorage
     private val clientlist = mutableListOf<Client>()
+    private val viewModel: AddClientViewModel by viewModels()
+
+    private lateinit var firebaseStorage: FirebaseStorage
     private var dbClients: String = ""
     var db: FirebaseFirestore? = null
     var nextquery: Query? = null
@@ -67,10 +79,10 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 //        getClients()
 //    }
 
-    override fun clickClient(client: Client) {
-        super.clickClient(client)
-        selectedClient(client)
-    }
+//    override fun clickClient(client: Client) {
+//        super.clickClient(client)
+//        selectedClient(client)
+//    }
 
     private fun selectedClient(client: Client) {
         findNavController().navigate(
@@ -218,6 +230,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             optionSelect(client, select)
         }
         binding.rvClient.adapter = clientAdapter
+        swipeToGesture(binding.rvClient)
     }
 
     private fun optionSelect(client: Client, select: Int) {
@@ -268,8 +281,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         client.phone?.let {
             reference.document(it).delete().addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
-                    client.phone?.let { it1 -> removeImage(it1) }
-                    Util.exibirToast(requireContext(), getString(R.string.information_delete_client))
+//                    client.phone?.let { it1 -> removeImage(it1) }
+//                    Util.exibirToast(requireContext(), getString(R.string.information_delete_client))
                     getClients()
                 } else {
                     Util.exibirToast(
@@ -304,7 +317,81 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     }
     // END Delete Client -----------------------------------------------
 
+    private fun swipeToGesture(itemRv: RecyclerView?) {
+        val swipeGesture = object : SwipeGesture(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                var actionBtnTapped = false
+                try {
+                    when (direction) {
+                        ItemTouchHelper.LEFT -> {
 
+                            val client = clientlist[position]
+                            clientlist.removeAt(position)
+                            clientAdapter.notifyItemRemoved(position)
+
+                            deleteClient(client)
+                            clientAdapter.notifyDataSetChanged()
+
+                            val snackBar = Snackbar.make(
+                                binding.rvClient, getString(R.string.item_deleted_client), 5000
+                            ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                    super.onDismissed(transientBottomBar, event)
+                                }
+
+                                override fun onShown(transientBottomBar: Snackbar?) {
+                                    transientBottomBar?.setAction(getString(R.string.undo_client)) {
+//                                        clientlist.add(position, client)
+                                        clientlist.clear()
+                                        insertClient(client)
+                                        getClients()
+//                                        clientAdapter.notifyItemInserted(position)
+//                                        clientAdapter.notifyDataSetChanged()
+                                        actionBtnTapped = true
+                                    }
+                                    super.onShown(transientBottomBar)
+                                }
+                            }).apply {
+
+                                animationMode = Snackbar.ANIMATION_MODE_FADE
+
+                            }
+                            snackBar.setActionTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.pink,
+
+                                    )
+                            )
+                            snackBar.show()
+
+                        }
+
+
+                        ItemTouchHelper.RIGHT -> {
+                            val clientPosition = clientlist[position]
+                            selectedClient(clientPosition)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        val touchHelper = ItemTouchHelper(swipeGesture)
+        touchHelper.attachToRecyclerView(itemRv)
+
+    }
+
+    private fun insertClient(client: Client) {
+        viewModel.db.collection(dbClients).document(client.phone.toString())
+            .set(client).addOnCompleteListener {
+//                Util.exibirToast(requireContext(), getString(R.string.add_success_client))
+            }.addOnFailureListener {
+                Util.exibirToast(requireContext(), getString(R.string.error_save_client))
+            }
+    }
 // Menu-----------------------------------------------------------------
 //    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 //        menuInflater.inflate(R.menu.search, menu)
