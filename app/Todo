@@ -136,15 +136,17 @@ Feitos
 - dentro Pdf.kt mudar texto para a string
 - mostrar dentro PDF o $ de dinheiro
 - ao clicar em buscar produto em price fechar o teclado (fica em cima da tela)
+
+31/03/2023
+- Fazer o grafico se tornar dinamico
+- Adicionar campo Ano dentro de uma venda 
+- Adicioanr campo mês dentro de uma venda
 -----------------------------------------------------------------------------
 
 A fazer
 
-- Fazer o grafico se tornar dinamico
-- Adicionar campo Ano dentro de uma venda 
-- Adicioanr campo mês dentro de uma venda
-
-- botão para copiar um produto para nao precisar digitar tudo novamente (as vezes muda so tamanho)
+- exibir a lista de vendas
+- Ao entrar para editar se alterar barcode mensagem de novo produto, se nao mesagem de update produto
 - customizar o bottonDialog para bordas arredondadas e colocar imagem de fundo
 - arrumar a cor de fundo do dialog do busca client
 - validação de campos
@@ -153,5 +155,5 @@ A fazer
 - mudar arquitetura  
 
 erros
-- Ao retornar client na lista o ultimo aparece 2 vezes
-- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto
+- Ao retornar client na lista o ultimo aparece 2 vezes ( arrumamos mas não solução final)
+- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto (tem de testar para ver se reproduz)

@@ -2,20 +2,26 @@ package com.clausfonseca.rosacha.view.chart
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.clausfonseca.rosacha.R
+import com.clausfonseca.rosacha.utils.DialogProgress
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class BarChartFragment : Fragment() {
     lateinit var barChart: BarChart
+    private val monthResults: MutableList<Double> = MutableList(12) { 0.0 }
+    private var dbSales: String = ""
+    var db: FirebaseFirestore? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,23 +32,27 @@ class BarChartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        db = FirebaseFirestore.getInstance()
+        dbSales = getString(R.string.db_sales)
         barChart = view.findViewById(R.id.bar_Chart)
+        getSales()
 
+    }
+
+    private fun getGraph() {
         val list: ArrayList<BarEntry> = ArrayList()
-
-        list.add(BarEntry(1f, 100f))
-        list.add(BarEntry(2f, 101f))
-        list.add(BarEntry(3f, 102f))
-        list.add(BarEntry(4f, 103f))
-        list.add(BarEntry(5f, 104f))
-        list.add(BarEntry(6f, 99f))
-        list.add(BarEntry(7f, 120f))
-        list.add(BarEntry(8f, 58f))
-        list.add(BarEntry(9f, 76f))
-        list.add(BarEntry(10f, 102.8f))
-        list.add(BarEntry(11f, 110f))
-        list.add(BarEntry(12f, 100f))
+        list.add(BarEntry(1f, monthResults[0].toFloat()))
+        list.add(BarEntry(2f, monthResults[1].toFloat()))
+        list.add(BarEntry(3f, monthResults[2].toFloat()))
+        list.add(BarEntry(4f, monthResults[3].toFloat()))
+        list.add(BarEntry(5f, monthResults[4].toFloat()))
+        list.add(BarEntry(6f, monthResults[5].toFloat()))
+        list.add(BarEntry(7f, monthResults[6].toFloat()))
+        list.add(BarEntry(8f, monthResults[7].toFloat()))
+        list.add(BarEntry(9f, monthResults[8].toFloat()))
+        list.add(BarEntry(10f, monthResults[9].toFloat()))
+        list.add(BarEntry(11f, monthResults[10].toFloat()))
+        list.add(BarEntry(12f, monthResults[11].toFloat()))
 
         val barDataSet = BarDataSet(list, "monthly values")
 
@@ -57,5 +67,28 @@ class BarChartFragment : Fragment() {
         barChart.data = barData
         barChart.description.text = "annual sales"
         barChart.animateY(2000)
+    }
+
+    private fun getSales() {
+        val dialogProgress = DialogProgress()
+        dialogProgress.show(childFragmentManager, "0")
+
+        val query = db!!.collection(dbSales).whereEqualTo("year", "2023".toInt())
+
+        query.addSnapshotListener { results, error ->
+            dialogProgress.dismiss()
+            if (results != null) {
+                for (result in results) {
+                    val month: Int = result.getLong("month")?.toInt() ?: -1
+                    Log.d("result", result["month"].toString())
+                    if (month != -1) {
+                        monthResults[month - 1] += result.getDouble("totalPrice") ?: 0.0
+                    }
+                }
+                Log.d("Total", "${monthResults}")
+                getGraph()
+            } else {
+            }
+        }
     }
 }

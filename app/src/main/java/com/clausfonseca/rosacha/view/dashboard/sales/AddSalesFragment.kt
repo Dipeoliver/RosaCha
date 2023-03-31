@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Html
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -41,6 +43,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -281,12 +284,21 @@ class AddSalesFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun insertSales() {
         dialogProgress.show(childFragmentManager, "0")
 
         val date = Calendar.getInstance().time
         val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         actualDate = dateTimeFormat.format(date)
+
+//        val dt = Date()
+//        val year = dt.year
+//        val current_Year = year + 1900
+
+        val currentDate: LocalDate = LocalDate.now()
+        val currentYear: Int = currentDate.year
+        val currentMonth: Int = currentDate.monthValue
 
         invoiceNumber =
             dateTimeFormat.format(date)
@@ -303,6 +315,8 @@ class AddSalesFragment : Fragment() {
         addSales.client = binding.txtClient.text.toString().uppercase()
         addSales.salesOwner = auth.currentUser?.email
         addSales.salesDate = actualDate
+        addSales.month = currentMonth
+        addSales.year = currentYear
         addSales.itens = itemsSales
         addSales.qtyParcel = qtyParcel
         addSales.parcelDate = actualDate.substring(0, 2)

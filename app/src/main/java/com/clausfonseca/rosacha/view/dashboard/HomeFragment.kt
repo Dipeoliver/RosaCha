@@ -12,12 +12,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentHomeBinding
-import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.utils.DialogProgress
-import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.view.adapter.ViewPagerAdapter
 import com.clausfonseca.rosacha.view.chart.BarChartFragment
-import com.clausfonseca.rosacha.view.dashboard.product.ListProductFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -29,8 +26,6 @@ class HomeFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private val viewModel by viewModels<DashboardViewModel>() // mudar valores o xml visivel
     private var verifyTest: String = ""
-    private var dbSales: String = ""
-    var db: FirebaseFirestore? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,10 +45,6 @@ class HomeFragment : Fragment() {
         if (verifyTest == "true")
             binding.viewPager.setBackgroundColor(resources.getColor(android.R.color.holo_orange_dark))
         configTabLayout()
-
-        db = FirebaseFirestore.getInstance()
-        dbSales = getString(R.string.db_sales)
-
     }
 
     private fun configTabLayout() {
@@ -94,26 +85,5 @@ class HomeFragment : Fragment() {
         findNavController().popBackStack()
         val uri = Uri.parse("android-app://com.clausfonseca.rosacha/login_fragment")
         findNavController().navigate(uri)
-    }
-
-
-    private fun getSales() {
-        val dialogProgress = DialogProgress()
-        dialogProgress.show(childFragmentManager, "0")
-
-        val query = db!!.collection(dbSales).whereEqualTo("year", "2023")
-
-        query.addSnapshotListener { results, error ->
-            dialogProgress.dismiss()
-
-            if (results != null) {
-                for (result in results) {
-                    // pegar o valor das somas por mês
-//                    clientlist.add(client)
-                    Log.d("SalesDiego", result.toString())
-                }
-            } else {
-            }
-        }
     }
 }
