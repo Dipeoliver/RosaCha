@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/date_pdf"
+        android:text="@string/date"
         app:layout_constraintStart_toStartOf="@+id/txt_student_name_label"
         app:layout_constraintTop_toBottomOf="@+id/txt_student_name_label" />
 
@@ -129,7 +129,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/marks_label_layout"
-        tools:listitem="@layout/recycler_marks" />
+        tools:listitem="@layout/item_recycler_pdf" />
 
     <View
         android:id="@+id/divider2"
@@ -217,7 +217,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="@string/total_pdf"
+        android:text="@string/total_sales"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textView17" />

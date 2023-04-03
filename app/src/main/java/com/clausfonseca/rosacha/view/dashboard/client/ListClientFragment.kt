@@ -55,9 +55,6 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        val menuHost: MenuHost = requireActivity()
-//        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
         binding = FragmentClientListBinding.inflate(inflater, container, false)
         return binding.root
     }

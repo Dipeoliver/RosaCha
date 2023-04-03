@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.clausfonseca.rosacha.R
-import com.clausfonseca.rosacha.databinding.ItemClientAdapterBinding
+import com.clausfonseca.rosacha.databinding.ItemRecyclerClientListBinding
 import com.clausfonseca.rosacha.model.Client
 
 class ClientAdapter(
@@ -25,7 +25,7 @@ class ClientAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientAdapter.MyViewHolder {
         return MyViewHolder(
-            ItemClientAdapterBinding.inflate(
+            ItemRecyclerClientListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -33,7 +33,7 @@ class ClientAdapter(
         )
     }
 
-    inner class MyViewHolder(val binding: ItemClientAdapterBinding) :
+    inner class MyViewHolder(val binding: ItemRecyclerClientListBinding) :
         RecyclerView.ViewHolder(binding.root)
 
 

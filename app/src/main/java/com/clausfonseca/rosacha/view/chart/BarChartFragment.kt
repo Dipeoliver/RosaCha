@@ -78,14 +78,15 @@ class BarChartFragment : Fragment() {
         query.addSnapshotListener { results, error ->
             dialogProgress.dismiss()
             if (results != null) {
+
                 for (result in results) {
                     val month: Int = result.getLong("month")?.toInt() ?: -1
-                    Log.d("result", result["month"].toString())
+//                    Log.d("result", result["month"].toString())
                     if (month != -1) {
                         monthResults[month - 1] += result.getDouble("totalPrice") ?: 0.0
                     }
                 }
-                Log.d("Total", "${monthResults}")
+//                Log.d("Total", "${monthResults}")
                 getGraph()
             } else {
             }

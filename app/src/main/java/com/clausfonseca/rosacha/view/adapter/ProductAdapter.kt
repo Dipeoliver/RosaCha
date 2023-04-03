@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.clausfonseca.rosacha.R
-import com.clausfonseca.rosacha.databinding.ItemProductAdapterBinding
+import com.clausfonseca.rosacha.databinding.ItemRecyclerProductListBinding
 import com.clausfonseca.rosacha.model.Product
 import com.clausfonseca.rosacha.view.dashboard.product.ListProductFragment
 
@@ -27,7 +27,7 @@ class ProductAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            ItemProductAdapterBinding.inflate(
+            ItemRecyclerProductListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -35,7 +35,7 @@ class ProductAdapter(
         )
     }
 
-    inner class MyViewHolder(val binding: ItemProductAdapterBinding) :
+    inner class MyViewHolder(val binding: ItemRecyclerProductListBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun getItemCount() = productList.size

@@ -1,6 +1,6 @@
 package com.clausfonseca.rosacha.model
 
-data class AddSales(
+data class Sales(
     var id: String? = "",
     var itens: MutableList<ItensSales>? = mutableListOf(),  // list [iten, price]
     var price: Double = 0.0,

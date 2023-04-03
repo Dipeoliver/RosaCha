@@ -24,7 +24,7 @@ import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetAfterSalesBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
-import com.clausfonseca.rosacha.model.AddSales
+import com.clausfonseca.rosacha.model.Sales
 import com.clausfonseca.rosacha.model.ItensSales
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
@@ -51,7 +51,7 @@ import kotlin.math.roundToInt
 class AddSalesFragment : Fragment() {
 
     private lateinit var binding: FragmentSalesAddBinding
-    private lateinit var addSales: AddSales
+    private lateinit var addSales: Sales
     private lateinit var itemsSalesAdapter: ItensSalesAdapter
     private lateinit var auth: FirebaseAuth
     private val itemsSales = mutableListOf<ItensSales>()
@@ -96,6 +96,16 @@ class AddSalesFragment : Fragment() {
         onBackPressed()
         initListeners()
         initAdapter()
+
+        // ao clicar botão voltar abaixo
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
+                    findNavController().navigate(uri)
+                }
+            })
     }
 
     private fun initListeners() {
@@ -169,6 +179,11 @@ class AddSalesFragment : Fragment() {
             }
             false
         })
+
+        binding.btnBack.setOnClickListener {
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
+            findNavController().navigate(uri)
+        }
     }
 
     // calculo de variações de valores -----------------------------------------
@@ -306,7 +321,7 @@ class AddSalesFragment : Fragment() {
                 .replace(":", "")
                 .replace(" ", "")
 
-        addSales = AddSales()
+        addSales = Sales()
         addSales.id = invoiceNumber
         addSales.price = (soma * 100.0).roundToInt() / 100.0
         addSales.discount = ((discount) * 100.0).roundToInt() / 100.0
@@ -501,11 +516,17 @@ class AddSalesFragment : Fragment() {
 
         sheetBinding.imvBottomListSales.setOnClickListener {
             // link para lista de vendas
-            Util.exibirToast(requireContext(), getString(R.string.go_list_sales))
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
+            findNavController().navigate(uri)
+            dialogAfterSales?.dismiss()
+
         }
         sheetBinding.txtBottomListSales.setOnClickListener {
             // link para lista de vendas
-            Util.exibirToast(requireContext(), getString(R.string.go_list_sales))
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
+            findNavController().navigate(uri)
+            dialogAfterSales?.dismiss()
+
         }
 
         sheetBinding.imvBottomPdfSales.setOnClickListener {

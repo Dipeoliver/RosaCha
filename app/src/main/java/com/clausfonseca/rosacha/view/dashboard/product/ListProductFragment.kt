@@ -56,7 +56,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
         db = FirebaseFirestore.getInstance()
         firebaseStorage = Firebase.storage
         auth = Firebase.auth
-        dbProducts = getString(R.string.db_product).toString()
+        dbProducts = getString(R.string.db_product)
         onBackPressed()
         initListeners()
         initAdapter()

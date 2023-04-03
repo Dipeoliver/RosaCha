@@ -45,6 +45,10 @@
     <string name="phone">Phone</string>
     <string name="email_example">Client@client.com.br</string>
     <string name="phone_example">+(55)12991111111</string>
+    <string name="total_sales">TOTAL:  $</string>
+    <string name="date">Date: </string>
+    <string name="client">Client:</string>
+    <string name="id">ID</string>
 
     <!-- Login Fragment-->
     <string name="login">Login</string>
@@ -121,7 +125,7 @@
     <!-- Sales Fragment-->
     <!--    layout -->
     <string name="sales">Sales</string>
-    <string name="client">Client</string>
+    <string name="client_">Client</string>
     <string name="client_help">Type the name or cLick in the button</string>
     <string name="list_items">List of items</string>
     <string name="sub_total">Sub Total</string>
@@ -134,6 +138,10 @@
     <string name="add_sales">Add Sales</string>
     <string name="list_sales">List of Sales</string>
     <string name="edit_sales">Edit Sales</string>
+
+
+
+
     <!--    Code -->
     <string name="add_item_sales">Add at least one item to be sold</string>
     <string name="check_value_sales">The sale value must be positive, check Paid value</string>
@@ -175,14 +183,14 @@ Enable camera access in your device settings</string>
     <!--    layout -->
     <string name="invoice_pdf">Invoice Nº</string>
     <string name="costumer_pdf">Costumer Name:</string>
-    <string name="date_pdf">Date: </string>
+
     <string name="text_pdf">non-tax coupon</string>
     <string name="item_pdf">Item</string>
     <string name="value_pdf">Value</string>
     <string name="subtotal_pdf">SubTotal:  $</string>
     <string name="discount_pdf">Discount:  $</string>
     <string name="paid_pdf">Paid:         $</string>
-    <string name="total_pdf">TOTAL   $</string>
+
     <string name="installed_pdf">Installed in:</string>
     <string name="expiration_day_pdf">Expiration every day:</string>
     <string name="msg_thanks_pdf">Rosa Cha thanks the preference</string>

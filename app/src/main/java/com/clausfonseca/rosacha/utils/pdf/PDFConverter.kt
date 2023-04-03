@@ -121,7 +121,7 @@ class PDFConverter {
         activity: Activity
     ) {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.layout_pdf_page, null)
+        val view = inflater.inflate(R.layout.item_layout_pdf, null)
 
         val adapter = MarksRecyclerAdapter(pdfDetails.itemDetailsList)
         val bitmap = createBitmapFromView(context, view, pdfDetails, adapter, activity)

@@ -6,6 +6,62 @@
     android:layout_height="match_parent"
     tools:context=".view.dashboard.sales.AddSalesFragment">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/rose"
+                android:elevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabIndicatorColor="@color/white"
+                app:tabTextAppearance="@style/CustomTabLayout"
+                app:tabTextColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_sales"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tabs"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.517">
+
+            </TextView>
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="8dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
@@ -19,7 +75,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
 
             <TextView
@@ -27,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="60dp"
                 android:text="@string/barcode"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +142,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="0dp"
-                android:layout_height="300dp"
+                android:layout_height="330dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
@@ -97,8 +153,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView25"
                 app:layout_constraintVertical_bias="0.0"
-                tools:itemCount="5"
-                tools:listitem="@layout/item_sales_adapter" />
+                tools:itemCount="6"
+                tools:listitem="@layout/item_recycler_sales_add" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -176,10 +232,10 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/bg_edit"
+                android:hint="@string/symbol_000"
                 android:imeOptions="actionSend"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
-                android:hint="@string/symbol_000"
                 android:nextFocusDown="@id/btn_add_sales"
                 android:textAlignment="center"
                 android:textSize="18sp"
@@ -272,7 +328,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/client"
+                android:text="@string/client_"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
@@ -284,11 +340,11 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_edit"
                 android:ems="10"
+                android:hint="@string/client_help"
                 android:inputType="textAutoComplete"
                 android:nextFocusDown="@id/edt_paid"
                 android:padding="8dp"
                 android:text=""
-                android:hint="@string/client_help"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@+id/btn_scan"
                 app:layout_constraintStart_toStartOf="@+id/edt_barcode"

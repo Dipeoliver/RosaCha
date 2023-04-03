@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.clausfonseca.rosacha.databinding.ItemSalesAdapterBinding
+import com.clausfonseca.rosacha.databinding.ItemRecyclerSalesAddBinding
 import com.clausfonseca.rosacha.model.ItensSales
 
 class ItensSalesAdapter(
@@ -15,7 +15,7 @@ class ItensSalesAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            ItemSalesAdapterBinding.inflate(
+            ItemRecyclerSalesAddBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -41,6 +41,6 @@ class ItensSalesAdapter(
     }
 
 
-    inner class MyViewHolder(val binding: ItemSalesAdapterBinding) :
+    inner class MyViewHolder(val binding: ItemRecyclerSalesAddBinding) :
         RecyclerView.ViewHolder(binding.root)
 }

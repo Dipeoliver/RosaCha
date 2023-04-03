@@ -116,29 +116,29 @@
         android:id="@+id/addClient_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment"
         android:label="fragment_add_client"
-        tools:layout="@layout/fragment_client_add" >
+        tools:layout="@layout/fragment_client_add">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_add_client" />
     </fragment>
     <fragment
         android:id="@+id/addProduct_fragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.product.AddProductFragment"
         android:label="fragment_add_product"
-        tools:layout="@layout/fragment_product_add" >
-    <deepLink app:uri="android-app://com.clausfonseca.rosacha/addProduct_fragment" />
+        tools:layout="@layout/fragment_product_add">
+        <deepLink app:uri="android-app://com.clausfonseca.rosacha/addProduct_fragment" />
     </fragment>
     <fragment
         android:id="@+id/listClientFragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.client.ListClientFragment"
         android:label="fragment_client_list"
-        tools:layout="@layout/fragment_client_list" >
-    <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_client_list" />
+        tools:layout="@layout/fragment_client_list">
+        <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_client_list" />
     </fragment>
 
     <fragment
         android:id="@+id/editClientFragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.client.EditClientFragment"
         android:label="fragment_client_edit"
-        tools:layout="@layout/fragment_client_edit" >
+        tools:layout="@layout/fragment_client_edit">
         <argument
             android:name="selectedClient"
             app:argType="com.clausfonseca.rosacha.model.Client" />
@@ -147,17 +147,30 @@
         android:id="@+id/listProductFragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.product.ListProductFragment"
         android:label="fragment_product_list"
-        tools:layout="@layout/fragment_product_list" >
-    <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_product_list" />
+        tools:layout="@layout/fragment_product_list">
+        <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_product_list" />
     </fragment>
 
     <fragment
         android:id="@+id/editProductFragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.product.EditProductFragment"
         android:label="fragment_product_edit"
-        tools:layout="@layout/fragment_product_edit" >
+        tools:layout="@layout/fragment_product_edit">
         <argument
             android:name="selectedProduct"
             app:argType="com.clausfonseca.rosacha.model.Product" />
     </fragment>
+    <fragment
+        android:id="@+id/listSalesFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.sales.ListSalesFragment"
+        android:label="fragment_sales_list"
+        tools:layout="@layout/fragment_sales_list" />
+    <fragment
+        android:id="@+id/addSalesFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.sales.AddSalesFragment"
+        android:label="fragment_sales_add"
+        tools:layout="@layout/fragment_sales_add">
+        <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_sales_add" />
+    </fragment>
+
 </navigation>
