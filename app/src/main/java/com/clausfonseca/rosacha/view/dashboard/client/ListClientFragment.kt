@@ -181,7 +181,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                     db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
 
                 clientAdapter.notifyDataSetChanged()
-                //initAdapter()
+
             } else {
                 dialogProgress.dismiss()
                 Util.exibirToast(requireContext(), getString(R.string.no_list_client))

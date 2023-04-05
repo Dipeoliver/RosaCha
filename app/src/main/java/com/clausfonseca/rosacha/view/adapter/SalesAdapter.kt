@@ -26,7 +26,7 @@ class SalesAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val sales = salesList[position]
         holder.binding.txtId.text = sales.id
-        holder.binding.txtDate.text = sales.salesDate
+        holder.binding.txtDate.text = sales.salesDate?.substring(0, 10) ?: "0000/00/00"
         holder.binding.txtClient.text = sales.client
         holder.binding.txtTotalSales.text = sales.totalPrice.toString()
 
@@ -42,5 +42,6 @@ class SalesAdapter(
 
     interface LastItemRecyclerView {
         fun lastItemRecyclerView(isShow: Boolean)
+        abstract fun setSingleChoiceItems(filter: Array<String>, selecteDItemIndex: Int, any: Any): Any
     }
 }

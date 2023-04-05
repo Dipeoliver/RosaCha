@@ -174,7 +174,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView, Pro
                 nextquery = db!!.collection(dbProducts).orderBy("description").startAfter(lastresult).limit(10)
 
                 productAdapter.notifyDataSetChanged()
-//                initAdapter()
+
             } else {
                 dialogProgress.dismiss()
                 Util.exibirToast(requireContext(), getString(R.string.no_list_product))

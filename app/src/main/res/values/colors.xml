@@ -11,6 +11,7 @@
     <color name="green">#3DDC84</color>
     <color name="rose">#FA88C1</color>
     <color name="pink">#fd2391</color>
+    <color name="transparent">#00000000</color>
 
 
     <color name="red">#FF0000</color>
