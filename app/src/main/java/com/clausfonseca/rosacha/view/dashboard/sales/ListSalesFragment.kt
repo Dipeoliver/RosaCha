@@ -61,6 +61,7 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
     }
 
     private fun initListeners() {
+
         binding.fabAddSales.setOnClickListener {
             val uri = Uri.parse("android-app://com.clausfonseca.rosacha/fragment_sales_add")
             findNavController().navigate(uri)
@@ -152,7 +153,7 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
     }
 
     private fun searchSales() {
-        binding.svSales.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+        binding.svSales.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS + InputType.TYPE_CLASS_TEXT
         binding.svSales.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -236,28 +237,31 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
                 selectedFilter = filter[witch]
             }
             .setPositiveButton("OK") { _, _ ->
+                binding.svSales.setQuery("", false);
                 when (selectedFilter) {
                     "Date" -> {
                         dbFilter = "salesDate"
                         binding.svSales.queryHint = "filter by Date"
+                        binding.svSales.inputType = InputType.TYPE_CLASS_DATETIME
                     }
                     "Id" -> {
                         dbFilter = "id"
                         binding.svSales.queryHint = "filter by ID"
-
+                        binding.svSales.inputType = InputType.TYPE_CLASS_NUMBER
                     }
                     "Price" -> {
                         dbFilter = "totalPrice"
                         binding.svSales.queryHint = "filter by Total Price"
-
+                        binding.svSales.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL + InputType.TYPE_CLASS_NUMBER
                     }
                     else -> {
                         dbFilter = "client"
                         binding.svSales.queryHint = "filter by Client"
+                        binding.svSales.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS + InputType.TYPE_CLASS_TEXT
                     }
                 }
             }
-            .setNeutralButton("Cancel") { dialog, witch ->
+            .setNeutralButton("Cancel") { _, _ ->
 
             }
             .show()

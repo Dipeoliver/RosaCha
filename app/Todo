@@ -141,14 +141,25 @@ Feitos
 - Fazer o grafico se tornar dinamico
 - Adicionar campo Ano dentro de uma venda 
 - Adicioanr campo mês dentro de uma venda
+
+04/04/2023
+- exibir a lista de vendas
+
+05/04/2023
+- seleção de filtro na lista de vendas
+- correção do campo data dentro rv(overflow visual)
+
+12/04/2023
+- mudar o teclado conforme o tipo de filtro (maiuscula / numeros)
 -----------------------------------------------------------------------------
 
 A fazer
-
-- exibir a lista de vendas
-- Ao entrar para editar se alterar barcode mensagem de novo produto, se nao mesagem de update produto
+- colocar os textos dentro da string (list sales e filtro)
+- Botao dentro do produto habilitar para adicionar novo intem (clone)
 - customizar o bottonDialog para bordas arredondadas e colocar imagem de fundo
 - arrumar a cor de fundo do dialog do busca client
+- 
+
 - validação de campos
 - Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
 - adicionar quantidade nos itens

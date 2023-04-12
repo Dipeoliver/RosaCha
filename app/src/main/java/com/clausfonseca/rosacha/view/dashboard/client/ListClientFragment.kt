@@ -108,7 +108,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
     // To control the click into searchView
     private fun searchClient() {
-        binding.svClient.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+        binding.svClient.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS + InputType.TYPE_CLASS_TEXT
         binding.svClient.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
