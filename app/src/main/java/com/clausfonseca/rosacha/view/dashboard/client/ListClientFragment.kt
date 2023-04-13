@@ -33,9 +33,6 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     ClientAdapter.ClickClient {
@@ -71,15 +68,28 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         onBackPressed()
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        getClients()
-//    }
+    override fun lastItemRecyclerView(isShow: Boolean) {
+        if (isFilterOn)
+        else getMoreClients()
+    }
 
-//    override fun clickClient(client: Client) {
-//        super.clickClient(client)
-//        selectedClient(client)
-//    }
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
+                    findNavController().navigate(uri)
+                }
+            })
+    }
+
+    private fun initListeners() {
+        binding.fabAddClient.setOnClickListener {
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/fragment_add_client")
+            findNavController().navigate(uri)
+        }
+    }
 
     private fun selectedClient(client: Client) {
         findNavController().navigate(
@@ -93,132 +103,6 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 //        args.putParcelable("client", client)
 //        findNavController().navigate(R.id.action_fragment_client_to_fragment_edit, args)
     }
-
-    override fun lastItemRecyclerView(isShow: Boolean) {
-        if (isFilterOn)
-        else getMoreClients()
-    }
-
-    private fun initListeners() {
-        binding.fabAddClient.setOnClickListener {
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/fragment_add_client")
-            findNavController().navigate(uri)
-        }
-    }
-
-    // To control the click into searchView
-    private fun searchClient() {
-        binding.svClient.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS + InputType.TYPE_CLASS_TEXT
-        binding.svClient.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
-            android.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-//                Log.d("Diego-onQueryTextSubmit", query.toString())
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                isFilterOn = true
-                filterSearchClient(newText.toString())
-//                Log.d("Diego-onQueryTextChange", newText.toString())
-                return true
-            }
-        })
-        binding.svClient.setOnCloseListener(object : SearchView.OnCloseListener,
-            android.widget.SearchView.OnCloseListener {
-            override fun onClose(): Boolean {
-                binding.svClient.onActionViewCollapsed()
-                clientlist.clear()
-                clientAdapter.notifyDataSetChanged()
-                getClients()
-                isFilterOn = false
-                return true
-            }
-        })
-    }
-
-    // Firestore DataBase -----------------------------------------------
-    @SuppressLint("NotifyDataSetChanged")
-    private fun filterSearchClient(newText: String) {
-        db!!.collection(dbClients).orderBy("name").startAt(newText)
-            .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
-                if (results.size() > 0) {
-                    clientlist.clear()
-                    for (result in results) {
-                        val client = result.toObject(Client::class.java)
-                        clientlist.add(client)
-                    }
-                    clientAdapter.notifyDataSetChanged()
-                }
-            }?.addOnFailureListener { error ->
-                Toast.makeText(
-                    requireContext(),
-                    "Error ${error.message.toString()}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun getClients() {
-        val dialogProgress = DialogProgress()
-        dialogProgress.show(childFragmentManager, "0")
-
-        db!!.collection(dbClients).orderBy("name").limit(10).get().addOnSuccessListener { results ->
-            dialogProgress.dismiss()
-
-            if (results.size() > 0) {
-                clientlist.clear()
-
-                // result é uma lista
-                for (result in results) {
-                    val key = result.id // pegar o nome  da pasta do documento
-                    val client = result.toObject(Client::class.java)
-                    clientlist.add(client)
-                }
-                // pegar ultimo item da query
-                val lastresult = results.documents[results.size() - 1]
-                nextquery =
-                    db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
-
-                clientAdapter.notifyDataSetChanged()
-
-            } else {
-                dialogProgress.dismiss()
-                Util.exibirToast(requireContext(), getString(R.string.no_list_client))
-            }
-        }.addOnFailureListener { error ->
-            dialogProgress.dismiss()
-
-            Util.exibirToast(requireContext(), getString(R.string.error_show_client) + ":" + error.message.toString())
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun getMoreClients() {
-        nextquery?.get()?.addOnSuccessListener { results ->
-
-            // o if e para verificar se chegou o fim da lista
-            if (results.size() > 0) {
-                // pegar ultimo item da query
-                val lastresult = results.documents[results.size() - 1]
-
-                nextquery =
-                    db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
-
-                for (result in results) {
-                    val client = result.toObject(Client::class.java)
-                    clientlist.add(client)
-                }
-                // notificar que teve atualizalçao
-                clientAdapter.notifyDataSetChanged()
-            } else {
-//                Util.exibirToast(requireContext(), "Não ha mais itens para serem exibidos")
-            }
-        }?.addOnFailureListener() { error ->
-            Util.exibirToast(requireContext(), error.message.toString())
-        }
-    }
-    // END Firestore DataBase -------------------------------------------
 
     private fun initAdapter() {
         binding.rvClient.layoutManager = LinearLayoutManager(requireContext())
@@ -240,7 +124,6 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         }
     }
 
-    // Delete Client ---------------------------------------------------
     private fun configDialog(client: Client) {
 
         val builder = AlertDialog.Builder(requireContext())
@@ -272,47 +155,6 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         alertDialog.setCancelable(false)
         alertDialog.show()
     }
-
-    private fun deleteClient(client: Client) {
-        val reference = db!!.collection(dbClients)
-        client.phone?.let {
-            reference.document(it).delete().addOnCompleteListener() { task ->
-                if (task.isSuccessful) {
-//                    client.phone?.let { it1 -> removeImage(it1) }
-//                    Util.exibirToast(requireContext(), getString(R.string.information_delete_client))
-                    getClients()
-                } else {
-                    Util.exibirToast(
-                        requireContext(),
-                        getString(R.string.error_delete_client) + ":" + task.exception.toString()
-                    )
-                }
-            }
-        }
-    }
-
-    fun removeImage(id: String) {
-        val reference = firebaseStorage.reference.child(dbClients).child("${id}.jpg")
-        reference.delete().addOnSuccessListener { task ->
-        }.addOnFailureListener { error ->
-            Util.exibirToast(
-                requireContext(),
-                getString(R.string.error_delete_image) + ":" + error.message.toString()
-            )
-        }
-    }
-
-    private fun onBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
-                    findNavController().navigate(uri)
-                }
-            })
-    }
-    // END Delete Client -----------------------------------------------
 
     private fun swipeToGesture(itemRv: RecyclerView?) {
         val swipeGesture = object : SwipeGesture(requireContext()) {
@@ -381,6 +223,59 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
     }
 
+    // Filter  -----------------------------------------------------------
+    private fun searchClient() {
+        binding.svClient.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS + InputType.TYPE_CLASS_TEXT
+        binding.svClient.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+//                Log.d("Diego-onQueryTextSubmit", query.toString())
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                isFilterOn = true
+                filterSearchClient(newText.toString())
+//                Log.d("Diego-onQueryTextChange", newText.toString())
+                return true
+            }
+        })
+        binding.svClient.setOnCloseListener(object : SearchView.OnCloseListener,
+            android.widget.SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                binding.svClient.onActionViewCollapsed()
+                clientlist.clear()
+                clientAdapter.notifyDataSetChanged()
+                getClients()
+                isFilterOn = false
+                return true
+            }
+        })
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun filterSearchClient(newText: String) {
+        db!!.collection(dbClients).orderBy("name").startAt(newText)
+            .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
+                if (results.size() > 0) {
+                    clientlist.clear()
+                    for (result in results) {
+                        val client = result.toObject(Client::class.java)
+                        clientlist.add(client)
+                    }
+                    clientAdapter.notifyDataSetChanged()
+                }
+            }?.addOnFailureListener { error ->
+                Toast.makeText(
+                    requireContext(),
+                    "Error ${error.message.toString()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    // Firestore DataBase --------------------------------------------------
+
     private fun insertClient(client: Client) {
         viewModel.db.collection(dbClients).document(client.phone.toString())
             .set(client).addOnCompleteListener {
@@ -389,6 +284,97 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                 Util.exibirToast(requireContext(), getString(R.string.error_save_client))
             }
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getClients() {
+        val dialogProgress = DialogProgress()
+        dialogProgress.show(childFragmentManager, "0")
+
+        db!!.collection(dbClients).orderBy("name").limit(10).get().addOnSuccessListener { results ->
+            dialogProgress.dismiss()
+
+            if (results.size() > 0) {
+                clientlist.clear()
+
+                // result é uma lista
+                for (result in results) {
+                    val key = result.id // pegar o nome  da pasta do documento
+                    val client = result.toObject(Client::class.java)
+                    clientlist.add(client)
+                }
+                // pegar ultimo item da query
+                val lastresult = results.documents[results.size() - 1]
+                nextquery =
+                    db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
+
+                clientAdapter.notifyDataSetChanged()
+
+            } else {
+                dialogProgress.dismiss()
+                Util.exibirToast(requireContext(), getString(R.string.no_list_client))
+            }
+        }.addOnFailureListener { error ->
+            dialogProgress.dismiss()
+
+            Util.exibirToast(requireContext(), getString(R.string.error_show_client) + ":" + error.message.toString())
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getMoreClients() {
+        nextquery?.get()?.addOnSuccessListener { results ->
+
+            // o if e para verificar se chegou o fim da lista
+            if (results.size() > 0) {
+                // pegar ultimo item da query
+                val lastresult = results.documents[results.size() - 1]
+
+                nextquery =
+                    db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
+
+                for (result in results) {
+                    val client = result.toObject(Client::class.java)
+                    clientlist.add(client)
+                }
+                // notificar que teve atualizalçao
+                clientAdapter.notifyDataSetChanged()
+            } else {
+//                Util.exibirToast(requireContext(), "Não ha mais itens para serem exibidos")
+            }
+        }?.addOnFailureListener() { error ->
+            Util.exibirToast(requireContext(), error.message.toString())
+        }
+    }
+
+    private fun deleteClient(client: Client) {
+        val reference = db!!.collection(dbClients)
+        client.phone?.let {
+            reference.document(it).delete().addOnCompleteListener() { task ->
+                if (task.isSuccessful) {
+//                    client.phone?.let { it1 -> removeImage(it1) }
+//                    Util.exibirToast(requireContext(), getString(R.string.information_delete_client))
+                    getClients()
+                } else {
+                    Util.exibirToast(
+                        requireContext(),
+                        getString(R.string.error_delete_client) + ":" + task.exception.toString()
+                    )
+                }
+            }
+        }
+    }
+
+    fun removeImage(id: String) {
+        val reference = firebaseStorage.reference.child(dbClients).child("${id}.jpg")
+        reference.delete().addOnSuccessListener { task ->
+        }.addOnFailureListener { error ->
+            Util.exibirToast(
+                requireContext(),
+                getString(R.string.error_delete_image) + ":" + error.message.toString()
+            )
+        }
+    }
+
 // Menu-----------------------------------------------------------------
 //    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
 //        menuInflater.inflate(R.menu.search, menu)

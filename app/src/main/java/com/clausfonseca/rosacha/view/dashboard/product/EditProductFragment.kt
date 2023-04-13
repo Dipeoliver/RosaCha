@@ -67,6 +67,8 @@ class EditProductFragment : Fragment() {
     var url: String? = null
     var oldUrl: String = ""
 
+    private var insertStatus: Boolean = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -271,8 +273,26 @@ class EditProductFragment : Fragment() {
             }
             selectedProduct?.owner = owner
 
-            updateProduct(selectedProduct!!)
+
+            // Verificação para ver se esta inserindo ou atualizando o produto
+            if (insertStatus == false) {
+                updateProduct(selectedProduct!!)
+            } else {
+                insertProduct(selectedProduct!!)
+
+            }
         }
+    }
+
+    private fun insertProduct(product: Product) {
+        db!!.collection(dbProducts).document(product.barcode.toString())
+            .set(product).addOnCompleteListener {
+                Util.exibirToast(requireContext(), getString(R.string.add_success_product))
+                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
+                findNavController().navigate(uri)
+            }.addOnFailureListener {
+                Util.exibirToast(requireContext(), getString(R.string.error_save_product))
+            }
     }
 
     private fun updateProduct(selectedProduct: Product) {
@@ -379,7 +399,6 @@ class EditProductFragment : Fragment() {
 
     // ----------------------------------------------------------------------------------------------------------------
 
-
     private fun initListeners() {
         binding.btnUpdateProduct.setOnClickListener {
 
@@ -414,6 +433,19 @@ class EditProductFragment : Fragment() {
         }
 
         binding.btnCopy.setOnClickListener {
+            if (insertStatus == true) {
+                binding.edtBarcode.isEnabled = false
+                binding.btnCopy.setImageDrawable(resources.getDrawable(R.drawable.baseline_content_copy_24))
+                binding.btnUpdateProduct.text = "UPDATE"
+                binding.txtProductTitle.text = "Update Product"
+                insertStatus = false
+            } else {
+                binding.edtBarcode.isEnabled = true
+                binding.btnCopy.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_cancel_24))
+                binding.btnUpdateProduct.text = "INSERT"
+                binding.txtProductTitle.text = "Insert Product"
+                insertStatus = true
+            }
             copyBarcode()
         }
     }

@@ -13,7 +13,7 @@ import com.clausfonseca.rosacha.view.dashboard.product.ListProductFragment
 class ProductAdapter(
     private val context: Context,
     private val productList: List<Product>,
-    var clickProduto: ClickProduto,
+    var clickProduto: ListProductFragment,
     var lastItemRecyclerView: ListProductFragment,
     val productSelected: (Product, Int) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.MyViewHolder>() {
@@ -55,20 +55,20 @@ class ProductAdapter(
             productSelected(product, SELECT_REMOVE)
         }
 
-        // click no card view
-        holder.binding.cardViewProduct1.setOnClickListener {
-            clickProduto.clickProduto((product))
-        }
+//        // click no card view
+//        holder.binding.cardViewProduct1.setOnClickListener {
+//            clickProduto.clickProduto((product))
+//        }
 
         // quando chegar na ultima posição que tem na tela chama a função abaixo
         if (position == itemCount - 1) {
             lastItemRecyclerView.lastItemRecyclerView(true)
         }
     }
-
-    interface ClickProduto {
-        fun clickProduto(product: Product)
-    }
+//
+//    interface ClickProduto {
+//        fun clickProduto(product: Product)
+//    }
 
     interface LastItemRecyclerView {
         fun lastItemRecyclerView(isShow: Boolean)
