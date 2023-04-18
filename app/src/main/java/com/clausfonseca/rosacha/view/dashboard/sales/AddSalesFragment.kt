@@ -526,7 +526,7 @@ class AddSalesFragment : Fragment() {
         }
 
         with(builder) {
-            setTitle(Html.fromHtml("<font color='#F92391'>" + getString(R.string.search_customer_sales) + "</font>"));
+            setTitle(Html.fromHtml("<font color='#F92391'>" + getString(R.string.search_customer_sales) + "</font>"))
             setPositiveButton(getString(R.string.ok)) { _, _ ->
                 binding.txtClient.setText(client)
             }
