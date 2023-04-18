@@ -47,7 +47,7 @@ class PriceFragment : Fragment() {
 
 
     private val db = FirebaseFirestore.getInstance()
-    var dialogPermission: BottomSheetDialog? = null
+    var bottomSheetDialogPermission: BottomSheetDialog? = null
 
 
     override fun onCreateView(
@@ -150,12 +150,12 @@ class PriceFragment : Fragment() {
     }
 
     private fun showBottomSheetDialogPermission() {
-        dialogPermission = BottomSheetDialog(requireContext())
+        bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
         val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
             ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
 
         sheetBinding.btnCancel.setOnClickListener {
-            dialogPermission?.dismiss()
+            bottomSheetDialogPermission?.dismiss()
         }
 
         sheetBinding.btnConfig.setOnClickListener {
@@ -164,11 +164,11 @@ class PriceFragment : Fragment() {
             val uri = Uri.fromParts("package", requireActivity().packageName, null)
             intent.data = uri
             requireContext().startActivity(intent)
-            dialogPermission?.dismiss()
+            bottomSheetDialogPermission?.dismiss()
         }
 
-        dialogPermission?.setContentView(sheetBinding.root)
-        dialogPermission?.show()
+        bottomSheetDialogPermission?.setContentView(sheetBinding.root)
+        bottomSheetDialogPermission?.show()
     }
 
     // ----------------------------------------------------------------------------------------------------------------

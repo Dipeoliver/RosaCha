@@ -140,8 +140,6 @@
     <string name="edit_sales">Edit Sales</string>
 
 
-
-
     <!--    Code -->
     <string name="add_item_sales">Add at least one item to be sold</string>
     <string name="check_value_sales">The sale value must be positive, check Paid value</string>

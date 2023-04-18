@@ -54,8 +54,8 @@ class EditProductFragment : Fragment() {
     private var dbProducts: String = ""
 
     var uriImagem: Uri? = null
-    var dialog: BottomSheetDialog? = null
-    var dialogPermission: BottomSheetDialog? = null
+    var bottomSheetDialogCamera: BottomSheetDialog? = null
+    var bottomSheetDialogPermission: BottomSheetDialog? = null
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -110,7 +110,7 @@ class EditProductFragment : Fragment() {
                 } else {
 
                 }
-                dialog?.dismiss()
+                bottomSheetDialogCamera?.dismiss()
             }
         } else {
         }
@@ -359,7 +359,7 @@ class EditProductFragment : Fragment() {
                             checkPermissions()
                         }
                         PackageManager.PERMISSION_DENIED -> {
-                            dialog?.dismiss()
+                            bottomSheetDialogCamera?.dismiss()
                             showBottomSheetDialogPermission()
                         }
                     }
@@ -367,7 +367,7 @@ class EditProductFragment : Fragment() {
 
                 PackageManager.PERMISSION_DENIED -> {
                     if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        dialog?.dismiss()
+                        bottomSheetDialogCamera?.dismiss()
                         showBottomSheetDialogPermission()
                     }
                 }
@@ -376,12 +376,12 @@ class EditProductFragment : Fragment() {
     }
 
     private fun showBottomSheetDialogPermission() {
-        dialogPermission = BottomSheetDialog(requireContext())
+        bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
         val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
             ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
 
         sheetBinding.btnCancel.setOnClickListener {
-            dialogPermission?.dismiss()
+            bottomSheetDialogPermission?.dismiss()
         }
 
         sheetBinding.btnConfig.setOnClickListener {
@@ -390,11 +390,11 @@ class EditProductFragment : Fragment() {
             val uri = Uri.fromParts("package", requireActivity().packageName, null)
             intent.data = uri
             requireContext().startActivity(intent)
-            dialogPermission?.dismiss()
+            bottomSheetDialogPermission?.dismiss()
         }
 
-        dialogPermission?.setContentView(sheetBinding.root)
-        dialogPermission?.show()
+        bottomSheetDialogPermission?.setContentView(sheetBinding.root)
+        bottomSheetDialogPermission?.show()
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -459,7 +459,7 @@ class EditProductFragment : Fragment() {
     }
 
     private fun showBottomSheetDialog() {
-        dialog = BottomSheetDialog(requireContext())
+        bottomSheetDialogCamera = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
 
         val sheetBinding: ItemCustomBottonSheetTakePictureBinding =
             ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
@@ -477,8 +477,8 @@ class EditProductFragment : Fragment() {
         sheetBinding.txtBottomGallery.setOnClickListener {
             obterImagemdaGaleria()
         }
-        dialog?.setContentView(sheetBinding.root)
-        dialog?.show()
+        bottomSheetDialogCamera?.setContentView(sheetBinding.root)
+        bottomSheetDialogCamera?.show()
     }
 
     private fun onBackPressed() {

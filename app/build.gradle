@@ -88,4 +88,8 @@ dependencies {
 
 //    Swipe
     implementation 'com.github.xabaras:RecyclerViewSwipeDecorator:1.4'
+
+    // Rounded Image View
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
 }

@@ -2,117 +2,144 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:background="@drawable/botton_sheet_background"
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_new_sales"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_drag_handle_24" />
+        app:layout_constraintTop_toBottomOf="@+id/cl_share_sales">
 
-    <TextView
-        android:id="@+id/textView35"
-        android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/imv_new_sales"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_attach_money_24" />
+
+        <TextView
+            android:id="@+id/txt_new_sales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/text_button1_sheet_after_sales"
+            android:textColor="@color/pink"
+            app:layout_constraintBottom_toBottomOf="@+id/imv_new_sales"
+            app:layout_constraintStart_toEndOf="@+id/imv_new_sales"
+            app:layout_constraintTop_toTopOf="@+id/imv_new_sales" />
+
+        <ImageView
+            android:id="@+id/imv_arrow_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_right" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_list_sales"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/title_bottom_sheet_after_sales"
-        android:textColor="@color/pink"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+        app:layout_constraintTop_toBottomOf="@+id/cl_new_sales">
 
-    <TextView
-        android:id="@+id/textView36"
-        android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/imv_list_sales"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_home_24" />
+
+        <TextView
+            android:id="@+id/txt_list_sales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Go to Home"
+            android:textColor="@color/pink"
+            app:layout_constraintBottom_toBottomOf="@+id/imv_list_sales"
+            app:layout_constraintStart_toEndOf="@+id/imv_list_sales"
+            app:layout_constraintTop_toTopOf="@+id/imv_list_sales" />
+
+        <ImageView
+            android:id="@+id/imv_arrow_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_right" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_share_sales"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/text_bottom_sheet_after_sales"
-        android:textColor="@color/pink"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView35" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="390dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.238"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView36" />
+        <ImageView
+            android:id="@+id/imv_share_sales"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_picture_as_pdf_24" />
 
-    <ImageView
-        android:id="@+id/imv_bottom_new_sales"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        app:srcCompat="@drawable/baseline_attach_money_24" />
+        <TextView
+            android:id="@+id/txt_share_sales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/text_button3_sheet_after_sales"
+            android:textColor="@color/pink"
+            app:layout_constraintBottom_toBottomOf="@+id/imv_share_sales"
+            app:layout_constraintStart_toEndOf="@+id/imv_share_sales"
+            app:layout_constraintTop_toTopOf="@+id/imv_share_sales" />
 
-    <TextView
-        android:id="@+id/txt_bottom_new_sales"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="@string/text_button1_sheet_after_sales"
-        android:textColor="@color/pink"
-        app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_new_sales"
-        app:layout_constraintStart_toEndOf="@+id/imv_bottom_new_sales"
-        app:layout_constraintTop_toTopOf="@+id/imv_bottom_new_sales" />
+        <ImageView
+            android:id="@+id/imv_arrow_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_right" />
 
-    <ImageView
-        android:id="@+id/imv_bottom_list_sales"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imv_bottom_new_sales"
-        app:srcCompat="@drawable/baseline_format_list_bulleted_24" />
 
-    <TextView
-        android:id="@+id/txt_bottom_list_sales"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="@string/text_button2_sheet_after_sales"
-        android:textColor="@color/pink"
-        app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_list_sales"
-        app:layout_constraintStart_toEndOf="@+id/imv_bottom_list_sales"
-        app:layout_constraintTop_toTopOf="@+id/imv_bottom_list_sales" />
-
-    <ImageView
-        android:id="@+id/imv_bottom_pdf_sales"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="@+id/imv_bottom_list_sales"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imv_bottom_list_sales"
-        app:srcCompat="@drawable/baseline_picture_as_pdf_24" />
-
-    <TextView
-        android:id="@+id/txt_bottom_pdf_sales"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="@string/text_button3_sheet_after_sales"
-        android:textColor="@color/pink"
-        app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_pdf_sales"
-        app:layout_constraintStart_toEndOf="@+id/imv_bottom_pdf_sales"
-        app:layout_constraintTop_toTopOf="@+id/imv_bottom_pdf_sales" />
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

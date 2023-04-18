@@ -24,8 +24,8 @@ import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetAfterSalesBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
-import com.clausfonseca.rosacha.model.Sales
 import com.clausfonseca.rosacha.model.ItensSales
+import com.clausfonseca.rosacha.model.Sales
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
@@ -76,7 +76,7 @@ class AddSalesFragment : Fragment() {
     private var client: String = ""
     private val dialogProgress = DialogProgress()
     private var dialogAfterSales: BottomSheetDialog? = null
-    private var dialogPermission: BottomSheetDialog? = null
+    private var bottomSheetDialogPermission: BottomSheetDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -167,7 +167,9 @@ class AddSalesFragment : Fragment() {
                     Util.exibirToast(requireContext(), getString(R.string.check_value_sales))
                 } else {
 
-                    informationDialog()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        informationDialog()
+                    }
                 }
             }
         }
@@ -307,10 +309,6 @@ class AddSalesFragment : Fragment() {
         val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         actualDate = dateTimeFormat.format(date)
 
-//        val dt = Date()
-//        val year = dt.year
-//        val current_Year = year + 1900
-
         val currentDate: LocalDate = LocalDate.now()
         val currentYear: Int = currentDate.year
         val currentMonth: Int = currentDate.monthValue
@@ -338,8 +336,48 @@ class AddSalesFragment : Fragment() {
 
         db.collection(dbSales).document(invoiceNumber)
             .set(addSales).addOnCompleteListener {
-                showBottomSheetDialogAfterSales()
+
+
+//                showBottomSheetDialogAfterSales()
                 dialogProgress.dismiss()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // Chamar outra Tela Se OK
+                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/fragment_after_sales")
+                findNavController().navigate(uri)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }.addOnFailureListener {
                 Util.exibirToast(requireContext(), getString(R.string.error_add_sales))
                 dialogProgress.dismiss()
@@ -434,6 +472,7 @@ class AddSalesFragment : Fragment() {
         binding.recyclerView.adapter = itemsSalesAdapter
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun informationDialog() {
 
         val builder = AlertDialog.Builder(requireContext())
@@ -505,23 +544,12 @@ class AddSalesFragment : Fragment() {
         val sheetBinding: ItemCustomBottonSheetAfterSalesBinding =
             ItemCustomBottonSheetAfterSalesBinding.inflate(layoutInflater, null, false)
 
-        sheetBinding.imvBottomNewSales.setOnClickListener {
-            dialogAfterSales?.dismiss()
-            cleaner()
-        }
-        sheetBinding.txtBottomNewSales.setOnClickListener {
+        sheetBinding.clNewSales.setOnClickListener {
             dialogAfterSales?.dismiss()
             cleaner()
         }
 
-        sheetBinding.imvBottomListSales.setOnClickListener {
-            // link para lista de vendas
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
-            findNavController().navigate(uri)
-            dialogAfterSales?.dismiss()
-
-        }
-        sheetBinding.txtBottomListSales.setOnClickListener {
+        sheetBinding.clListSales.setOnClickListener {
             // link para lista de vendas
             val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
             findNavController().navigate(uri)
@@ -529,12 +557,7 @@ class AddSalesFragment : Fragment() {
 
         }
 
-        sheetBinding.imvBottomPdfSales.setOnClickListener {
-            createPdf()
-            dialogAfterSales?.dismiss()
-            cleaner()
-        }
-        sheetBinding.txtBottomPdfSales.setOnClickListener {
+        sheetBinding.clShareSales.setOnClickListener {
             createPdf()
             dialogAfterSales?.dismiss()
             cleaner()
@@ -545,12 +568,12 @@ class AddSalesFragment : Fragment() {
     }
 
     private fun showBottomSheetDialogPermission() {
-        dialogPermission = BottomSheetDialog(requireContext())
+        bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
         val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
             ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
 
         sheetBinding.btnCancel.setOnClickListener {
-            dialogPermission?.dismiss()
+            bottomSheetDialogPermission?.dismiss()
         }
 
         sheetBinding.btnConfig.setOnClickListener {
@@ -559,11 +582,11 @@ class AddSalesFragment : Fragment() {
             val uri = Uri.fromParts("package", requireActivity().packageName, null)
             intent.data = uri
             requireContext().startActivity(intent)
-            dialogPermission?.dismiss()
+            bottomSheetDialogPermission?.dismiss()
         }
 
-        dialogPermission?.setContentView(sheetBinding.root)
-        dialogPermission?.show()
+        bottomSheetDialogPermission?.setContentView(sheetBinding.root)
+        bottomSheetDialogPermission?.show()
     }
 
     private fun createPdf() {

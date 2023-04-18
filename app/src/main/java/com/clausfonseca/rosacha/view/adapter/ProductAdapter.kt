@@ -51,10 +51,6 @@ class ProductAdapter(
             Glide.with(context).load(R.drawable.no_image).into(holder.binding.imvProduto)
         } else Glide.with(context).load(product.urlImagem).into(holder.binding.imvProduto)
 
-        holder.binding.btnProductDelete.setOnClickListener {
-            productSelected(product, SELECT_REMOVE)
-        }
-
 //        // click no card view
 //        holder.binding.cardViewProduct1.setOnClickListener {
 //            clickProduto.clickProduto((product))

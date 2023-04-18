@@ -177,11 +177,12 @@
         app:layout_constraintGuide_begin="442dp" />
 
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/imv_product"
         android:layout_width="212dp"
         android:layout_height="209dp"
         android:scaleType="centerCrop"
+        app:riv_corner_radius="10dp"
         android:src="@drawable/no_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

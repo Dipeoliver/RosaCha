@@ -16,7 +16,6 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -60,8 +59,8 @@ class AddClientFragment : Fragment() {
     private val viewModel: AddClientViewModel by viewModels()
     private var pictureName: String? = ""
     var uriImagem: Uri? = null
-    var dialogPermission: BottomSheetDialog? = null
-    var dialog: BottomSheetDialog? = null
+    var bottomSheetDialogPermission: BottomSheetDialog? = null
+    var bottomSheetDialogCamera: BottomSheetDialog? = null
     val dialogProgress = DialogProgress()
     var email: String = ""
 
@@ -116,7 +115,7 @@ class AddClientFragment : Fragment() {
 
                     binding.imvPhotoClient.setImageURI(uriImagem)
                 }
-                dialog?.dismiss()
+                bottomSheetDialogCamera?.dismiss()
             }
         }
     }
@@ -297,7 +296,7 @@ class AddClientFragment : Fragment() {
                             checkPermissions()
                         }
                         PackageManager.PERMISSION_DENIED -> {
-                            dialog?.dismiss()
+                            bottomSheetDialogCamera?.dismiss()
                             showBottomSheetDialogPermission()
                         }
                     }
@@ -305,7 +304,7 @@ class AddClientFragment : Fragment() {
 
                 PackageManager.PERMISSION_DENIED -> {
                     if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        dialog?.dismiss()
+                        bottomSheetDialogCamera?.dismiss()
                         showBottomSheetDialogPermission()
                     }
                 }
@@ -314,12 +313,12 @@ class AddClientFragment : Fragment() {
     }
 
     private fun showBottomSheetDialogPermission() {
-        dialogPermission = BottomSheetDialog(requireContext())
+        bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
         val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
             ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
 
         sheetBinding.btnCancel.setOnClickListener {
-            dialogPermission?.dismiss()
+            bottomSheetDialogPermission?.dismiss()
         }
 
         sheetBinding.btnConfig.setOnClickListener {
@@ -328,11 +327,11 @@ class AddClientFragment : Fragment() {
             val uri = Uri.fromParts("package", requireActivity().packageName, null)
             intent.data = uri
             requireContext().startActivity(intent)
-            dialogPermission?.dismiss()
+            bottomSheetDialogPermission?.dismiss()
         }
 
-        dialogPermission?.setContentView(sheetBinding.root)
-        dialogPermission?.show()
+        bottomSheetDialogPermission?.setContentView(sheetBinding.root)
+        bottomSheetDialogPermission?.show()
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -385,7 +384,7 @@ class AddClientFragment : Fragment() {
     }
 
     private fun showBottomSheetDialogCamera() {
-        dialog = BottomSheetDialog(requireContext())
+        bottomSheetDialogCamera = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
 
         val sheetBinding: ItemCustomBottonSheetTakePictureBinding =
             ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
@@ -403,8 +402,8 @@ class AddClientFragment : Fragment() {
         sheetBinding.txtBottomGallery.setOnClickListener {
             obterImagemdaGaleria()
         }
-        dialog?.setContentView(sheetBinding.root)
-        dialog?.show()
+        bottomSheetDialogCamera?.setContentView(sheetBinding.root)
+        bottomSheetDialogCamera?.show()
     }
 
     private fun configureComponents() {

@@ -172,5 +172,12 @@
         tools:layout="@layout/fragment_sales_add">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_sales_add" />
     </fragment>
+    <fragment
+        android:id="@+id/afterSalesFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.sales.AfterSalesFragment"
+        android:label="fragment_after_sales"
+        tools:layout="@layout/fragment_after_sales" >
+    <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_after_sales" />
+    </fragment>
 
 </navigation>

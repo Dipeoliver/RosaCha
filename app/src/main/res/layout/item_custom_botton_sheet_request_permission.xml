@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
+    android:background="@drawable/botton_sheet_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView

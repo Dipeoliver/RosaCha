@@ -19,6 +19,7 @@ Feitos
 06/01/23
 - Mudar o graph para deeplink
 - Tratar para o campo barcode nao estar vazio em price
+
 - Receber o focus no campo Barcode e limpar campos ao nao encontrar produto
 - mascara para sempre ter 2 casas decimais na consulta de price
 
@@ -152,15 +153,18 @@ Feitos
 12/04/2023
 - mudar o teclado conforme o tipo de filtro (maiuscula / numeros)
 
+13/04/2023
 - Botao dentro do produto habilitar para adicionar novo intem (clone)
+- arrumar a cor de fundo do dialog do busca client
 -----------------------------------------------------------------------------
 
 A fazer
 - colocar os textos dentro da string (list sales e filtro)
-
 - customizar o bottonDialog para bordas arredondadas e colocar imagem de fundo
-- arrumar a cor de fundo do dialog do busca client
+- Tirar lixeira de produtos e click 
 
+- ao clicar na venda exibir itens vendidos
+- dentro de cada venda poder compartilhar arquivo
 
 - validação de campos
 - Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
