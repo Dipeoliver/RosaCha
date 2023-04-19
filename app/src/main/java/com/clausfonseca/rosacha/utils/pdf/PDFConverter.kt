@@ -8,18 +8,40 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.os.Build
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.FileProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.R
+import com.clausfonseca.rosacha.model.ItensSales
 import java.io.File
 import java.io.FileOutputStream
 
 class PDFConverter {
+
+
+    fun createPdf(
+        context: Context,
+        pdfDetails: PdfDetails,
+        activity: Activity,
+        adapter: MarksRecyclerAdapter
+    ) {
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.item_layout_pdf, null)
+        Log.d("itemsSalesAdapter22222222222", adapter.toString())
+
+//        val adapter = MarksRecyclerAdapter(pdfDetails.itemDetailsList)
+
+        val bitmap = createBitmapFromView(context, view, pdfDetails, adapter, activity)
+        convertBitmapToPdf(bitmap, activity)
+    }
 
     @SuppressLint("SetTextI18n")
     private fun createBitmapFromView(
@@ -37,13 +59,13 @@ class PDFConverter {
         val total = view.findViewById<TextView>(R.id.txt_total_value)
         val moneyPaid = view.findViewById<TextView>(R.id.txt_paid)
         val recyclerView = view.findViewById<RecyclerView>(R.id.pdf_marks)
-
         // texto rodapé
         val qtyParcelFinal = view.findViewById<TextView>(R.id.txt_qty_parcel)
         val parcelText = view.findViewById<TextView>(R.id.txt_parcel_text)
         val parcelText2 = view.findViewById<TextView>(R.id.txt_parcel_text2)
         val parcelDay = view.findViewById<TextView>(R.id.txt_parcel_day)
         val parcelValue = view.findViewById<TextView>(R.id.txt_parcel_value)
+
 
         invoice.text = pdfDetails.invoiceNumber
         costumerName.text = pdfDetails.costumerName
@@ -54,7 +76,6 @@ class PDFConverter {
         moneyPaid.text = String.format("%.2f", pdfDetails.moneyPaid)
         recyclerView.adapter = adapter
         parcelValue.text = String.format("%.2f", pdfDetails.parcelValue)
-
         // texto rodapé
         qtyParcelFinal.text = pdfDetails.qtyParcel.toString() + "X"
         parcelDay.text = pdfDetails.date.substring(0, 2)
@@ -113,19 +134,6 @@ class PDFConverter {
         pdfDocument.writeTo(FileOutputStream(filePath))
         pdfDocument.close()
         renderPdf(context, filePath)
-    }
-
-    fun createPdf(
-        context: Context,
-        pdfDetails: PdfDetails,
-        activity: Activity
-    ) {
-        val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.item_layout_pdf, null)
-
-        val adapter = MarksRecyclerAdapter(pdfDetails.itemDetailsList)
-        val bitmap = createBitmapFromView(context, view, pdfDetails, adapter, activity)
-        convertBitmapToPdf(bitmap, activity)
     }
 
     private fun renderPdf(context: Context, filePath: File) {

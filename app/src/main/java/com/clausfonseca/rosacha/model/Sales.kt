@@ -13,5 +13,6 @@ data class Sales(
     var month: Int? = 0,
     var year: Int? = 0,
     var qtyParcel: Int? = 0,
-    var parcelDate: String? = ""
+    var parcelDate: String? = "",
+    var parceled: Double = 0.0,
 )

@@ -171,6 +171,9 @@
         android:label="fragment_sales_add"
         tools:layout="@layout/fragment_sales_add">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_sales_add" />
+        <action
+            android:id="@+id/action_addSalesFragment_to_afterSalesFragment"
+            app:destination="@id/afterSalesFragment" />
     </fragment>
     <fragment
         android:id="@+id/afterSalesFragment"

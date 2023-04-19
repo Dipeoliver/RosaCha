@@ -41,11 +41,8 @@ class PriceFragment : Fragment() {
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var auth: FirebaseAuth
     private var dbProducts: String = ""
-
     var price: Double = 0.00
     var qtyParcel: Int = 1
-
-
     private val db = FirebaseFirestore.getInstance()
     var bottomSheetDialogPermission: BottomSheetDialog? = null
 
@@ -62,7 +59,7 @@ class PriceFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
         firebaseStorage = Firebase.storage
-        dbProducts = getString(R.string.db_product).toString()
+        dbProducts = getString(R.string.db_product)
         configureButton()
         initListeners()
         onBackPressed()

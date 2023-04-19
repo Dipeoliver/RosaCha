@@ -189,7 +189,7 @@ Enable camera access in your device settings</string>
     <string name="discount_pdf">Discount:  $</string>
     <string name="paid_pdf">Paid:         $</string>
 
-    <string name="installed_pdf">Installed in:</string>
+    <string name="installed_pdf">parceled out in:</string>
     <string name="expiration_day_pdf">Expiration every day:</string>
     <string name="msg_thanks_pdf">Rosa Cha thanks the preference</string>
     <string name="cash_sales_pdf">Cash sale</string>

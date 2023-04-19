@@ -22,7 +22,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
-import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetAfterSalesBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.model.ItensSales
 import com.clausfonseca.rosacha.model.Sales
@@ -30,8 +29,6 @@ import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
-import com.clausfonseca.rosacha.utils.pdf.PDFConverter
-import com.clausfonseca.rosacha.utils.pdf.PdfDetails
 import com.clausfonseca.rosacha.view.adapter.ItensSalesAdapter
 import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -89,23 +86,66 @@ class AddSalesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
-        dbClients = getString(R.string.db_client).toString()
-        dbProducts = getString(R.string.db_product).toString()
-        dbSales = getString(R.string.db_sales).toString()
+        dbClients = getString(R.string.db_client)
+        dbProducts = getString(R.string.db_product)
+        dbSales = getString(R.string.db_sales)
 
         onBackPressed()
         initListeners()
         initAdapter()
+    }
 
-        // ao clicar botão voltar abaixo
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
-                    findNavController().navigate(uri)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        // BARCODE
+        val result: IntentResult? =
+            IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+
+        if (result != null) {
+            if (result.contents != null) {
+                barcode = result.contents
+                getItem(barcode.toString())
+            } else {
+                // criar um dialog aqui
+                binding.edtBarcode.setText(getString(R.string.scan_failed))
+                binding.edtBarcode.requestFocus()
+                binding.edtBarcode.selectAll()
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+            // criar um dialog aqui
+            binding.edtBarcode.requestFocus()
+            binding.edtBarcode.selectAll()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
+            when (grantResults[0]) {
+                PackageManager.PERMISSION_GRANTED -> {
+                    when (grantResults[1]) {
+                        PackageManager.PERMISSION_GRANTED -> {
+                            checkPermissions()
+                        }
+
+                        PackageManager.PERMISSION_DENIED -> {
+                            showBottomSheetDialogPermission()
+                        }
+                    }
                 }
-            })
+
+                PackageManager.PERMISSION_DENIED -> {
+                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                        showBottomSheetDialogPermission()
+                    }
+                }
+            }
+        }
     }
 
     private fun initListeners() {
@@ -160,7 +200,6 @@ class AddSalesFragment : Fragment() {
 
         binding.btnAddSales.setOnClickListener {
             if (itemsSales.size == 0) {
-
                 Util.exibirToast(requireContext(), getString(R.string.add_item_sales))
             } else {
                 if (finalPrice < 0) {
@@ -221,7 +260,7 @@ class AddSalesFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
+                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
                     findNavController().navigate(uri)
                 }
             })
@@ -247,59 +286,8 @@ class AddSalesFragment : Fragment() {
         integrator.initiateScan()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
-            when (grantResults[0]) {
-                PackageManager.PERMISSION_GRANTED -> {
-                    when (grantResults[1]) {
-                        PackageManager.PERMISSION_GRANTED -> {
-                            checkPermissions()
-                        }
-                        PackageManager.PERMISSION_DENIED -> {
-                            showBottomSheetDialogPermission()
-                        }
-                    }
-                }
-
-                PackageManager.PERMISSION_DENIED -> {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        showBottomSheetDialogPermission()
-                    }
-                }
-            }
-        }
-    }
-
 
     // BARCODE     ------------------------------
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        // BARCODE
-        val result: IntentResult? =
-            IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-
-        if (result != null) {
-            if (result.contents != null) {
-                barcode = result.contents
-                getItem(barcode.toString())
-            } else {
-                // criar um dialog aqui
-                binding.edtBarcode.setText(getString(R.string.scan_failed))
-                binding.edtBarcode.requestFocus()
-                binding.edtBarcode.selectAll()
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-            // criar um dialog aqui
-            binding.edtBarcode.requestFocus()
-            binding.edtBarcode.selectAll()
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun insertSales() {
@@ -333,50 +321,20 @@ class AddSalesFragment : Fragment() {
         addSales.itens = itemsSales
         addSales.qtyParcel = qtyParcel
         addSales.parcelDate = actualDate.substring(0, 2)
-
+        addSales.parceled = (parcelValue * 100.0).roundToInt() / 100.0
         db.collection(dbSales).document(invoiceNumber)
             .set(addSales).addOnCompleteListener {
-
 
 //                showBottomSheetDialogAfterSales()
                 dialogProgress.dismiss()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 // Chamar outra Tela Se OK
-                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/fragment_after_sales")
-                findNavController().navigate(uri)
+//                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/fragment_after_sales")
+//                findNavController().navigate(uri)
 
-
-
-
-
-
-
-
-
-
-
-
-
+                val args = Bundle()
+                args.putString("id", invoiceNumber)
+                findNavController().navigate(R.id.action_addSalesFragment_to_afterSalesFragment, args)
 
             }.addOnFailureListener {
                 Util.exibirToast(requireContext(), getString(R.string.error_add_sales))
@@ -538,34 +496,6 @@ class AddSalesFragment : Fragment() {
         }
     }
 
-    private fun showBottomSheetDialogAfterSales() {
-        dialogAfterSales = BottomSheetDialog(requireContext())
-
-        val sheetBinding: ItemCustomBottonSheetAfterSalesBinding =
-            ItemCustomBottonSheetAfterSalesBinding.inflate(layoutInflater, null, false)
-
-        sheetBinding.clNewSales.setOnClickListener {
-            dialogAfterSales?.dismiss()
-            cleaner()
-        }
-
-        sheetBinding.clListSales.setOnClickListener {
-            // link para lista de vendas
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
-            findNavController().navigate(uri)
-            dialogAfterSales?.dismiss()
-
-        }
-
-        sheetBinding.clShareSales.setOnClickListener {
-            createPdf()
-            dialogAfterSales?.dismiss()
-            cleaner()
-        }
-        dialogAfterSales?.setContentView(sheetBinding.root)
-        dialogAfterSales?.setCancelable(false)
-        dialogAfterSales?.show()
-    }
 
     private fun showBottomSheetDialogPermission() {
         bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
@@ -589,35 +519,46 @@ class AddSalesFragment : Fragment() {
         bottomSheetDialogPermission?.show()
     }
 
-    private fun createPdf() {
-        // chamada para gerar o PDF
 
-        val pdfDetails = PdfDetails(
-            invoiceNumber,
-            binding.txtClient.text.toString().uppercase(),
-            actualDate,
-            soma,
-            discount,
-            finalPrice,
-            moneyPaid,
-            qtyParcel,
-            parcelValue,
-            itemsSales
-        )
-        val pdfConverter = PDFConverter()
-        pdfConverter.createPdf(requireContext(), pdfDetails, requireActivity())
-    }
+//    private fun showBottomSheetDialogAfterSales() {
+//        dialogAfterSales = BottomSheetDialog(requireContext())
+//
+//        val sheetBinding: ItemCustomBottonSheetAfterSalesBinding =
+//            ItemCustomBottonSheetAfterSalesBinding.inflate(layoutInflater, null, false)
+//
+//        sheetBinding.clNewSales.setOnClickListener {
+//            dialogAfterSales?.dismiss()
+//            cleaner()
+//        }
+//
+//        sheetBinding.clListSales.setOnClickListener {
+//            // link para lista de vendas
+//            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
+//            findNavController().navigate(uri)
+//            dialogAfterSales?.dismiss()
+//
+//        }
+//
+//        sheetBinding.clShareSales.setOnClickListener {
+//            createPdf()
+//            dialogAfterSales?.dismiss()
+//            cleaner()
+//        }
+//        dialogAfterSales?.setContentView(sheetBinding.root)
+//        dialogAfterSales?.setCancelable(false)
+//        dialogAfterSales?.show()
+//    }
 
-    private fun cleaner() {
-        binding.seekBar.progress = 0
-        binding.seekBar2.progress = 0
-        binding.edtPaid.setText("")
-        binding.txtTotalPrice.text = getString(R.string.symbol_000)
-        binding.txtFinalPrice.text = getString(R.string.symbol_000)
-        binding.txtParcelValue.text = getString(R.string.symbol_000)
-        binding.txtClient.setText("")
-        itemsSales.clear()
-        itemsSalesAdapter.notifyDataSetChanged()
-        binding.edtBarcode.requestFocus()
-    }
+//    private fun cleaner() {
+//        binding.seekBar.progress = 0
+//        binding.seekBar2.progress = 0
+//        binding.edtPaid.setText("")
+//        binding.txtTotalPrice.text = getString(R.string.symbol_000)
+//        binding.txtFinalPrice.text = getString(R.string.symbol_000)
+//        binding.txtParcelValue.text = getString(R.string.symbol_000)
+//        binding.txtClient.setText("")
+//        itemsSales.clear()
+//        itemsSalesAdapter.notifyDataSetChanged()
+//        binding.edtBarcode.requestFocus()
+//    }
 }

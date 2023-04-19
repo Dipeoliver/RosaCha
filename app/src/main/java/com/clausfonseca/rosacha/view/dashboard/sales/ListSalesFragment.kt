@@ -187,7 +187,7 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
 
             if (!newText.isNullOrEmpty()) {
                 newDouble = newText.toDouble()
-                db!!.collection(dbSales).whereEqualTo("totalPrice", newDouble).limit(5).get().addOnSuccessListener { results ->
+                db!!.collection(dbSales).whereEqualTo("totalPrice", newDouble).limit(30).get().addOnSuccessListener { results ->
                     if (results.size() > 0) {
                         salesList.clear()
                         for (result in results) {
@@ -207,7 +207,7 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
         } else {
             newDouble = newText
             db!!.collection(dbSales).orderBy(dbFilter).startAt(newDouble)
-                .endAt(newText + "\uf8ff").limit(5).get().addOnSuccessListener { results ->
+                .endAt(newText + "\uf8ff").limit(30).get().addOnSuccessListener { results ->
                     if (results.size() > 0) {
                         salesList.clear()
                         for (result in results) {
