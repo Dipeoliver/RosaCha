@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.model.ItensSales
-import org.json.JSONArray
 
 class MarksRecyclerAdapter(private val subjectItemList: List<ItensSales>) :
     RecyclerView.Adapter<MarksRecyclerAdapter.MarksViewHolder>() {
@@ -25,13 +24,9 @@ class MarksRecyclerAdapter(private val subjectItemList: List<ItensSales>) :
     }
 
     override fun onBindViewHolder(holder: MarksViewHolder, position: Int) {
-        // transforma objeto em json
-        val jsonArray = JSONArray(subjectItemList)
-
-        // pegando valores dentro json
-        holder.itemBarcode.text = jsonArray.getJSONObject(position).getString("barcode").toString()
-        holder.itemDescription.text = jsonArray.getJSONObject(position).getString("description").toString()
-        holder.itemValue.text = jsonArray.getJSONObject(position).getDouble("salesPrice").toString()
+        holder.itemBarcode.text = subjectItemList[position].barcode
+        holder.itemDescription.text = subjectItemList[position].description
+        holder.itemValue.text = subjectItemList[position].salesPrice.toString()
     }
 
     override fun getItemCount(): Int {

@@ -111,6 +111,9 @@
         android:label="fragment_sales"
         tools:layout="@layout/fragment_sales">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/sales_fragment" />
+        <action
+            android:id="@+id/action_sales_fragment_to_detailSalesFragment"
+            app:destination="@id/detailSalesFragment" />
     </fragment>
     <fragment
         android:id="@+id/addClient_fragment"
@@ -164,7 +167,9 @@
         android:id="@+id/listSalesFragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.sales.ListSalesFragment"
         android:label="fragment_sales_list"
-        tools:layout="@layout/fragment_sales_list" />
+        tools:layout="@layout/fragment_sales_list" >
+    <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_sales_list" />
+    </fragment>
     <fragment
         android:id="@+id/addSalesFragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.sales.AddSalesFragment"
@@ -179,8 +184,18 @@
         android:id="@+id/afterSalesFragment"
         android:name="com.clausfonseca.rosacha.view.dashboard.sales.AfterSalesFragment"
         android:label="fragment_after_sales"
-        tools:layout="@layout/fragment_after_sales" >
-    <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_after_sales" />
+        tools:layout="@layout/fragment_after_sales">
     </fragment>
+    <fragment
+        android:id="@+id/detailSalesFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.sales.DetailSalesFragment"
+        android:label="fragment_detail_sales"
+        tools:layout="@layout/fragment_detail_sales">
+        <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_detail_sales" />
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+
 
 </navigation>

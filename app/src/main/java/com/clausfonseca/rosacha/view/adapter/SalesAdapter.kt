@@ -3,10 +3,13 @@ package com.clausfonseca.rosacha.view.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.Callback.makeMovementFlags
 import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.databinding.ItemRecyclerSalesListBinding
 import com.clausfonseca.rosacha.model.Sales
 import com.clausfonseca.rosacha.view.dashboard.sales.ListSalesFragment
+
 
 class SalesAdapter(
     private val context: Context,

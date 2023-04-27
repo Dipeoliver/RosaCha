@@ -8,24 +8,18 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.pdf.PdfDocument
-import android.net.Uri
 import android.os.Build
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.FileProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.R
-import com.clausfonseca.rosacha.model.ItensSales
 import java.io.File
 import java.io.FileOutputStream
 
 class PDFConverter {
-
 
     fun createPdf(
         context: Context,
@@ -35,10 +29,6 @@ class PDFConverter {
     ) {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.item_layout_pdf, null)
-        Log.d("itemsSalesAdapter22222222222", adapter.toString())
-
-//        val adapter = MarksRecyclerAdapter(pdfDetails.itemDetailsList)
-
         val bitmap = createBitmapFromView(context, view, pdfDetails, adapter, activity)
         convertBitmapToPdf(bitmap, activity)
     }
@@ -68,28 +58,26 @@ class PDFConverter {
 
 
         invoice.text = pdfDetails.invoiceNumber
-        costumerName.text = pdfDetails.costumerName
-        date.text = pdfDetails.date
-        subTotal.text = String.format("%.2f", pdfDetails.subTotal)
-        discount.text = String.format("%.2f", pdfDetails.discount)
-        total.text = String.format("%.2f", pdfDetails.total)
-        moneyPaid.text = String.format("%.2f", pdfDetails.moneyPaid)
+        costumerName.text = pdfDetails.sales.client
+        date.text = pdfDetails.sales.salesDate
+        subTotal.text = String.format("%.2f", pdfDetails.sales.price)
+        discount.text = String.format("%.2f", pdfDetails.sales.discount)
+        total.text = String.format("%.2f", pdfDetails.sales.totalPrice)
+        moneyPaid.text = String.format("%.2f", pdfDetails.sales.paid)
         recyclerView.adapter = adapter
-        parcelValue.text = String.format("%.2f", pdfDetails.parcelValue)
+        parcelValue.text = String.format("%.2f", pdfDetails.sales.parceled)
         // texto rodapé
-        qtyParcelFinal.text = pdfDetails.qtyParcel.toString() + "X"
-        parcelDay.text = pdfDetails.date.substring(0, 2)
+        qtyParcelFinal.text = pdfDetails.sales.qtyParcel.toString() + "X"
+        parcelDay.text = pdfDetails.sales.parcelDate?.substring(0, 2)
 
-        val checkParcel: Int = pdfDetails.qtyParcel
+        val checkParcel: Int = pdfDetails.sales.qtyParcel!!
         if (checkParcel == 1) {
             parcelText.text = context.getString(R.string.cash_sales_pdf)
             parcelText2.visibility = View.GONE
             qtyParcelFinal.visibility = View.GONE
             parcelDay.visibility = View.GONE
-            parcelValue.visibility = View.GONE
-        } else {
-
         }
+
         return createBitmap(context, view, activity)
     }
 

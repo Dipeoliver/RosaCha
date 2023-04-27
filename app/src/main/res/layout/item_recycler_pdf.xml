@@ -55,10 +55,11 @@
             android:layout_height="20dp"
             android:layout_marginStart="16dp"
             android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_barcode_recy"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.49"
             app:layout_constraintStart_toEndOf="@+id/rs"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txt_barcode_recy"
             tools:text="Value" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

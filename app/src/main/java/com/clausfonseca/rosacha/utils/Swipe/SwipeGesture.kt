@@ -8,16 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.R
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
-abstract class SwipeGesture(context: Context) : ItemTouchHelper.SimpleCallback(
+abstract class SwipeGesture(context: Context, isDeleteGesture: Boolean = false) : ItemTouchHelper.SimpleCallback(
     0,
     ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
 ) {
 
-    private val deleteColor = ContextCompat.getColor(context, R.color.red)
-    private val deleteIcon = R.drawable.ic_baseline_delete_forever_24
-
+    private val disableRightGesture = isDeleteGesture
+    private val requeryContext = context
+    private var deleteColor = ContextCompat.getColor(context, R.color.red)
+    private var deleteIcon = R.drawable.ic_baseline_delete_forever_24
     private val archiveColor = ContextCompat.getColor(context, R.color.blue)
-    private val archiveIcon = R.drawable.ic_baseline_edit_24
+    private var archiveIcon = R.drawable.ic_baseline_edit_24
+
 
     override fun onMove(
         recyclerView: RecyclerView,
@@ -28,6 +30,7 @@ abstract class SwipeGesture(context: Context) : ItemTouchHelper.SimpleCallback(
     }
 
     override fun onChildDraw(
+
         c: Canvas,
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
@@ -36,6 +39,11 @@ abstract class SwipeGesture(context: Context) : ItemTouchHelper.SimpleCallback(
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
+        if (disableRightGesture) {
+            deleteColor = ContextCompat.getColor(requeryContext, R.color.blue)
+            deleteIcon = R.drawable.ic_visibility
+            archiveIcon = R.drawable.ic_visibility
+        }
         RecyclerViewSwipeDecorator.Builder(
             c,
             recyclerView,

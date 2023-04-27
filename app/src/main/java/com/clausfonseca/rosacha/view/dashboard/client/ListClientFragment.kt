@@ -207,7 +207,6 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
                         }
 
-
                         ItemTouchHelper.RIGHT -> {
                             val clientPosition = clientlist[position]
                             selectedClient(clientPosition)

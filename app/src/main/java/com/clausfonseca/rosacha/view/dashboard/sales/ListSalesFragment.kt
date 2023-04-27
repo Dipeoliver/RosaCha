@@ -13,22 +13,24 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentSalesListBinding
 import com.clausfonseca.rosacha.model.Sales
 import com.clausfonseca.rosacha.utils.DialogProgress
+import com.clausfonseca.rosacha.utils.Swipe.SwipeGesture
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.view.adapter.SalesAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.storage.FirebaseStorage
+
 
 class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
     private lateinit var binding: FragmentSalesListBinding
     private lateinit var salesAdapter: SalesAdapter
-    private lateinit var firebaseStorage: FirebaseStorage
     private var dbSales: String = ""
     private val salesList = mutableListOf<Sales>()
     private var db: FirebaseFirestore? = null
@@ -56,10 +58,6 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
         onBackPressed()
     }
 
-    override fun setSingleChoiceItems(filter: Array<String>, selecteDItemIndex: Int, any: Any): Any {
-        TODO("Not yet implemented")
-    }
-
     private fun initListeners() {
 
         binding.fabAddSales.setOnClickListener {
@@ -77,6 +75,10 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
         else getMoreSales()
     }
 
+    override fun setSingleChoiceItems(filter: Array<String>, selecteDItemIndex: Int, any: Any): Any {
+        TODO("Not yet implemented")
+    }
+
     private fun onBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -91,6 +93,8 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
         binding.rvSalesList.setHasFixedSize(true)
         salesAdapter = SalesAdapter(requireContext(), salesList, this)
         binding.rvSalesList.adapter = salesAdapter
+
+        swipeToGesture(binding.rvSalesList)
     }
 
     private fun getSales() {
@@ -244,16 +248,19 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
                         binding.svSales.queryHint = "filter by Date"
                         binding.svSales.inputType = InputType.TYPE_CLASS_DATETIME
                     }
+
                     "Id" -> {
                         dbFilter = "id"
                         binding.svSales.queryHint = "filter by ID"
                         binding.svSales.inputType = InputType.TYPE_CLASS_NUMBER
                     }
+
                     "Price" -> {
                         dbFilter = "totalPrice"
                         binding.svSales.queryHint = "filter by Total Price"
                         binding.svSales.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL + InputType.TYPE_CLASS_NUMBER
                     }
+
                     else -> {
                         dbFilter = "client"
                         binding.svSales.queryHint = "filter by Client"
@@ -268,4 +275,40 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
     }
 
 
+    private fun swipeToGesture(itemRv: RecyclerView?) {
+        val swipeGesture = object : SwipeGesture(requireContext(), true) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                var actionBtnTapped = false
+                try {
+                    when (direction) {
+                        ItemTouchHelper.LEFT -> {
+                            val salesPosition = salesList[position].id
+                            selectedSales(salesPosition ?: "")
+                        }
+
+                        ItemTouchHelper.RIGHT -> {
+                            val salesPosition = salesList[position].id
+                            selectedSales(salesPosition ?: "")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        val touchHelper = ItemTouchHelper(swipeGesture)
+        touchHelper.attachToRecyclerView(itemRv)
+
+    }
+
+    private fun selectedSales(id: String) {
+        findNavController().navigate(
+            SalesFragmentDirections.actionSalesFragmentToDetailSalesFragment(
+                id
+            )
+        )
+    }
 }
+

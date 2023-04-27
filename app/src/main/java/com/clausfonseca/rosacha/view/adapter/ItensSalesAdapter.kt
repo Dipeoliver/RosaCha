@@ -9,8 +9,8 @@ import com.clausfonseca.rosacha.model.ItensSales
 
 class ItensSalesAdapter(
     private val context: Context,
-    private val itensSales: MutableList<ItensSales>,
-    val itensSalesSelected: (MutableList<ItensSales>) -> Unit
+    private var itemsSales: MutableList<ItensSales>,
+    val itemsSalesSelected: (MutableList<ItensSales>) -> Unit
 ) : RecyclerView.Adapter<ItensSalesAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -23,23 +23,21 @@ class ItensSalesAdapter(
         )
     }
 
-    override fun getItemCount() = itensSales.size
+    override fun getItemCount() = itemsSales.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-        val item = itensSales[position]
+        val item = itemsSales[position]
         holder.binding.txtBarcode.text = item.barcode
         holder.binding.txtDescription.text = item.description
         holder.binding.txtSalesPrice.text = String.format("%.2f", item.salesPrice)
 
         holder.binding.btnDeleteIten.setOnClickListener {
-
-            itensSales.remove(item)
+            itemsSales.remove(item)
             notifyItemRemoved(holder.adapterPosition)
-            itensSalesSelected(itensSales)
+            itemsSalesSelected(itemsSales)
         }
     }
-
 
     inner class MyViewHolder(val binding: ItemRecyclerSalesAddBinding) :
         RecyclerView.ViewHolder(binding.root)

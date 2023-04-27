@@ -193,6 +193,7 @@ Enable camera access in your device settings</string>
     <string name="expiration_day_pdf">Expiration every day:</string>
     <string name="msg_thanks_pdf">Rosa Cha thanks the preference</string>
     <string name="cash_sales_pdf">Cash sale</string>
+    <string name="error_pdf">error generating PDF</string>
 
     <!-- errors Firebase Authentication-->
     <string name="account_not_registered_register_fragment">There is no user record corresponding to this identifier.</string>

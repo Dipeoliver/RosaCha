@@ -72,7 +72,6 @@ class AddSalesFragment : Fragment() {
     private var barcode: String? = ""
     private var client: String = ""
     private val dialogProgress = DialogProgress()
-    private var dialogAfterSales: BottomSheetDialog? = null
     private var bottomSheetDialogPermission: BottomSheetDialog? = null
 
     override fun onCreateView(
@@ -518,47 +517,4 @@ class AddSalesFragment : Fragment() {
         bottomSheetDialogPermission?.setContentView(sheetBinding.root)
         bottomSheetDialogPermission?.show()
     }
-
-
-//    private fun showBottomSheetDialogAfterSales() {
-//        dialogAfterSales = BottomSheetDialog(requireContext())
-//
-//        val sheetBinding: ItemCustomBottonSheetAfterSalesBinding =
-//            ItemCustomBottonSheetAfterSalesBinding.inflate(layoutInflater, null, false)
-//
-//        sheetBinding.clNewSales.setOnClickListener {
-//            dialogAfterSales?.dismiss()
-//            cleaner()
-//        }
-//
-//        sheetBinding.clListSales.setOnClickListener {
-//            // link para lista de vendas
-//            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
-//            findNavController().navigate(uri)
-//            dialogAfterSales?.dismiss()
-//
-//        }
-//
-//        sheetBinding.clShareSales.setOnClickListener {
-//            createPdf()
-//            dialogAfterSales?.dismiss()
-//            cleaner()
-//        }
-//        dialogAfterSales?.setContentView(sheetBinding.root)
-//        dialogAfterSales?.setCancelable(false)
-//        dialogAfterSales?.show()
-//    }
-
-//    private fun cleaner() {
-//        binding.seekBar.progress = 0
-//        binding.seekBar2.progress = 0
-//        binding.edtPaid.setText("")
-//        binding.txtTotalPrice.text = getString(R.string.symbol_000)
-//        binding.txtFinalPrice.text = getString(R.string.symbol_000)
-//        binding.txtParcelValue.text = getString(R.string.symbol_000)
-//        binding.txtClient.setText("")
-//        itemsSales.clear()
-//        itemsSalesAdapter.notifyDataSetChanged()
-//        binding.edtBarcode.requestFocus()
-//    }
 }
