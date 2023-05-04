@@ -2,7 +2,6 @@ package com.clausfonseca.rosacha.view.dashboard.sales
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +48,7 @@ class AfterSalesFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (invoiceNumber == "") {
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
             findNavController().navigate(uri)
         }
     }

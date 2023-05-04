@@ -78,55 +78,82 @@
             android:layout_height="match_parent">
 
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/barcodeContainer"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="60dp"
-                android:text="@string/barcode"
-                android:textColor="@color/white"
+                android:layout_marginTop="62dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="13"
+                app:helperText=""
+                app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:startIconDrawable="@drawable/ic_qr_code_2">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_edit"
+                    android:hint="@string/barcode"
+                    android:inputType="number"
+                    android:lines="1"
+                    android:maxLength="13"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/edt_barcode"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="4dp"
-                android:background="@drawable/bg_edit"
-                android:ems="10"
-                android:hint="@string/barcode"
-                android:inputType="number"
-                android:padding="08dp"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
             <ImageButton
                 android:id="@+id/btn_scan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
                 android:backgroundTint="@color/white"
                 android:src="@drawable/ic_baseline_qr_code_scanner_24"
-                app:layout_constraintBottom_toBottomOf="@+id/edt_barcode"
-                app:layout_constraintStart_toEndOf="@+id/edt_barcode"
-                app:layout_constraintTop_toTopOf="@+id/edt_barcode" />
+                app:layout_constraintBottom_toTopOf="@+id/guideline19"
+                app:layout_constraintEnd_toStartOf="@+id/btn_price_search"
+                app:layout_constraintTop_toTopOf="@+id/barcodeContainer" />
 
 
             <ImageButton
                 android:id="@+id/btn_price_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginEnd="24dp"
                 android:backgroundTint="@color/white"
                 android:src="@drawable/ic_baseline_search_24"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_scan"
-                app:layout_constraintStart_toEndOf="@+id/btn_scan"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/btn_scan" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phoneContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                app:errorIconTint="@color/red"
+                app:helperText=""
+                app:helperTextTextColor="@android:color/holo_red_dark"
+                app:layout_constraintEnd_toEndOf="@+id/btn_scan"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline21"
+                app:startIconDrawable="@drawable/ic_contact_phone">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_client"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_edit"
+                    android:hint="@string/client_help"
+                    android:inputType="textAutoComplete"
+                    android:lines="1"
+                    android:maxLength="15"
+                    android:textSize="12sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <TextView
                 android:id="@+id/textView25"
@@ -137,12 +164,12 @@
                 android:text="@string/list_items"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_client" />
+                app:layout_constraintTop_toBottomOf="@+id/phoneContainer" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="0dp"
-                android:layout_height="330dp"
+                android:layout_height="300dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
@@ -322,34 +349,6 @@
                 app:layout_constraintStart_toEndOf="@+id/textView26"
                 app:layout_constraintTop_toTopOf="@+id/textView26" />
 
-            <TextView
-                android:id="@+id/textView18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/client_"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edt_barcode" />
-
-            <EditText
-                android:id="@+id/txt_client"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_edit"
-                android:ems="10"
-                android:hint="@string/client_help"
-                android:inputType="textAutoComplete"
-                android:nextFocusDown="@id/edt_paid"
-                android:padding="8dp"
-                android:text=""
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="@+id/btn_scan"
-                app:layout_constraintStart_toStartOf="@+id/edt_barcode"
-                app:layout_constraintTop_toBottomOf="@+id/textView18" />
-
 
             <ImageButton
                 android:id="@+id/btn_search_client"
@@ -357,10 +356,10 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 android:src="@drawable/ic_baseline_search_24"
-                app:layout_constraintBottom_toBottomOf="@+id/txt_client"
+                app:layout_constraintBottom_toBottomOf="@+id/phoneContainer"
                 app:layout_constraintEnd_toEndOf="@+id/btn_price_search"
                 app:layout_constraintStart_toStartOf="@+id/btn_price_search"
-                app:layout_constraintTop_toTopOf="@+id/txt_client" />
+                app:layout_constraintTop_toTopOf="@+id/phoneContainer" />
 
             <Button
                 android:id="@+id/btn_add_sales"
@@ -438,6 +437,34 @@
                 app:layout_constraintBottom_toBottomOf="@+id/textView38"
                 app:layout_constraintStart_toEndOf="@+id/textView38"
                 app:layout_constraintTop_toTopOf="@+id/textView38" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="112dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="133dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="133dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="183dp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,9 +5,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ItensSales(
-    var id: String? = "",
-    var barcode: String? = "",
-    var description: String? = "",
-    var salesPrice: Double? = 0.0,
+    var id: String = "",
+    var barcode: String = "",
+    var description: String = "",
+    var salesPrice: Double = 0.0,
 
     ) : Parcelable

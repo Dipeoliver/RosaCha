@@ -296,9 +296,8 @@ class AddSalesFragment : Fragment() {
         val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         actualDate = dateTimeFormat.format(date)
 
-        val currentDate: LocalDate = LocalDate.now()
-        val currentYear: Int = currentDate.year
-        val currentMonth: Int = currentDate.monthValue
+        val calendar = Calendar.getInstance()
+
 
         invoiceNumber =
             dateTimeFormat.format(date)
@@ -315,21 +314,16 @@ class AddSalesFragment : Fragment() {
         addSales.client = binding.txtClient.text.toString().uppercase()
         addSales.salesOwner = auth.currentUser?.email
         addSales.salesDate = actualDate
-        addSales.month = currentMonth
-        addSales.year = currentYear
+        addSales.month = calendar.get(Calendar.MONTH) + 1
+        addSales.year = calendar.get(Calendar.YEAR)
         addSales.itens = itemsSales
         addSales.qtyParcel = qtyParcel
-        addSales.parcelDate = actualDate.substring(0, 2)
+        addSales.parcelDate = calendar.get(Calendar.DAY_OF_MONTH)
         addSales.parceled = (parcelValue * 100.0).roundToInt() / 100.0
         db.collection(dbSales).document(invoiceNumber)
             .set(addSales).addOnCompleteListener {
 
-//                showBottomSheetDialogAfterSales()
                 dialogProgress.dismiss()
-
-                // Chamar outra Tela Se OK
-//                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/fragment_after_sales")
-//                findNavController().navigate(uri)
 
                 val args = Bundle()
                 args.putString("id", invoiceNumber)

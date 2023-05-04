@@ -248,7 +248,7 @@ class PriceFragment : Fragment() {
     // ----------------------------------------------------------------------------------
 
     private fun initListeners() {
-        binding.edtBarcodePrice.requestFocus()
+//        binding.edtBarcodePrice.requestFocus()
         binding.btnSearchPrice.setOnClickListener {
             selectPrice(binding.edtBarcodePrice.text.toString())
             binding.btnSearchPrice.hideKeyboard()

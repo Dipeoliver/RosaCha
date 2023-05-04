@@ -13,6 +13,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +42,6 @@ import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.mask.DateMask
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
-import com.clausfonseca.rosacha.utils.mask.validateEmailRegex
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -78,25 +80,32 @@ class AddClientFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.edtNameClient.requestFocus()
         firebaseStorage = Firebase.storage
         dbClients = getString(R.string.db_client)
         initListeners()
         configureComponents()
+        onBackPressed()
 
-        // ao clicar botão voltar abaixo
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
-                    findNavController().navigate(uri)
-                }
-            })
+    }
+
+    private fun initListeners() {
+        binding.btnAddClient.setOnClickListener {
+            submitForm()
+        }
+
+        binding.imvPhotoClient.setOnClickListener {
+            if (!binding.edtPhoneClient.text.isNullOrEmpty()) showBottomSheetDialogCamera()
+            else Util.exibirToast(requireContext(), getString(R.string.required_phone_client))
+        }
+
+        binding.btnBack.setOnClickListener {
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
+            findNavController().navigate(uri)
+        }
     }
 
 
-    // IMAGEVIEW   --------------------------------------------------------
+    // region - Camera & ImageView
     @Suppress("DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
@@ -119,10 +128,7 @@ class AddClientFragment : Fragment() {
             }
         }
     }
-    // -----------------------------------------------------------------------
 
-
-    // STORAGE----------------------------------------------------------------------------
     //  Capturar imagem da Camera
     private fun obterImagemdaCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -158,6 +164,17 @@ class AddClientFragment : Fragment() {
         startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), 11)
     }
 
+    // para corrigir problema de falta de imagem selecionada
+    fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path =
+            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+        return Uri.parse(path.toString())
+    }
+    // endregion
+
+    // region - FirebaseStorage
     // com recurso para diminuir a imagem
     fun uploadImagem() {
         dialogProgress.show(childFragmentManager, "0")
@@ -226,10 +243,9 @@ class AddClientFragment : Fragment() {
             }
         }
     }
-    // ----------------------------------------------------------------------------------
+    // endregion
 
-
-    // FIRESTORE--------------------------------------------------------------------------
+    // region - FirebaseFirestore
     private fun validateData(url: String) {
 
         val phone = binding.edtPhoneClient.text.toString()
@@ -262,10 +278,9 @@ class AddClientFragment : Fragment() {
                 dialogProgress.dismiss()
             }
     }
-    // ----------------------------------------------------------------------------------
+    // endregion
 
-
-    // Perdir Permissão para acessar a camera -------------------------------------------------------------------------
+    // region - RequestCameraAccess
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
@@ -295,6 +310,7 @@ class AddClientFragment : Fragment() {
                         PackageManager.PERMISSION_GRANTED -> {
                             checkPermissions()
                         }
+
                         PackageManager.PERMISSION_DENIED -> {
                             bottomSheetDialogCamera?.dismiss()
                             showBottomSheetDialogPermission()
@@ -311,6 +327,97 @@ class AddClientFragment : Fragment() {
             }
         }
     }
+// endregion
+
+    // region - FieldValidation
+    private fun validName(): Boolean {
+        val nameText = binding.edtNameClient.text.toString()
+        if (nameText == "") {
+            binding.nameContainer.error = getString(R.string.required_field)
+            return false
+        }
+        return true
+    }
+
+    private fun textNameChange() {
+        binding.edtNameClient.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.nameContainer.error = ""
+            }
+        })
+    }
+
+    private fun validPhone(): Boolean {
+        val phoneText = binding.edtPhoneClient.text.toString()
+        if (phoneText == "") {
+            binding.phoneContainer.error = getString(R.string.required_field)
+            return false
+        }
+        if (phoneText.length < 14) {
+            binding.phoneContainer.error = getString(R.string.must_be_14_digits)
+            return false
+        }
+        return true
+    }
+
+    private fun textPhoneChange() {
+        binding.edtPhoneClient.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.phoneContainer.error = ""
+            }
+        })
+    }
+
+    private fun validEmail(): Boolean {
+        val emailText = binding.edtEmailClient.text.toString().trim().lowercase()
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
+            binding.emailContainer.error = getString(R.string.invalid_email_address)
+            return false
+        }
+        return true
+    }
+
+    private fun textEmailChange() {
+        binding.edtEmailClient.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.emailContainer.error = ""
+            }
+        })
+    }
+
+    private fun submitForm() {
+        val name = validName()
+        textNameChange()
+        val phone = validPhone()
+        textPhoneChange()
+        var email: Boolean = true
+        if (!binding.edtEmailClient.text.isNullOrEmpty()) {
+            email = validEmail()
+        }
+        textEmailChange()
+
+        if (name && phone && email) {
+            if (uriImagem != null) {
+                uploadImagem()
+            } else {
+                // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
+                val drawable =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
+                val bitmap = drawable?.toBitmap()
+                uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
+                uploadImagem()
+            }
+        }
+    }
+    // endregion
+
+    // region - BottomSheetDialog
 
     private fun showBottomSheetDialogPermission() {
         bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
@@ -332,55 +439,6 @@ class AddClientFragment : Fragment() {
 
         bottomSheetDialogPermission?.setContentView(sheetBinding.root)
         bottomSheetDialogPermission?.show()
-    }
-
-    // ----------------------------------------------------------------------------------------------------------------
-
-    private fun initListeners() {
-        binding.btnAddClient.setOnClickListener {
-
-            email = binding.edtEmailClient.text.toString().trim().lowercase()
-
-            if (binding.edtNameClient.text.isNotEmpty()
-                && binding.edtPhoneClient.text.length > 13
-            ) {
-                if (email != "" && !email.validateEmailRegex(email)) {
-                    Util.exibirToast(requireContext(), getString(R.string.invalid_email_register_fragment))
-                } else {
-                    if (uriImagem != null) {
-                        uploadImagem()
-                    } else {
-                        // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
-                        val drawable =
-                            ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
-                        val bitmap = drawable?.toBitmap()
-                        uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
-                        uploadImagem()
-                    }
-                }
-            } else {
-                Util.exibirToast(requireContext(), getString(R.string.required_fields))
-            }
-        }
-
-        binding.imvPhotoClient.setOnClickListener {
-            if (binding.edtPhoneClient.text.isNotEmpty()) showBottomSheetDialogCamera()
-            else Util.exibirToast(requireContext(), getString(R.string.required_phone_client))
-        }
-
-        binding.btnBack.setOnClickListener {
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
-            findNavController().navigate(uri)
-        }
-    }
-
-    // para corrigir problema de falta de imagem selecionada
-    fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path =
-            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
-        return Uri.parse(path.toString())
     }
 
     private fun showBottomSheetDialogCamera() {
@@ -406,6 +464,8 @@ class AddClientFragment : Fragment() {
         bottomSheetDialogCamera?.show()
     }
 
+// endregion
+
     private fun configureComponents() {
         //Mask to Phone
         val country = PhoneNumberFormatType.PT_BR // OR PhoneNumberFormatType.PT_BR
@@ -422,12 +482,23 @@ class AddClientFragment : Fragment() {
         )
     }
 
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
+                    findNavController().navigate(uri)
+                }
+            })
+    }
+
     private fun cleaner() {
         binding.apply {
-            edtNameClient.text.clear()
-            edtPhoneClient.text.clear()
-            edtEmailClient.text.clear()
-            edtBirthdayClient.text.clear()
+            edtNameClient.text = null
+            edtPhoneClient.text = null
+            edtEmailClient.text = null
+            edtBirthdayClient.text = null
             edtNameClient.requestFocus()
             binding.imvPhotoClient.setImageResource(R.drawable.no_image)
             binding.imvPlus.visibility = View.VISIBLE

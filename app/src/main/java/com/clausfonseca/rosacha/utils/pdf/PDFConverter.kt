@@ -68,7 +68,7 @@ class PDFConverter {
         parcelValue.text = String.format("%.2f", pdfDetails.sales.parceled)
         // texto rodapé
         qtyParcelFinal.text = pdfDetails.sales.qtyParcel.toString() + "X"
-        parcelDay.text = pdfDetails.sales.parcelDate?.substring(0, 2)
+        parcelDay.text = pdfDetails.sales.parcelDate.toString()
 
         val checkParcel: Int = pdfDetails.sales.qtyParcel!!
         if (checkParcel == 1) {

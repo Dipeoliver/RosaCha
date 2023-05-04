@@ -13,7 +13,7 @@
     <string name="barcode">Barcode</string>
     <string name="description_require">* Description</string>
     <string name="description">Description</string>
-    <string name="sales_price">Sales Price</string>
+    <string name="sales_price">Sales Price $</string>
     <string name="price">Price</string>
     <string name="search">Search</string>
     <string name="size_require">* Size</string>
@@ -49,6 +49,7 @@
     <string name="date">Date: </string>
     <string name="client">Client:</string>
     <string name="id">ID</string>
+    <string name="required_field">Required field</string>
 
     <!-- Login Fragment-->
     <string name="login">Login</string>
@@ -103,7 +104,7 @@
     <string name="list_product">List of Products</string>
     <string name="edit_product">Edit Product</string>
     <string name="reference">Reference</string>
-    <string name="cost_price">* Cost Price $</string>
+    <string name="cost_price">Cost Price $</string>
     <string name="sales_price_require">* Sales Price $</string>
     <string name="owner">Owner</string>
     <string name="claudia">Claudia</string>
@@ -212,6 +213,8 @@ Enable camera access in your device settings</string>
     <string name="db_client">ClientsTest</string>
     <string name="db_product">ProductsTest</string>
     <string name="db_sales">SalesTest</string>
+    <string name="must_be_14_digits">Must be 14 Digits</string>
+    <string name="invalid_email_address">Invalid Email Address</string>
 
 
 </resources>

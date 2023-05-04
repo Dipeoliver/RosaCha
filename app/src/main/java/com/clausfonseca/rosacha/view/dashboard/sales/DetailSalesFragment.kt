@@ -1,5 +1,6 @@
 package com.clausfonseca.rosacha.view.dashboard.sales
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -76,6 +77,7 @@ class DetailSalesFragment : Fragment() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun selectSale(id: String) {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
@@ -92,7 +94,7 @@ class DetailSalesFragment : Fragment() {
                     binding.txtPaidDetail.text = mySales?.paid.toString()
                     binding.txtDiscountDetail.text = mySales?.discount.toString()
                     binding.txtTotalDetail.text = mySales?.totalPrice.toString()
-                    binding.txtParceledDetail.text = "${mySales?.qtyParcel.toString()} X"
+                    binding.txtParceledDetail.text = "${mySales?.qtyParcel.toString()}X"
                     binding.txtParcelValueDetail.text = mySales?.parceled.toString()
                     binding.txtExpirationDetail.text = mySales?.parcelDate.toString()
 

@@ -13,6 +13,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,17 +82,33 @@ class EditClientFragment : Fragment() {
         selectedClient = EditClientFragmentArgs.fromBundle(requireArguments()).selectedClient
 
         // outro metodo de recuperar dados de outro fragment
-//        selectedClient = requireArguments().getParcelable<Client>("client")
+        // selectedClient = requireArguments().getParcelable<Client>("client")
 
         firebaseStorage = Firebase.storage
         dbClients = getString(R.string.db_client)
         recoverClient()
-        onBackPressed()
         initListeners()
         configureComponents()
+        onBackPressed()
     }
 
-    // IMAGEVIEW   --------------------------------------------------------
+    private fun initListeners() {
+        binding.btnUpdateClient.setOnClickListener {
+            submitForm()
+        }
+
+        binding.imvPhotoClientEdit.setOnClickListener {
+            if (!binding.edtPhoneClientEdit.text.isNullOrEmpty()) showBottomSheetDialog()
+            else Util.exibirToast(requireContext(), getString(R.string.required_phone_client))
+        }
+
+        binding.btnBack.setOnClickListener {
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
+            findNavController().navigate(uri)
+        }
+    }
+
+    // region - Camera & ImageView
     @Suppress("DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
@@ -113,10 +132,7 @@ class EditClientFragment : Fragment() {
             }
         }
     }
-    // -----------------------------------------------------------------------
 
-
-    // STORAGE----------------------------------------------------------------------------
     //  Capturar imagem da Camera
     private fun obterImagemdaCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -151,6 +167,17 @@ class EditClientFragment : Fragment() {
         startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), 11)
     }
 
+    // para corrigir problema de falta de imagem selecionada
+    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+        return Uri.parse(path.toString())
+    }
+
+    // endregion
+
+    // region - FirebaseStorage
     // com recurso para diminuir a imagem
     private fun uploadImagem() {
 
@@ -216,8 +243,9 @@ class EditClientFragment : Fragment() {
             Util.exibirToast(requireContext(), getString(R.string.error_delete_image) + error.message.toString())
         }
     }
-    // ----------------------------------------------------------------------------------
+//endregion
 
+    // region - FirebaseFirestore
     // FIRESTORE--------------------------------------------------------------------------
     private fun validateData(url: String) {
 
@@ -284,145 +312,6 @@ class EditClientFragment : Fragment() {
         }
     }
 
-    // ----------------------------------------------------------------------------------
-
-
-    // Perdir Permissão para acessar a camera -------------------------------------------------------------------------
-    private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(
-                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                AddClientFragment.REQUEST_PERMISSION_CODE
-            )
-            return
-        }
-        obterImagemdaCamera()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
-            when (grantResults[0]) {
-                PackageManager.PERMISSION_GRANTED -> {
-                    when (grantResults[1]) {
-                        PackageManager.PERMISSION_GRANTED -> {
-                            checkPermissions()
-                        }
-                        PackageManager.PERMISSION_DENIED -> {
-                            bottomSheetDialogCamera?.dismiss()
-                            showBottomSheetDialogPermission()
-                        }
-                    }
-                }
-
-                PackageManager.PERMISSION_DENIED -> {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        bottomSheetDialogCamera?.dismiss()
-                        showBottomSheetDialogPermission()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun showBottomSheetDialogPermission() {
-        bottomSheetDialogPermission = BottomSheetDialog(requireContext(),R.style.BottomSheetDialogTheme)
-        val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
-            ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
-
-        sheetBinding.btnCancel.setOnClickListener {
-            bottomSheetDialogPermission?.dismiss()
-        }
-
-        sheetBinding.btnConfig.setOnClickListener {
-            val intent = Intent()
-            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            val uri = Uri.fromParts("package", requireActivity().packageName, null)
-            intent.data = uri
-            requireContext().startActivity(intent)
-            bottomSheetDialogPermission?.dismiss()
-        }
-
-        bottomSheetDialogPermission?.setContentView(sheetBinding.root)
-        bottomSheetDialogPermission?.show()
-    }
-
-    // ----------------------------------------------------------------------------------------------------------------
-
-
-    private fun initListeners() {
-        binding.btnUpdateClient.setOnClickListener {
-
-            if (uriImagem == null && binding.imvPhotoClientEdit.background != null) {
-                // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
-                val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
-                val bitmap = drawable?.toBitmap()
-                uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
-                uploadImagem()
-
-            } else if (uriImagem != null) {
-                uploadImagem()
-            } else {
-                validateData(oldUrl)
-            }
-        }
-
-        binding.imvPhotoClientEdit.setOnClickListener {
-            if (binding.edtPhoneClientEdit.text.isNotEmpty()) showBottomSheetDialog()
-            else Util.exibirToast(requireContext(), getString(R.string.required_phone_client))
-        }
-
-        binding.btnBackEdit.setOnClickListener {
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
-            findNavController().navigate(uri)
-        }
-    }
-
-    // para corrigir problema de falta de imagem selecionada
-    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
-        return Uri.parse(path.toString())
-    }
-
-    private fun showBottomSheetDialog() {
-        bottomSheetDialogCamera = BottomSheetDialog(requireContext(),R.style.BottomSheetDialogTheme)
-
-        val sheetBinding: ItemCustomBottonSheetTakePictureBinding =
-            ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
-
-        sheetBinding.imvBottomPhoto.setOnClickListener {
-            checkPermissions()
-        }
-        sheetBinding.txtBottomPhoto.setOnClickListener {
-            checkPermissions()
-        }
-
-        sheetBinding.imvBottomGallery.setOnClickListener {
-            obterImagemdaGaleria()
-        }
-        sheetBinding.txtBottomGallery.setOnClickListener {
-            obterImagemdaGaleria()
-        }
-        bottomSheetDialogCamera?.setContentView(sheetBinding.root)
-        bottomSheetDialogCamera?.show()
-    }
-
-    private fun onBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
-                findNavController().navigate(uri)
-            }
-        })
-    }
-
     private fun recoverClient() {
         binding.edtNameClientEdit.setText(selectedClient?.name.toString())
         binding.edtPhoneClientEdit.setText(selectedClient?.phone.toString())
@@ -462,6 +351,200 @@ class EditClientFragment : Fragment() {
 
             }).into(binding.imvPhotoClientEdit)
         }
+    }
+// endregion
+
+    // region - RequestCameraAccess
+    private fun checkPermissions() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                AddClientFragment.REQUEST_PERMISSION_CODE
+            )
+            return
+        }
+        obterImagemdaCamera()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
+            when (grantResults[0]) {
+                PackageManager.PERMISSION_GRANTED -> {
+                    when (grantResults[1]) {
+                        PackageManager.PERMISSION_GRANTED -> {
+                            checkPermissions()
+                        }
+
+                        PackageManager.PERMISSION_DENIED -> {
+                            bottomSheetDialogCamera?.dismiss()
+                            showBottomSheetDialogPermission()
+                        }
+                    }
+                }
+
+                PackageManager.PERMISSION_DENIED -> {
+                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                        bottomSheetDialogCamera?.dismiss()
+                        showBottomSheetDialogPermission()
+                    }
+                }
+            }
+        }
+    }
+
+//endregion
+
+    // region - FieldValidation
+    private fun validName(): Boolean {
+        val nameText = binding.edtNameClientEdit.text.toString()
+        if (nameText == "") {
+            binding.nameContainer.error = getString(R.string.required_field)
+            return false
+        }
+        return true
+    }
+
+    private fun textNameChange() {
+        binding.edtNameClientEdit.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.nameContainer.error = ""
+            }
+        })
+    }
+
+    private fun validPhone(): Boolean {
+        val phoneText = binding.edtPhoneClientEdit.text.toString()
+        if (phoneText == "") {
+            binding.phoneContainer.error = getString(R.string.required_field)
+            return false
+        }
+        if (phoneText.length < 14) {
+            binding.phoneContainer.error = getString(R.string.must_be_14_digits)
+            return false
+        }
+        return true
+    }
+
+    private fun textPhoneChange() {
+        binding.edtPhoneClientEdit.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.phoneContainer.error = ""
+            }
+        })
+    }
+
+    private fun validEmail(): Boolean {
+        val emailText = binding.edtEmailClientEdit.text.toString().trim().lowercase()
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
+            binding.emailContainer.error = getString(R.string.invalid_email_address)
+            return false
+        }
+        return true
+    }
+
+    private fun textEmailChange() {
+        binding.edtEmailClientEdit.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.emailContainer.error = ""
+            }
+        })
+    }
+
+    private fun submitForm() {
+        val name = validName()
+        textNameChange()
+        val phone = validPhone()
+        textPhoneChange()
+        var email: Boolean = true
+        if (!binding.edtEmailClientEdit.text.isNullOrEmpty()) {
+            email = validEmail()
+        }
+        textEmailChange()
+
+        if (name && phone && email) {
+            if (uriImagem == null && binding.imvPhotoClientEdit.background != null) {
+                // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
+                val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
+                val bitmap = drawable?.toBitmap()
+                uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
+                uploadImagem()
+
+            } else if (uriImagem != null) {
+                uploadImagem()
+            } else {
+                validateData(oldUrl)
+            }
+        }
+    }
+    // endregion
+
+    // region - BottomSheetDialog
+    private fun showBottomSheetDialogPermission() {
+        bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
+        val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
+            ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
+
+        sheetBinding.btnCancel.setOnClickListener {
+            bottomSheetDialogPermission?.dismiss()
+        }
+
+        sheetBinding.btnConfig.setOnClickListener {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts("package", requireActivity().packageName, null)
+            intent.data = uri
+            requireContext().startActivity(intent)
+            bottomSheetDialogPermission?.dismiss()
+        }
+
+        bottomSheetDialogPermission?.setContentView(sheetBinding.root)
+        bottomSheetDialogPermission?.show()
+    }
+
+    private fun showBottomSheetDialog() {
+        bottomSheetDialogCamera = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
+
+        val sheetBinding: ItemCustomBottonSheetTakePictureBinding =
+            ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
+
+        sheetBinding.imvBottomPhoto.setOnClickListener {
+            checkPermissions()
+        }
+        sheetBinding.txtBottomPhoto.setOnClickListener {
+            checkPermissions()
+        }
+
+        sheetBinding.imvBottomGallery.setOnClickListener {
+            obterImagemdaGaleria()
+        }
+        sheetBinding.txtBottomGallery.setOnClickListener {
+            obterImagemdaGaleria()
+        }
+        bottomSheetDialogCamera?.setContentView(sheetBinding.root)
+        bottomSheetDialogCamera?.show()
+    }
+// endregion
+
+
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
+                findNavController().navigate(uri)
+            }
+        })
     }
 
     private fun configureComponents() {

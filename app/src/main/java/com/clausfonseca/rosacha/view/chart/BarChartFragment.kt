@@ -6,8 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.clausfonseca.rosacha.R
+import com.clausfonseca.rosacha.databinding.FragmentBarChartBinding
+import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
@@ -15,19 +18,24 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Calendar
 
 
 class BarChartFragment : Fragment() {
+    private lateinit var binding: FragmentBarChartBinding
+
     lateinit var barChart: BarChart
     private val monthResults: MutableList<Double> = MutableList(12) { 0.0 }
     private var dbSales: String = ""
     var db: FirebaseFirestore? = null
+    private val calendar = Calendar.getInstance()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bar_chart, container, false)
+    ): View {
+        binding = FragmentBarChartBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,6 +44,7 @@ class BarChartFragment : Fragment() {
         dbSales = getString(R.string.db_sales)
         barChart = view.findViewById(R.id.bar_Chart)
         getSales()
+
 
     }
 
@@ -65,15 +74,16 @@ class BarChartFragment : Fragment() {
         val barData = BarData(barDataSet)
         barChart.setFitBars(true)
         barChart.data = barData
-        barChart.description.text = "annual sales"
+        barChart.description.text = calendar.get(Calendar.YEAR).toString()
         barChart.animateY(2000)
     }
 
     private fun getSales() {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
+        calendar.get(Calendar.YEAR)
 
-        val query = db!!.collection(dbSales).whereEqualTo("year", "2023".toInt())
+        val query = db!!.collection(dbSales).whereEqualTo("year", calendar.get(Calendar.YEAR))
 
         query.addSnapshotListener { results, error ->
             dialogProgress.dismiss()
@@ -86,9 +96,8 @@ class BarChartFragment : Fragment() {
                         monthResults[month - 1] += result.getDouble("totalPrice") ?: 0.0
                     }
                 }
-//                Log.d("Total", "${monthResults}")
+                binding.txtMonthSales.text = String.format("%.2f", (monthResults[calendar.get(Calendar.MONTH)]))
                 getGraph()
-            } else {
             }
         }
     }

@@ -16,7 +16,7 @@ class Sales(
     var month: Int? = 0,
     var year: Int? = 0,
     var qtyParcel: Int? = 0,
-    var parcelDate: String? = "",
+    var parcelDate: Int? = 0,
     var parceled: Double = 0.0,
 ): Parcelable {
     constructor(parcel: Parcel) : this(
@@ -32,7 +32,7 @@ class Sales(
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readDouble()
     ) {
     }
@@ -49,7 +49,7 @@ class Sales(
         parcel.writeValue(month)
         parcel.writeValue(year)
         parcel.writeValue(qtyParcel)
-        parcel.writeString(parcelDate)
+        parcel.writeValue(parcelDate)
         parcel.writeDouble(parceled)
     }
 

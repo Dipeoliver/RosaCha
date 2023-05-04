@@ -2,6 +2,7 @@ package com.clausfonseca.rosacha.view.dashboard.product
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -13,6 +14,8 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -62,17 +65,15 @@ class AddProductFragment : Fragment() {
     private var pictureName: String? = ""
     private var statusOwner: Int = 0
     private var owner: String = ""
-
     val dialogProgress = DialogProgress()
     var bottomSheetDialogCamera: BottomSheetDialog? = null
-    var bottomSheetDialogPermission: BottomSheetDialog? = null
-
+    private var bottomSheetDialogPermission: BottomSheetDialog? = null
     var uriImagem: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentProductAddBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -96,7 +97,112 @@ class AddProductFragment : Fragment() {
             })
     }
 
-    // BARCODE  &&  IMAGEVIEW   --------------------------------------------------------
+    private fun initListeners() {
+        binding.btnAddProduct.setOnClickListener {
+            // verificar sinal de internet (FAZER)
+            submitForm()
+        }
+
+        binding.rgOwnerProduct.setOnCheckedChangeListener { _, id ->
+            statusOwner = when (id) {
+                R.id.claudia -> 0
+                else -> 1
+            }
+        }
+
+        binding.btnBack.setOnClickListener {
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
+            findNavController().navigate(uri)
+        }
+
+        binding.imvPhoto.setOnClickListener {
+            if (!binding.edtBarcode.text.isNullOrEmpty()) showBottomSheetDialog()
+            else Util.exibirToast(requireContext(), getString(R.string.required_barcode_product))
+        }
+    }
+
+    // region - RequestCameraAccess
+
+    private fun checkPermissions() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                AddClientFragment.REQUEST_PERMISSION_CODE
+            )
+            return
+        }
+        // verifica se quem foi pressionado foi o botão scanner
+        if (binding.btnScan.isPressed) {
+            val integrator: IntentIntegrator =
+                IntentIntegrator.forSupportFragment(this@AddProductFragment)
+            integrator.setPrompt(getString(R.string.scan_active))
+            integrator.initiateScan()
+        } else {
+            obterImagemdaCamera()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
+            when (grantResults[0]) {
+                PackageManager.PERMISSION_GRANTED -> {
+                    when (grantResults[1]) {
+                        PackageManager.PERMISSION_GRANTED -> {
+                            checkPermissions()
+                        }
+
+                        PackageManager.PERMISSION_DENIED -> {
+                            bottomSheetDialogCamera?.dismiss()
+                            showBottomSheetDialogPermission()
+                        }
+                    }
+                }
+
+                PackageManager.PERMISSION_DENIED -> {
+                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                        bottomSheetDialogCamera?.dismiss()
+                        showBottomSheetDialogPermission()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showBottomSheetDialogPermission() {
+        bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
+        val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
+            ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
+
+        sheetBinding.btnCancel.setOnClickListener {
+            bottomSheetDialogPermission?.dismiss()
+        }
+
+        sheetBinding.btnConfig.setOnClickListener {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts("package", requireActivity().packageName, null)
+            intent.data = uri
+            requireContext().startActivity(intent)
+            bottomSheetDialogPermission?.dismiss()
+        }
+
+        bottomSheetDialogPermission?.setContentView(sheetBinding.root)
+        bottomSheetDialogPermission?.show()
+    }
+
+    // endregion
+
+    // region - Barcode&&ImageView
     @Suppress("DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
@@ -149,10 +255,135 @@ class AddProductFragment : Fragment() {
             checkPermissions()
         }
     }
-    // ----------------------------------------------------------------------------------
 
-    // STORAGE----------------------------------------------------------------------------
-    //  Capturar imagem da Camera
+    // endregion
+
+    // region - FieldValidation
+    private fun validBarcode(): Boolean {
+        val barcodeText = binding.edtBarcode.text.toString()
+        if (barcodeText == "") {
+            binding.barcodeContainer.error = getString(R.string.required_field)
+            return false
+        }
+        return true
+    }
+
+    private fun textBarcodeChange() {
+        binding.edtBarcode.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.barcodeContainer.error = ""
+            }
+        })
+    }
+
+    private fun validDescription(): Boolean {
+        val descriptionText = binding.edtDescriptionProduct.text.toString()
+        if (descriptionText == "") {
+            binding.descriptionContainer.error = getString(R.string.required_field)
+            return false
+        }
+        return true
+    }
+
+    private fun textDescriptionChange() {
+        binding.edtDescriptionProduct.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.descriptionContainer.error = ""
+            }
+        })
+    }
+
+    private fun validSize(): Boolean {
+        val sizeText = binding.edtSizeProduct.text.toString()
+        if (sizeText == "") {
+            binding.sizeContainer.error = getString(R.string.required_field)
+            return false
+        }
+        return true
+    }
+
+    private fun textSizeChange() {
+        binding.edtSizeProduct.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.sizeContainer.error = ""
+            }
+        })
+    }
+
+    private fun validCost(): Boolean {
+        val costText = binding.edtCostProduct.text.toString()
+        if (costText == "") {
+            binding.costContainer.error = getString(R.string.required_field)
+            return false
+        }
+        return true
+    }
+
+    private fun textCostChange() {
+        binding.edtCostProduct.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.costContainer.error = ""
+            }
+        })
+    }
+
+    private fun validSales(): Boolean {
+        val salesText = binding.edtSalesProduct.text.toString()
+        if (salesText == "") {
+            binding.salesContainer.error = getString(R.string.required_field)
+            return false
+        }
+        return true
+    }
+
+    private fun textSalesChange() {
+        binding.edtSalesProduct.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.salesContainer.error = ""
+            }
+        })
+    }
+
+
+    private fun submitForm() {
+        val validBarcode = validBarcode()
+        textBarcodeChange()
+        val validDescription = validDescription()
+        textDescriptionChange()
+        val validSize = validSize()
+        textSizeChange()
+        val validCost = validCost()
+        textCostChange()
+        val validSales = validSales()
+        textSalesChange()
+
+        if (validBarcode && validDescription && validSize && validCost && validSales) {
+            if (uriImagem != null) {
+                uploadImagem()
+            } else {
+                // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
+                val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
+                val bitmap = drawable?.toBitmap()
+                uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
+                uploadImagem()
+            }
+        }
+    }
+
+
+    // endregion
+
+    // region - FirebaseStorage
     private fun obterImagemdaCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
@@ -179,6 +410,15 @@ class AddProductFragment : Fragment() {
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
         startActivityForResult(intent, 22)
+    }
+
+    // para corrigir problema de falta de imagem selecionada
+    fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path =
+            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+        return Uri.parse(path.toString())
     }
 
     // selecionar imagem da galeria
@@ -257,9 +497,9 @@ class AddProductFragment : Fragment() {
             }
         }
     }
-    // ----------------------------------------------------------------------------------
+    // endregion
 
-    // FIRESTORE--------------------------------------------------------------------------
+    // region - FirebaseFirestore
     private fun validateData(url: String) {
 
         val barcode = binding.edtBarcode.text.toString().trim()
@@ -310,145 +550,10 @@ class AddProductFragment : Fragment() {
                 dialogProgress.dismiss()
             }
     }
-
-    // ----------------------------------------------------------------------------------
-
-
-    // Perdir Permissão para acessar a camera -------------------------------------------------------------------------
-    private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(
-                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                AddClientFragment.REQUEST_PERMISSION_CODE
-            )
-            return
-        }
-        // verifica se quem foi pressionado foi o botão scanner
-        if (binding.btnScan.isPressed) {
-            val integrator: IntentIntegrator =
-                IntentIntegrator.forSupportFragment(this@AddProductFragment)
-            integrator.setPrompt(getString(R.string.scan_active))
-            integrator.initiateScan()
-        } else {
-            obterImagemdaCamera()
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
-            when (grantResults[0]) {
-                PackageManager.PERMISSION_GRANTED -> {
-                    when (grantResults[1]) {
-                        PackageManager.PERMISSION_GRANTED -> {
-                            checkPermissions()
-                        }
-                        PackageManager.PERMISSION_DENIED -> {
-                            bottomSheetDialogCamera?.dismiss()
-                            showBottomSheetDialogPermission()
-                        }
-                    }
-                }
-
-                PackageManager.PERMISSION_DENIED -> {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        bottomSheetDialogCamera?.dismiss()
-                        showBottomSheetDialogPermission()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun showBottomSheetDialogPermission() {
-        bottomSheetDialogPermission = BottomSheetDialog(requireContext(),R.style.BottomSheetDialogTheme)
-        val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =
-            ItemCustomBottonSheetRequestPermissionBinding.inflate(layoutInflater, null, false)
-
-        sheetBinding.btnCancel.setOnClickListener {
-            bottomSheetDialogPermission?.dismiss()
-        }
-
-        sheetBinding.btnConfig.setOnClickListener {
-            val intent = Intent()
-            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            val uri = Uri.fromParts("package", requireActivity().packageName, null)
-            intent.data = uri
-            requireContext().startActivity(intent)
-            bottomSheetDialogPermission?.dismiss()
-        }
-
-        bottomSheetDialogPermission?.setContentView(sheetBinding.root)
-        bottomSheetDialogPermission?.show()
-    }
-
-    // ----------------------------------------------------------------------------------------------------------------
-
-
-    private fun initListeners() {
-        binding.btnAddProduct.setOnClickListener {
-            // verificar sinal de internet (FAZER)
-
-            if (binding.edtBarcode.text.isNotEmpty() &&
-                binding.edtDescriptionProduct.text.isNotEmpty() &&
-                binding.edtSizeProduct.text.isNotEmpty() &&
-                binding.edtCostProduct.text.isNotEmpty() &&
-                binding.edtSalesProduct.text.isNotEmpty()
-            ) {
-                if (uriImagem != null) {
-                    uploadImagem()
-                } else {
-
-                    // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
-                    val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
-                    val bitmap = drawable?.toBitmap()
-                    uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
-                    uploadImagem()
-                }
-            } else {
-                Util.exibirToast(requireContext(), getString(R.string.required_fields))
-            }
-        }
-        binding.rgOwnerProduct.setOnCheckedChangeListener { _, id ->
-            statusOwner = when (id) {
-                R.id.claudia -> 0
-                else -> 1
-            }
-        }
-
-        binding.btnBack.setOnClickListener {
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
-            findNavController().navigate(uri)
-        }
-
-        binding.imvPhoto.setOnClickListener {
-            if (binding.edtBarcode.text.isNotEmpty()) showBottomSheetDialog()
-            else Util.exibirToast(requireContext(), getString(R.string.required_barcode_product))
-        }
-    }
-
-
-    // para corrigir problema de falta de imagem selecionada
-    fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path =
-            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
-        return Uri.parse(path.toString())
-    }
-
+    // endregion
 
     private fun showBottomSheetDialog() {
-        bottomSheetDialogCamera = BottomSheetDialog(requireContext(),R.style.BottomSheetDialogTheme)
+        bottomSheetDialogCamera = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
 
         val sheetBinding: ItemCustomBottonSheetTakePictureBinding =
             ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
@@ -472,16 +577,15 @@ class AddProductFragment : Fragment() {
 
     private fun cleaner() {
         binding.apply {
-            edtBarcode.text.clear()
-            edtReferenceProduct.text.clear()
-            edtDescriptionProduct.text.clear()
-            edtBrandProduct.text.clear()
-            edtProviderProduct.text.clear()
-            edtSizeProduct.text.clear()
-            edtColorProduct.text.clear()
-            edtCostProduct.text.clear()
-            edtSalesProduct.text.clear()
-            edtBarcode.requestFocus()
+            edtBarcode.text = null
+            edtReferenceProduct.text = null
+            edtDescriptionProduct.text = null
+            edtBrandProduct.text = null
+            edtProviderProduct.text = null
+            edtSizeProduct.text = null
+            edtColorProduct.text = null
+            edtCostProduct.text = null
+            edtSalesProduct.text = null
             binding.imvPhoto.setImageResource(R.drawable.no_image)
             binding.imvPlus.visibility = VISIBLE
         }
