@@ -27,6 +27,9 @@ import com.clausfonseca.rosacha.model.ItensSales
 import com.clausfonseca.rosacha.model.Sales
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
+import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
+import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
+import com.clausfonseca.rosacha.utils.extencionFunctions.hideKeyboard
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
 import com.clausfonseca.rosacha.view.adapter.ItensSalesAdapter
@@ -147,8 +150,16 @@ class AddSalesFragment : Fragment() {
         }
     }
 
+    private fun submitForm() {
+        val password = checkEmptyField(binding.edtBarcode, binding.barcodeContainer, requireContext())
+        cleanErrorValidation(binding.edtBarcode, binding.barcodeContainer)
+        if (password) {
+            getItem(binding.edtBarcode.text.toString())
+        }
+    }
+
     private fun initListeners() {
-        binding.edtBarcode.requestFocus()
+//        binding.edtBarcode.requestFocus()
 
         binding.btnScan.setOnClickListener {
             checkPermissions()
@@ -159,11 +170,7 @@ class AddSalesFragment : Fragment() {
         }
 
         binding.btnPriceSearch.setOnClickListener {
-            if (binding.edtBarcode.text.toString().isNotEmpty()) {
-                getItem(binding.edtBarcode.text.toString())
-            } else {
-                Util.exibirToast(requireContext(), getString(R.string.required_barcode_product))
-            }
+            submitForm()
         }
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

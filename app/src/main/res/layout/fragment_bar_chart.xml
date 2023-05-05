@@ -20,7 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Venda Mensal R$"
+        android:text="@string/monthly_sales"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/bar_Chart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,6 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:textSize="23sp"
+        tools:text="1000.00"
         app:layout_constraintBottom_toBottomOf="@+id/textView45"
         app:layout_constraintStart_toEndOf="@+id/textView45"
         app:layout_constraintTop_toTopOf="@+id/textView45" />

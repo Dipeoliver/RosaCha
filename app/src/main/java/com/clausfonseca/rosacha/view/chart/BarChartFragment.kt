@@ -96,8 +96,8 @@ class BarChartFragment : Fragment() {
                         monthResults[month - 1] += result.getDouble("totalPrice") ?: 0.0
                     }
                 }
-                binding.txtMonthSales.text = String.format("%.2f", (monthResults[calendar.get(Calendar.MONTH)]))
                 getGraph()
+                binding.txtMonthSales.text = String.format("%.2f", (monthResults[calendar.get(Calendar.MONTH)]))
             }
         }
     }

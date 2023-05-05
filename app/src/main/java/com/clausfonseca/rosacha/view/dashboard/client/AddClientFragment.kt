@@ -39,6 +39,8 @@ import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBind
 import com.clausfonseca.rosacha.model.Client
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
+import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
+import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
 import com.clausfonseca.rosacha.utils.mask.DateMask
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
@@ -330,77 +332,19 @@ class AddClientFragment : Fragment() {
 // endregion
 
     // region - FieldValidation
-    private fun validName(): Boolean {
-        val nameText = binding.edtNameClient.text.toString()
-        if (nameText == "") {
-            binding.nameContainer.error = getString(R.string.required_field)
-            return false
-        }
-        return true
-    }
-
-    private fun textNameChange() {
-        binding.edtNameClient.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.nameContainer.error = ""
-            }
-        })
-    }
-
-    private fun validPhone(): Boolean {
-        val phoneText = binding.edtPhoneClient.text.toString()
-        if (phoneText == "") {
-            binding.phoneContainer.error = getString(R.string.required_field)
-            return false
-        }
-        if (phoneText.length < 14) {
-            binding.phoneContainer.error = getString(R.string.must_be_14_digits)
-            return false
-        }
-        return true
-    }
-
-    private fun textPhoneChange() {
-        binding.edtPhoneClient.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.phoneContainer.error = ""
-            }
-        })
-    }
-
-    private fun validEmail(): Boolean {
-        val emailText = binding.edtEmailClient.text.toString().trim().lowercase()
-        if (!Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
-            binding.emailContainer.error = getString(R.string.invalid_email_address)
-            return false
-        }
-        return true
-    }
-
-    private fun textEmailChange() {
-        binding.edtEmailClient.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.emailContainer.error = ""
-            }
-        })
-    }
-
     private fun submitForm() {
-        val name = validName()
-        textNameChange()
-        val phone = validPhone()
-        textPhoneChange()
+        val name = checkEmptyField(binding.edtNameClient, binding.nameContainer, requireContext(), )
+        cleanErrorValidation(binding.edtNameClient, binding.nameContainer)
+
+        val phone = checkEmptyField(binding.edtPhoneClient, binding.phoneContainer, requireContext(),"phone" )
+        cleanErrorValidation(binding.edtPhoneClient, binding.phoneContainer)
+
         var email: Boolean = true
+
         if (!binding.edtEmailClient.text.isNullOrEmpty()) {
-            email = validEmail()
+            email = checkEmptyField(binding.edtEmailClient, binding.emailContainer, requireContext(),"email" )
         }
-        textEmailChange()
+        cleanErrorValidation(binding.edtEmailClient, binding.emailContainer)
 
         if (name && phone && email) {
             if (uriImagem != null) {

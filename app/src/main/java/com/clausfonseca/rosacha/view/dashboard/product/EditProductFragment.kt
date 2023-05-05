@@ -37,6 +37,8 @@ import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBind
 import com.clausfonseca.rosacha.model.Product
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
+import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
+import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
 import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
@@ -222,112 +224,22 @@ class EditProductFragment : Fragment() {
     // endregion
 
     // region - FieldValidation
-    private fun validBarcode(): Boolean {
-        val barcodeText = binding.edtBarcode.text.toString()
-        if (barcodeText == "") {
-            binding.barcodeContainer.error = getString(R.string.required_field)
-            return false
-        }
-        return true
-    }
-
-    private fun textBarcodeChange() {
-        binding.edtBarcode.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.barcodeContainer.error = ""
-            }
-        })
-    }
-
-    private fun validDescription(): Boolean {
-        val descriptionText = binding.edtDescriptionProduct.text.toString()
-        if (descriptionText == "") {
-            binding.descriptionContainer.error = getString(R.string.required_field)
-            return false
-        }
-        return true
-    }
-
-    private fun textDescriptionChange() {
-        binding.edtDescriptionProduct.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.descriptionContainer.error = ""
-            }
-        })
-    }
-
-    private fun validSize(): Boolean {
-        val sizeText = binding.edtSizeProduct.text.toString()
-        if (sizeText == "") {
-            binding.sizeContainer.error = getString(R.string.required_field)
-            return false
-        }
-        return true
-    }
-
-    private fun textSizeChange() {
-        binding.edtSizeProduct.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.sizeContainer.error = ""
-            }
-        })
-    }
-
-    private fun validCost(): Boolean {
-        val costText = binding.edtCostProduct.text.toString()
-        if (costText == "") {
-            binding.costContainer.error = getString(R.string.required_field)
-            return false
-        }
-        return true
-    }
-
-    private fun textCostChange() {
-        binding.edtCostProduct.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.costContainer.error = ""
-            }
-        })
-    }
-
-    private fun validSales(): Boolean {
-        val salesText = binding.edtSalesProduct.text.toString()
-        if (salesText == "") {
-            binding.salesContainer.error = getString(R.string.required_field)
-            return false
-        }
-        return true
-    }
-
-    private fun textSalesChange() {
-        binding.edtSalesProduct.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.salesContainer.error = ""
-            }
-        })
-    }
-
     private fun submitForm() {
-        val validBarcode = validBarcode()
-        textBarcodeChange()
-        val validDescription = validDescription()
-        textDescriptionChange()
-        val validSize = validSize()
-        textSizeChange()
-        val validCost = validCost()
-        textCostChange()
-        val validSales = validSales()
-        textSalesChange()
+        val validBarcode = checkEmptyField(binding.edtBarcode, binding.barcodeContainer, requireContext())
+        cleanErrorValidation(binding.edtBarcode, binding.barcodeContainer)
+
+        val validDescription = checkEmptyField(binding.edtDescriptionProduct, binding.descriptionContainer, requireContext())
+        cleanErrorValidation(binding.edtDescriptionProduct, binding.descriptionContainer)
+
+        val validSize = checkEmptyField(binding.edtSizeProduct, binding.sizeContainer, requireContext())
+        cleanErrorValidation(binding.edtSizeProduct, binding.sizeContainer)
+
+        val validCost = checkEmptyField(binding.edtCostProduct, binding.costContainer, requireContext())
+        cleanErrorValidation(binding.edtCostProduct, binding.costContainer)
+
+        val validSales = checkEmptyField(binding.edtSalesProduct, binding.salesContainer, requireContext())
+        cleanErrorValidation(binding.edtSalesProduct, binding.salesContainer)
+
 
         if (validBarcode && validDescription && validSize && validCost && validSales) {
             if (uriImage == null && binding.imvPhoto.getBackground() != null) {

@@ -149,6 +149,7 @@
         app:helperTextTextColor="@android:color/holo_red_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:placeholderText="@string/email_example"
         app:layout_constraintTop_toTopOf="@+id/guideline7"
         app:startIconDrawable="@drawable/ic_email">
 
@@ -203,21 +204,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="136dp" />
+        app:layout_constraintGuide_begin="139dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="212dp" />
+        app:layout_constraintGuide_begin="218dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="288dp" />
+        app:layout_constraintGuide_begin="294dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"

@@ -80,7 +80,7 @@ class AfterSalesFragment : Fragment() {
 
         sheetBinding.clListSales.setOnClickListener {
             // link para lista de vendas
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/home_fragment")
+            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/sales_fragment")
             findNavController().navigate(uri)
             dialogAfterSales?.dismiss()
         }

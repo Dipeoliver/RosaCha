@@ -129,6 +129,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edit"
+                    android:nextFocusDown="@id/edt_description_product"
                     android:hint="@string/reference"
                     android:inputType="textPersonName"
                     android:lines="1" />
@@ -367,7 +368,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="270dp" />
+                app:layout_constraintGuide_begin="275dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline1"
@@ -381,14 +382,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="352dp" />
+                app:layout_constraintGuide_begin="355dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="437dp" />
+                app:layout_constraintGuide_begin="440dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline14"

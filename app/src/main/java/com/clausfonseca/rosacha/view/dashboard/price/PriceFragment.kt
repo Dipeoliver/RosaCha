@@ -23,6 +23,8 @@ import com.clausfonseca.rosacha.databinding.FragmentPriceBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
+import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
+import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
 import com.clausfonseca.rosacha.utils.extencionFunctions.hideKeyboard
 import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -131,6 +133,7 @@ class PriceFragment : Fragment() {
                         PackageManager.PERMISSION_GRANTED -> {
                             checkPermissions()
                         }
+
                         PackageManager.PERMISSION_DENIED -> {
                             showBottomSheetDialogPermission()
                         }
@@ -246,12 +249,18 @@ class PriceFragment : Fragment() {
     }
 
     // ----------------------------------------------------------------------------------
-
-    private fun initListeners() {
-//        binding.edtBarcodePrice.requestFocus()
-        binding.btnSearchPrice.setOnClickListener {
+    private fun submitForm() {
+        val password = checkEmptyField(binding.edtBarcodePrice, binding.barcodeContainer, requireContext())
+        cleanErrorValidation(binding.edtBarcodePrice, binding.barcodeContainer)
+        if (password) {
             selectPrice(binding.edtBarcodePrice.text.toString())
             binding.btnSearchPrice.hideKeyboard()
+        }
+    }
+
+    private fun initListeners() {
+        binding.btnSearchPrice.setOnClickListener {
+            submitForm()
         }
 
         binding.seekBar3.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -290,6 +299,7 @@ class PriceFragment : Fragment() {
         binding.txtValuePrice.text = ""
         binding.edtSizePrice.setText("")
         binding.edtColorPrice.setText("")
+        binding.txtParcelPriceValue.text=""
         binding.edtBarcodePrice.requestFocus()
         binding.edtBarcodePrice.selectAll()
         binding.imvProduct.setImageResource(R.drawable.baseline_image_not_supported_24)

@@ -1,6 +1,9 @@
 package com.clausfonseca.rosacha.view.onboarding.login
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -102,4 +105,63 @@ class RegisterFragment : Fragment() {
                 }
             }
     }
+
+//    // region - FieldValidation
+//    private fun valiEmail(): Boolean {
+//        val emailText = binding.edtEmail.text.toString().trim().lowercase()
+//        if (!Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
+//            binding.emailContainer.error = getString(R.string.invalid_email_address)
+//            return false
+//        }
+//        return true
+//    }
+//
+//    private fun textEmailChange() {
+//        binding.edtEmail.addTextChangedListener(object : TextWatcher {
+//            override fun afterTextChanged(s: Editable?) {}
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                binding.emailContainer.error = ""
+//            }
+//        })
+//    }
+//
+//    private fun validPassword(): Boolean {
+//        val phoneText = binding.edtPassword.text.toString()
+//        if (phoneText == "") {
+//            binding.passwordContainer.error = getString(R.string.required_field)
+//            return false
+//        }
+//        if (phoneText.length < 6) {
+//            binding.passwordContainer.error = getString(R.string.must_be_6_digits)
+//            return false
+//        }
+//        return true
+//    }
+//
+//    private fun textPasswordChange() {
+//        binding.edtPassword.addTextChangedListener(object : TextWatcher {
+//            override fun afterTextChanged(s: Editable?) {}
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                binding.passwordContainer.error = ""
+//            }
+//        })
+//    }
+//
+//    private fun submitForm() {
+//        val email = valiEmail()
+//        textEmailChange()
+//        val password = validPassword()
+//        textPasswordChange()
+//
+//        val emailuser = binding.edtEmail.text.toString().trim()
+//        val passworduser = binding.edtPassword.text.toString().trim()
+//
+//        if (password && email) {
+//            binding.progressBar2.isVisible = true
+//            loginUser(emailuser, passworduser)
+//        }
+//    }
+//    // endregion
 }
