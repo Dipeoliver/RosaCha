@@ -97,6 +97,7 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/barcode"
                     android:inputType="number"
+                    android:nextFocusDown="@id/edt_reference_product"
                     android:lines="1"
                     android:maxLength="13" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -156,6 +157,7 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/description"
                     android:inputType="textPersonName"
+                    android:nextFocusDown="@id/edt_brand_product"
                     android:lines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -176,6 +178,7 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/brand"
                     android:inputType="textPersonName"
+                    android:nextFocusDown="@id/edt_provider_product"
                     android:lines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -196,6 +199,7 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/provider"
                     android:inputType="textPersonName"
+                    android:nextFocusDown="@id/edt_size_product"
                     android:lines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -217,6 +221,7 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/size"
                     android:inputType="textPersonName"
+                    android:nextFocusDown="@id/edt_color_product"
                     android:lines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -238,6 +243,7 @@
                     android:hint="@string/color"
                     android:textSize="14sp"
                     android:inputType="textPersonName"
+                    android:nextFocusDown="@id/edt_cost_product"
                     android:lines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -261,6 +267,7 @@
                     android:hint="@string/cost_price"
                     android:textSize="12sp"
                     android:inputType="number|numberDecimal"
+                    android:nextFocusDown="@id/edt_sales_product"
                     android:lines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 

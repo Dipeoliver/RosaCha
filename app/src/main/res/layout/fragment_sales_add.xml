@@ -151,6 +151,7 @@
                     android:inputType="textAutoComplete"
                     android:lines="1"
                     android:maxLength="15"
+                    android:nextFocusDown="@id/edt_paid"
                     android:textSize="12sp" />
             </com.google.android.material.textfield.TextInputLayout>
 

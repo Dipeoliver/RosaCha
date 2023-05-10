@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.clausfonseca.rosacha.databinding.FragmentRecoverBinding
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
+import com.clausfonseca.rosacha.databinding.FragmentRecoverBinding
+import com.clausfonseca.rosacha.utils.DialogProgress
+import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
+import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -19,11 +21,13 @@ class RecoverFragment : Fragment() {
     private lateinit var binding: FragmentRecoverBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var receivedArgs: String
+    val dialogProgress = DialogProgress()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentRecoverBinding.inflate(inflater, container, false)
         return binding.root
@@ -32,7 +36,7 @@ class RecoverFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
-        initClicks()
+        initListeners()
         receivedArgs = requireArguments().get("email").toString()
         binding.edtEmail.setText(receivedArgs)
         configureComponents()
@@ -50,29 +54,25 @@ class RecoverFragment : Fragment() {
         }
     }
 
-    private fun initClicks() {
+    private fun initListeners() {
         binding.btnEnviar.setOnClickListener {
-            validateData()
+            dialogProgress.show(childFragmentManager, "0")
+            submitForm()
         }
     }
 
-    private fun validateData() {
-        val email = binding.edtEmail.text.toString().trim()
+    private fun submitForm() {
+        val email = checkEmptyField(binding.edtEmail, binding.emailContainer, requireContext(), "email")
+        cleanErrorValidation(binding.edtEmail, binding.emailContainer)
 
-        if (email.isNotEmpty()) {
-            binding.progressBar3.isVisible = true
-            recoveryUser(email)
-        } else {
-            Toast.makeText(
-                requireContext(),
-                getString(com.clausfonseca.rosacha.R.string.empty_email),
-                Toast.LENGTH_SHORT
-            ).show()
+        val emailUser = binding.edtEmail.text.toString().trim()
+
+        if (email) {
+            recoveryUser(emailUser)
         }
     }
 
     private fun recoveryUser(email: String) {
-
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
@@ -88,7 +88,7 @@ class RecoverFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 }
-                binding.progressBar3.isVisible = false
+                dialogProgress.dismiss()
             }
     }
 }
