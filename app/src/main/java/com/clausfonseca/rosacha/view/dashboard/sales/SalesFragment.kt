@@ -16,15 +16,14 @@ import com.google.firebase.ktx.Firebase
 
 class SalesFragment : Fragment() {
 
-    private var _binding: FragmentSalesBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentSalesBinding
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentSalesBinding.inflate(inflater, container, false)
+    ): View {
+        binding = FragmentSalesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -36,16 +35,15 @@ class SalesFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 
     private fun configTabLayout() {
         val adapter = ViewPagerAdapter(requireActivity())
         binding.viewPager.adapter = adapter
 
-        adapter.addFragment(AddSalesFragment(), getString(R.string.add_sales))
+//        adapter.addFragment(AddSalesFragment(), getString(R.string.add_sales))
         adapter.addFragment(ListSalesFragment(), getString(R.string.list_sales))
-        adapter.addFragment(EditSalesFragment(), getString(R.string.edit_sales))
+//        adapter.addFragment(EditSalesFragment(), getString(R.string.edit_sales))
 
         binding.viewPager.offscreenPageLimit = adapter.itemCount
 

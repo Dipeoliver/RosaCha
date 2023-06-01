@@ -3,10 +3,8 @@ package com.clausfonseca.rosacha.view.onboarding
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentSplashBinding
@@ -16,15 +14,15 @@ import com.google.firebase.ktx.Firebase
 
 class SplashFragment : Fragment() {
 
-    private var _binding: FragmentSplashBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentSplashBinding
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSplashBinding.inflate(inflater, container, false)
+
+        binding = FragmentSplashBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -36,7 +34,6 @@ class SplashFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 
     // verificar se usuario esta logado

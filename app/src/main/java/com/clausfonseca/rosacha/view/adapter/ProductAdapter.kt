@@ -1,15 +1,20 @@
 package com.clausfonseca.rosacha.view.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.clausfonseca.rosacha.databinding.ItemProductAdapterBinding
-import com.clausfonseca.rosacha.view.model.Product
-import com.google.firebase.database.core.Context
+import com.bumptech.glide.Glide
+import com.clausfonseca.rosacha.R
+import com.clausfonseca.rosacha.databinding.ItemRecyclerProductListBinding
+import com.clausfonseca.rosacha.model.Product
+import com.clausfonseca.rosacha.view.dashboard.product.ListProductFragment
 
 class ProductAdapter(
-    private val context: android.content.Context,
+    private val context: Context,
     private val productList: List<Product>,
+    var clickProduto: ListProductFragment,
+    var lastItemRecyclerView: ListProductFragment,
     val productSelected: (Product, Int) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.MyViewHolder>() {
 
@@ -18,12 +23,11 @@ class ProductAdapter(
         val SELECT_REMOVE: Int = 1
         val SELECT_EDIT: Int = 2
         val SELECT_DETAILS: Int = 3
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            ItemProductAdapterBinding.inflate(
+            ItemRecyclerProductListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -31,28 +35,38 @@ class ProductAdapter(
         )
     }
 
-    inner class MyViewHolder(val binding: ItemProductAdapterBinding) :
+    inner class MyViewHolder(val binding: ItemRecyclerProductListBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    //    mostrar o tamanho da lista
     override fun getItemCount() = productList.size
 
     //    exibir as informações de cada tarefa
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val product = productList[position]
         holder.binding.txtBarcode.text = product.barcode
-        holder.binding.txtBrand.text = product.brand
-        holder.binding.txtProv.text = product.provider
         holder.binding.txtDescription.text = product.description
-        holder.binding.txtOwner.text = product.owner.toString()
-        holder.binding.txtCostPrice.text = product.cost_price.toString()
-        holder.binding.txtSalesPrice.text = product.sales_price.toString()
+        holder.binding.txtSalesPrice.text = String.format("%.2f", product.salesPrice)
 
-        holder.binding.btnProductDelete.setOnClickListener {
-            productSelected(product, SELECT_REMOVE)
+        if (product.urlImagem == "") {
+            Glide.with(context).load(R.drawable.no_image).into(holder.binding.imvProduto)
+        } else Glide.with(context).load(product.urlImagem).into(holder.binding.imvProduto)
+
+//        // click no card view
+//        holder.binding.cardViewProduct1.setOnClickListener {
+//            clickProduto.clickProduto((product))
+//        }
+
+        // quando chegar na ultima posição que tem na tela chama a função abaixo
+        if (position == itemCount - 1) {
+            lastItemRecyclerView.lastItemRecyclerView(true)
         }
-        holder.binding.btnProductUpdate.setOnClickListener {
-            productSelected(product, SELECT_EDIT)
-        }
+    }
+//
+//    interface ClickProduto {
+//        fun clickProduto(product: Product)
+//    }
+
+    interface LastItemRecyclerView {
+        fun lastItemRecyclerView(isShow: Boolean)
     }
 }

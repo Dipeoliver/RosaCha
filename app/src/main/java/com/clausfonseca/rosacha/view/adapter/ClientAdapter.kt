@@ -3,12 +3,16 @@ package com.clausfonseca.rosacha.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.clausfonseca.rosacha.databinding.ClientAdapterBinding
-import com.clausfonseca.rosacha.view.model.Client
+import com.bumptech.glide.Glide
+import com.clausfonseca.rosacha.R
+import com.clausfonseca.rosacha.databinding.ItemRecyclerClientListBinding
+import com.clausfonseca.rosacha.model.Client
 
 class ClientAdapter(
     private val context: android.content.Context,
     private val clientList: List<Client>,
+    var clickClient: ClickClient,
+    var lastItemRecyclerView: LastItemRecyclerView,
     val clientSelected: (Client, Int) -> Unit
 ) : RecyclerView.Adapter<ClientAdapter.MyViewHolder>() {
 
@@ -21,7 +25,7 @@ class ClientAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClientAdapter.MyViewHolder {
         return MyViewHolder(
-            ClientAdapterBinding.inflate(
+            ItemRecyclerClientListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -29,8 +33,9 @@ class ClientAdapter(
         )
     }
 
-    inner class MyViewHolder(val binding: ClientAdapterBinding) :
+    inner class MyViewHolder(val binding: ItemRecyclerClientListBinding) :
         RecyclerView.ViewHolder(binding.root)
+
 
     override fun getItemCount() = clientList.size
 
@@ -39,14 +44,32 @@ class ClientAdapter(
         holder.binding.txtName.text = client.name
         holder.binding.txtPhone.text = client.phone
         holder.binding.txtEmail.text = client.email
-        holder.binding.txtBirthday.text = client.birthday
 
-        holder.binding.btnClientDelete.setOnClickListener {
-            clientSelected(client, SELECT_REMOVE)
+
+        if (client.urlImagem == "") {
+            Glide.with(context).load(R.drawable.no_image).into(holder.binding.imvClient)
+        } else Glide.with(context).load(client.urlImagem).into(holder.binding.imvClient)
+
+//        holder.binding.btnClientDelete.setOnClickListener {
+//            clientSelected(client, SELECT_REMOVE)
+//        }
+
+        holder.binding.cardViewClient1.setOnClickListener {
+            clickClient.clickClient(client)
         }
 
-        holder.binding.btnClientUpdate.setOnClickListener {
-            clientSelected(client, SELECT_EDIT)
+        // quando chegar na ultima posição que tem na tela chama a função abaixo
+        if (position == itemCount - 1) {
+            lastItemRecyclerView.lastItemRecyclerView(true)
+        }
+    }
+
+    interface LastItemRecyclerView {
+        fun lastItemRecyclerView(isShow: Boolean)
+    }
+
+    interface ClickClient {
+        fun clickClient(client: Client) {
         }
     }
 }

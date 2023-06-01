@@ -6,245 +6,306 @@
     android:layout_height="match_parent"
     tools:context=".view.dashboard.price.PriceFragment">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout2"
+        android:layout_width="411dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/barcode"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <EditText
-        android:id="@+id/edt_barcode_price"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="90dp"
-        android:background="@drawable/bg_edit"
-        android:ems="10"
-        android:hint="@string/barcode"
-        android:inputType="number|numberDecimal"
-        android:padding="14dp"
-        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.079"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/rose"
+                android:elevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabIndicatorColor="@color/white"
+                app:tabTextAppearance="@style/CustomTabLayout"
+                app:tabTextColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/price_query"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tabs"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.517">
+
+            </TextView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/barcodeContainer"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="60dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="13"
+        app:helperText=""
+        app:helperTextTextColor="@android:color/holo_red_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconDrawable="@drawable/ic_qr_code_2">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_barcode_price"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_edit"
+            android:hint="@string/barcode"
+            android:inputType="number"
+            android:lines="1"
+            android:maxLength="13" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <ImageButton
         android:id="@+id/btn_scan_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="@color/white"
-        android:src="@drawable/ic_baseline_photo_camera_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/edt_barcode_price"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/ic_baseline_qr_code_scanner_24"
+        app:layout_constraintBottom_toTopOf="@+id/guideline18"
+        app:layout_constraintEnd_toStartOf="@+id/btn_search_price"
+        app:layout_constraintStart_toEndOf="@+id/barcodeContainer"
+        app:layout_constraintTop_toTopOf="@+id/barcodeContainer" />
+
 
     <ImageButton
         android:id="@+id/btn_search_price"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
+        android:layout_height="43dp"
+        android:layout_marginEnd="32dp"
         android:backgroundTint="@color/white"
         android:src="@drawable/ic_baseline_search_24"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_scan_price"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/edt_barcode_price"
-        app:layout_constraintTop_toBottomOf="@+id/btn_scan_price" />
+        app:layout_constraintTop_toTopOf="@+id/btn_scan_price" />
 
-    <TextView
-        android:id="@+id/textView17"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/description"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_barcode_price" />
-
-    <EditText
-        android:id="@+id/edt_description_price"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/descriptionContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="90dp"
-        android:background="@drawable/bg_edit"
-        android:ems="10"
-        android:hint="@string/description"
-        android:inputType="number|numberDecimal"
-        android:padding="14dp"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView17" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/size"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_description_price" />
-
-    <EditText
-        android:id="@+id/edt_size_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/bg_edit"
-        android:ems="10"
-        android:hint="@string/size"
-        android:inputType="textPersonName"
-        android:padding="14dp"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="214dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/color"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_description_price" />
-
-    <EditText
-        android:id="@+id/edt_color_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:background="@drawable/bg_edit"
-        android:ems="10"
-        android:hint="@string/color"
-        android:inputType="textPersonName"
-        android:padding="14dp"
-        android:textSize="14sp"
+        app:helperText=""
+        app:helperTextTextColor="@android:color/holo_red_dark"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/edt_size_price"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline16"
+        app:startIconDrawable="@drawable/ic_local_offer">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_description_price"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:enabled="false"
+            android:background="@drawable/bg_edit"
+            android:hint="@string/description"
+            android:inputType="textPersonName"
+            android:lines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/sizeContainer"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        app:helperText=""
+        app:helperTextTextColor="@android:color/holo_red_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline11"
+        app:startIconDrawable="@drawable/ic_open">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_size_price"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_edit"
+            android:hint="@string/size"
+            android:enabled="false"
+            android:inputType="textPersonName"
+            android:lines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/colorContainer"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        app:helperTextTextColor="@android:color/holo_red_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline11"
+        app:startIconDrawable="@drawable/ic_color">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_color_price"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_edit"
+            android:hint="@string/color"
+            android:inputType="textPersonName"
+            android:enabled="false"
+            android:lines="1"
+             />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="176dp"
         android:text="@string/rs"
         android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_value_price"
+        app:layout_constraintEnd_toStartOf="@+id/txt_value_price"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_size_price"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="@+id/txt_value_price"
+        app:layout_constraintVertical_bias="0.525" />
 
     <TextView
         android:id="@+id/txt_value_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:text="148.50"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:inputType="numberDecimal"
         android:textColor="@color/white"
-        android:textSize="100sp"
+        android:textSize="70sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_size_price" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView20"
+        app:layout_constraintTop_toBottomOf="@+id/imv_product"
+        tools:text="9999.67" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="481dp" />
+        app:layout_constraintGuide_begin="311dp" />
 
-    <TextView
-        android:id="@+id/textView21"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="60dp"
-        android:text="@string/symbol_3x"
-        android:textColor="@color/white"
-        android:textSize="20sp"
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/imv_product"
+        android:layout_width="212dp"
+        android:layout_height="209dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_value_price" />
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:riv_corner_radius="10dp" />
 
-    <TextView
-        android:id="@+id/txt_value_3x_price"
-        android:layout_width="wrap_content"
+    <SeekBar
+        android:id="@+id/seekBar3"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="49.5"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView21"
-        app:layout_constraintStart_toEndOf="@+id/textView21"
-        app:layout_constraintTop_toTopOf="@+id/textView21" />
+        android:layout_marginTop="16dp"
+        android:max="10"
+        android:min="1"
+        android:progress="1"
+
+        android:progressTint="#FC2390"
+        android:thumb="@drawable/baseline_arrow_circle_right_24"
+        app:layout_constraintEnd_toEndOf="@+id/imv_product"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/imv_product"
+        app:layout_constraintTop_toBottomOf="@+id/txt_value_price" />
 
     <TextView
         android:id="@+id/textView22"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/symbol_6x"
+        android:text="@string/rs"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView21" />
+        app:layout_constraintBottom_toBottomOf="@+id/txt_qty_value"
+        app:layout_constraintEnd_toStartOf="@+id/txt_parcel_price_value"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/txt_qty_value"
+        app:layout_constraintTop_toTopOf="@+id/txt_qty_value" />
 
     <TextView
-        android:id="@+id/txt_value_6x_price"
+        android:id="@+id/txt_parcel_price_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="24.75"
+        tools:text="@string/symbol_000"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView22"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView22"
-        app:layout_constraintTop_toTopOf="@+id/textView22"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/textView22" />
 
-    <ProgressBar
-        android:id="@+id/progressBar6"
-        style="?android:attr/progressBarStyle"
+    <TextView
+        android:id="@+id/txt_qty_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTint="@color/white"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/txt_value_price"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/symbol_1x"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView22"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_color_price"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@+id/seekBar3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="206dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="235dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="147dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="115dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
