@@ -274,7 +274,6 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
             .show()
     }
 
-
     private fun swipeToGesture(itemRv: RecyclerView?) {
         val swipeGesture = object : SwipeGesture(requireContext(), true) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {

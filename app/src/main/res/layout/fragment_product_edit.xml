@@ -69,21 +69,18 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/barcodeContainer"
                 android:layout_width="270dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="60dp"
                 app:counterEnabled="true"
                 app:counterMaxLength="13"
@@ -99,34 +96,35 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edit"
                     android:hint="@string/barcode"
-                    android:enabled="false"
                     android:inputType="number"
-                    android:nextFocusDown="@id/edt_reference_product"
+                    android:enabled="false"
                     android:lines="1"
-                    android:maxLength="13" />
+                    android:maxLength="13"
+                    android:nextFocusDown="@id/edt_description_product"
+                    android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageButton
                 android:id="@+id/btn_copy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
                 android:layout_marginEnd="32dp"
                 android:backgroundTint="@color/white"
                 android:src="@drawable/baseline_content_copy_24"
+                app:layout_constraintBottom_toTopOf="@+id/guideline1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+                app:layout_constraintTop_toTopOf="@+id/barcodeContainer" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/referenceContainer"
-                android:layout_width="160dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="16dp"
+                app:helperText=""
+
                 app:helperTextTextColor="@android:color/holo_red_dark"
-                app:layout_constraintBottom_toBottomOf="@+id/imv_photo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imv_photo"
+                app:layout_constraintTop_toTopOf="@+id/guideline12"
                 app:startIconDrawable="@drawable/ic_local_offer">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -136,17 +134,18 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/reference"
                     android:inputType="textPersonName"
-                    android:nextFocusDown="@id/edt_description_product"
-                    android:lines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:lines="1"
+                    android:nextFocusDown="@id/edt_brand_product"
 
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/descriptionContainer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 app:helperText=""
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -161,18 +160,22 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/description"
                     android:inputType="textPersonName"
-                    android:nextFocusDown="@id/edt_brand_product"
-                    android:lines="1" />
+                    android:lines="1"
+
+                    android:nextFocusDown="@id/edt_reference_product"
+                    android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/brandContainer"
-                android:layout_width="160dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="16dp"
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline12"
+                app:helperText=""
+
+                app:layout_constraintTop_toTopOf="@+id/guideline14"
                 app:startIconDrawable="@drawable/ic_local_offer">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -182,18 +185,22 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/brand"
                     android:inputType="textPersonName"
+                    android:lines="1"
+
                     android:nextFocusDown="@id/edt_provider_product"
-                    android:lines="1" />
+                    android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/providerContainer"
-                android:layout_width="160dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
+                android:layout_marginStart="16dp"
                 app:helperTextTextColor="@android:color/holo_red_dark"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:helperText=""
+
+                app:layout_constraintTop_toTopOf="@+id/guideline13"
                 app:startIconDrawable="@drawable/ic_local_offer">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -203,19 +210,21 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/provider"
                     android:inputType="textPersonName"
+                    android:lines="1"
                     android:nextFocusDown="@id/edt_size_product"
-                    android:lines="1" />
+
+                    android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/sizeContainer"
-                android:layout_width="160dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="16dp"
                 app:helperText=""
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline13"
+                app:layout_constraintTop_toTopOf="@+id/guideline15"
                 app:startIconDrawable="@drawable/ic_open">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -225,19 +234,20 @@
                     android:background="@drawable/bg_edit"
                     android:hint="@string/size"
                     android:inputType="textPersonName"
+                    android:lines="1"
                     android:nextFocusDown="@id/edt_color_product"
 
-                    android:lines="1" />
+                    android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/colorContainer"
-                android:layout_width="160dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="16dp"
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline13"
+                app:layout_constraintTop_toTopOf="@+id/guideline15"
                 app:startIconDrawable="@drawable/ic_color">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -245,23 +255,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edit"
-                    android:nextFocusDown="@id/edt_cost_product"
                     android:hint="@string/color"
-                    android:textSize="14sp"
                     android:inputType="textPersonName"
-                    android:lines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:lines="1"
+                    android:nextFocusDown="@id/edt_cost_product"
 
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/costContainer"
-                android:layout_width="160dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="16dp"
                 app:helperText=""
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline14"
+                app:layout_constraintTop_toTopOf="@+id/guideline29"
                 app:startIconDrawable="@drawable/ic_money">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -270,22 +280,21 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edit"
                     android:hint="@string/cost_price"
-                    android:textSize="12sp"
                     android:inputType="number|numberDecimal"
+                    android:lines="1"
                     android:nextFocusDown="@id/edt_sales_product"
-                    android:lines="1" />
+                    android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
-
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/salesContainer"
-                android:layout_width="160dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="16dp"
                 app:helperText=""
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline14"
+                app:layout_constraintTop_toTopOf="@+id/guideline29"
                 app:startIconDrawable="@drawable/ic_money">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -293,37 +302,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edit"
-                    android:textSize="12sp"
                     android:hint="@string/sales_price"
                     android:inputType="number|numberDecimal"
-                    android:lines="1" />
+                    android:lines="1"
+                    android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
                 android:text="@string/owner"
                 android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/rg_owner_product"
+                app:layout_constraintEnd_toStartOf="@+id/rg_owner_product"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline15" />
+                app:layout_constraintTop_toTopOf="@+id/guideline30" />
 
             <RadioGroup
                 android:id="@+id/rg_owner_product"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:orientation="horizontal"
+                android:layout_marginStart="90dp"
+                android:layout_marginEnd="90dp"
+                android:orientation="vertical"
+                android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView11">
+                app:layout_constraintTop_toTopOf="@+id/guideline30">
 
                 <RadioButton
                     android:id="@+id/claudia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_horizontal|center_vertical"
                     android:layout_weight="1"
                     android:buttonTint="@color/white"
                     android:checked="true"
@@ -336,34 +348,23 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:buttonTint="@color/white"
+                    android:paddingEnd="16dp"
                     android:text="@string/claudenice"
                     android:textColor="@color/white" />
             </RadioGroup>
 
-
-            <Button
-                android:id="@+id/btn_update_product"
-                android:layout_width="347dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:backgroundTint="@color/pink"
-                android:text="@string/update"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rg_owner_product" />
-
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/imv_photo"
-                android:layout_width="145dp"
-                android:layout_height="124dp"
-                android:layout_marginEnd="32dp"
+                android:layout_width="179dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="16dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/no_image"
                 android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/providerContainer"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barcodeContainer"
+                app:layout_constraintStart_toStartOf="@+id/colorContainer"
+                app:layout_constraintTop_toTopOf="@+id/guideline12"
                 app:riv_corner_radius="10dp" />
 
             <ImageView
@@ -380,44 +381,71 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="270dp" />
+                app:layout_constraintGuide_begin="142dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="136dp" />
+                app:layout_constraintGuide_begin="110dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="352dp" />
+                app:layout_constraintGuide_begin="220dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="437dp" />
+                app:layout_constraintGuide_begin="376dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="522dp" />
+                app:layout_constraintGuide_begin="299dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="604dp" />
+                app:layout_constraintGuide_begin="455dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline29"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="534dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="610dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/btn_update_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/pink"
+        android:text="@string/update"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Html
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +30,6 @@ import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
 import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
-import com.clausfonseca.rosacha.utils.extencionFunctions.hideKeyboard
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
 import com.clausfonseca.rosacha.view.adapter.ItensSalesAdapter
@@ -43,7 +43,6 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -59,6 +58,7 @@ class AddSalesFragment : Fragment() {
     private var dbClients: String = ""
     private var dbProducts: String = ""
     private var dbSales: String = ""
+    private var dbMonthSales: String = ""
     private var soma: Double = 0.0
     private var qtyParcel: Int = 1
     private var paid = ""
@@ -76,6 +76,10 @@ class AddSalesFragment : Fragment() {
     private var client: String = ""
     private val dialogProgress = DialogProgress()
     private var bottomSheetDialogPermission: BottomSheetDialog? = null
+    val calendar = Calendar.getInstance()
+
+    var mes = ""
+    var actualvalue = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,6 +95,7 @@ class AddSalesFragment : Fragment() {
         dbClients = getString(R.string.db_client)
         dbProducts = getString(R.string.db_product)
         dbSales = getString(R.string.db_sales)
+        dbMonthSales = getString(R.string.db_month_sales)
 
         onBackPressed()
         initListeners()
@@ -211,7 +216,6 @@ class AddSalesFragment : Fragment() {
                 if (finalPrice < 0) {
                     Util.exibirToast(requireContext(), getString(R.string.check_value_sales))
                 } else {
-
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         informationDialog()
                     }
@@ -303,7 +307,6 @@ class AddSalesFragment : Fragment() {
         val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         actualDate = dateTimeFormat.format(date)
 
-        val calendar = Calendar.getInstance()
 
 
         invoiceNumber =
@@ -317,7 +320,7 @@ class AddSalesFragment : Fragment() {
         addSales.price = (soma * 100.0).roundToInt() / 100.0
         addSales.discount = ((discount) * 100.0).roundToInt() / 100.0
         addSales.paid = (moneyPaid * 100.0).roundToInt() / 100.0
-        addSales.totalPrice = (finalPrice * 100.0).roundToInt() / 100.0
+        addSales.totalPrice = ((soma - discount)* 100.0).roundToInt() / 100.0
         addSales.client = binding.txtClient.text.toString().uppercase()
         addSales.salesOwner = auth.currentUser?.email
         addSales.salesDate = actualDate
@@ -327,17 +330,81 @@ class AddSalesFragment : Fragment() {
         addSales.qtyParcel = qtyParcel
         addSales.parcelDate = calendar.get(Calendar.DAY_OF_MONTH)
         addSales.parceled = (parcelValue * 100.0).roundToInt() / 100.0
+
         db.collection(dbSales).document(invoiceNumber)
             .set(addSales).addOnCompleteListener {
-
                 dialogProgress.dismiss()
-
                 val args = Bundle()
                 args.putString("id", invoiceNumber)
                 findNavController().navigate(R.id.action_addSalesFragment_to_afterSalesFragment, args)
-
             }.addOnFailureListener {
                 Util.exibirToast(requireContext(), getString(R.string.error_add_sales))
+//                dialogProgress.dismiss()
+            }
+        getControlMonthSales()
+
+    }
+
+    private fun getControlMonthSales() {
+
+//        var monthList = listOf<Double>()
+        when (calendar.get(Calendar.MONTH) + 1) {
+            1 -> mes = "jan"
+            2 -> mes = "feb"
+            3 -> mes = "mar"
+            4 -> mes = "apr"
+            5 -> mes = "may"
+            6 -> mes = "jun"
+            7 -> mes = "jul"
+            8 -> mes = "aug"
+            9 -> mes = "sep"
+            10 -> mes = "oct"
+            11 -> mes = "nov"
+            12 -> mes = "dec"
+        }
+        db.collection(dbMonthSales).document(calendar.get(Calendar.YEAR).toString()).get()
+            .addOnSuccessListener { task ->
+                if (task != null && task.exists()) {
+                    actualvalue = task.getDouble(mes) ?: 0.0
+                    updateControlMonthSales()
+                } else {
+                    actualvalue = 0.0
+                    insertControlMonthSales()
+                }
+            }.addOnFailureListener { error ->
+                dialogProgress.dismiss()
+                "Erro de comunicação com servidor ${error.message.toString()}"
+            }
+    }
+
+    private fun updateControlMonthSales() {
+        actualvalue += (soma - discount)
+        val value = hashMapOf(
+            mes to actualvalue,
+        )
+        db.collection(dbMonthSales).document(calendar.get(Calendar.YEAR).toString()).update(value as Map<String, Any>)
+            .addOnSuccessListener()
+            {
+                dialogProgress.dismiss()
+            }.addOnFailureListener()
+            {
+                Util.exibirToast(requireContext(), "erro to upload month valeu")
+                dialogProgress.dismiss()
+            }
+    }
+
+    private fun insertControlMonthSales() {
+        actualvalue += (soma - discount)
+        val value = hashMapOf(
+            mes to actualvalue,
+        )
+        db.collection(dbMonthSales).document(calendar.get(Calendar.YEAR).toString()).set(value)
+            .addOnCompleteListener()
+            {
+                dialogProgress.dismiss()
+            }.addOnFailureListener()
+            {
+                Util.exibirToast(requireContext(), "erro to insert month valeu")
                 dialogProgress.dismiss()
             }
     }

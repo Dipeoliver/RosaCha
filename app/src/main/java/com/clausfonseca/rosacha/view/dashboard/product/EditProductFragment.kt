@@ -534,17 +534,11 @@ class EditProductFragment : Fragment() {
         val sheetBinding: ItemCustomBottonSheetTakePictureBinding =
             ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
 
-        sheetBinding.imvBottomPhoto.setOnClickListener {
-            checkPermissions()
-        }
-        sheetBinding.txtBottomPhoto.setOnClickListener {
+        sheetBinding.clTakePhoto.setOnClickListener {
             checkPermissions()
         }
 
-        sheetBinding.imvBottomGallery.setOnClickListener {
-            obterImagemdaGaleria()
-        }
-        sheetBinding.txtBottomGallery.setOnClickListener {
+        sheetBinding.clGallery.setOnClickListener {
             obterImagemdaGaleria()
         }
         bottomSheetDialogCamera?.setContentView(sheetBinding.root)

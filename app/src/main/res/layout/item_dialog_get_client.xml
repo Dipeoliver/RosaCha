@@ -36,8 +36,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/bg_border_edit"
+        app:layout_constraintEnd_toEndOf="@+id/btn_search1"
         app:layout_constraintStart_toStartOf="@+id/edt_client_phone"
         app:layout_constraintTop_toBottomOf="@+id/edt_client_phone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

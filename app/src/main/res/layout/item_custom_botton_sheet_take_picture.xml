@@ -3,50 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:padding="8dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/botton_sheet_background"
-    android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/txt_bottom_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="@string/get_image_camera"
-        android:textColor="@color/pink"
-        app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_photo"
-        app:layout_constraintStart_toEndOf="@+id/imv_bottom_photo"
-        app:layout_constraintTop_toTopOf="@+id/imv_bottom_photo" />
-
-    <TextView
-        android:id="@+id/txt_bottom_gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="@string/get_image_gallery"
-        android:textColor="@color/pink"
-        app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_gallery"
-        app:layout_constraintStart_toEndOf="@+id/imv_bottom_gallery"
-        app:layout_constraintTop_toTopOf="@+id/imv_bottom_gallery" />
-
-    <ImageView
-        android:id="@+id/imv_bottom_photo"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
-        app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
-
-    <ImageView
-        android:id="@+id/imv_bottom_gallery"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imv_bottom_photo"
-        app:srcCompat="@drawable/ic_baseline_image_24" />
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/imageView5"
@@ -56,4 +15,78 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_drag_handle_24" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_take_photo"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView5">
+
+
+        <ImageView
+            android:id="@+id/imv_bottom_photo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
+
+
+        <TextView
+            android:id="@+id/txt_bottom_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="@string/get_image_camera"
+            android:textColor="@color/pink"
+            app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_photo"
+            app:layout_constraintStart_toEndOf="@+id/imv_bottom_photo"
+            app:layout_constraintTop_toTopOf="@+id/imv_bottom_photo" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_gallery"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_take_photo">
+
+        <ImageView
+            android:id="@+id/imv_bottom_gallery"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_image_24" />
+
+
+        <TextView
+            android:id="@+id/txt_bottom_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="@string/get_image_gallery"
+            android:textColor="@color/pink"
+            app:layout_constraintBottom_toBottomOf="@+id/imv_bottom_gallery"
+            app:layout_constraintStart_toEndOf="@+id/imv_bottom_gallery"
+            app:layout_constraintTop_toTopOf="@+id/imv_bottom_gallery" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -333,16 +333,16 @@ class AddClientFragment : Fragment() {
 
     // region - FieldValidation
     private fun submitForm() {
-        val name = checkEmptyField(binding.edtNameClient, binding.nameContainer, requireContext(), )
+        val name = checkEmptyField(binding.edtNameClient, binding.nameContainer, requireContext())
         cleanErrorValidation(binding.edtNameClient, binding.nameContainer)
 
-        val phone = checkEmptyField(binding.edtPhoneClient, binding.phoneContainer, requireContext(),"phone" )
+        val phone = checkEmptyField(binding.edtPhoneClient, binding.phoneContainer, requireContext(), "phone")
         cleanErrorValidation(binding.edtPhoneClient, binding.phoneContainer)
 
         var email: Boolean = true
 
         if (!binding.edtEmailClient.text.isNullOrEmpty()) {
-            email = checkEmptyField(binding.edtEmailClient, binding.emailContainer, requireContext(),"email" )
+            email = checkEmptyField(binding.edtEmailClient, binding.emailContainer, requireContext(), "email")
         }
         cleanErrorValidation(binding.edtEmailClient, binding.emailContainer)
 
@@ -391,19 +391,14 @@ class AddClientFragment : Fragment() {
         val sheetBinding: ItemCustomBottonSheetTakePictureBinding =
             ItemCustomBottonSheetTakePictureBinding.inflate(layoutInflater, null, false)
 
-        sheetBinding.imvBottomPhoto.setOnClickListener {
-            checkPermissions()
-        }
-        sheetBinding.txtBottomPhoto.setOnClickListener {
+        sheetBinding.clTakePhoto.setOnClickListener {
             checkPermissions()
         }
 
-        sheetBinding.imvBottomGallery.setOnClickListener {
+        sheetBinding.clGallery.setOnClickListener {
             obterImagemdaGaleria()
         }
-        sheetBinding.txtBottomGallery.setOnClickListener {
-            obterImagemdaGaleria()
-        }
+
         bottomSheetDialogCamera?.setContentView(sheetBinding.root)
         bottomSheetDialogCamera?.show()
     }

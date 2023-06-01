@@ -362,16 +362,6 @@
                 app:layout_constraintStart_toStartOf="@+id/btn_price_search"
                 app:layout_constraintTop_toTopOf="@+id/phoneContainer" />
 
-            <Button
-                android:id="@+id/btn_add_sales"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/pink"
-                android:text="@string/sell"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline4"
@@ -467,8 +457,19 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="186dp" />
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
+    <Button
+        android:id="@+id/btn_add_sales"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/pink"
+        android:text="@string/sell"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

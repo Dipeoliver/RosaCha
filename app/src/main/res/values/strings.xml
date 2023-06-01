@@ -208,16 +208,20 @@ Enable camera access in your device settings</string>
     // Production (Clients / Products / Sales)
     // Test (ClientsTest / ProductsTest / SalesTest)
 
-
-    <string name="verifyTest">false</string>
     <string name="db_client">ClientsTest</string>
     <string name="db_product">ProductsTest</string>
     <string name="db_sales">SalesTest</string>
+    <string name="db_month_sales">MonthSalesTest</string>
+
+
+
+
     <string name="must_be_14_digits">Must be 14 Digits</string>
     <string name="must_be_6_digits">Must be 6 Digits</string>
     <string name="invalid_email_address">Invalid Email Address</string>
     <string name="monthly_sales">monthly sales $</string>
     <string name="price_query">price query</string>
+    <string name="quantity">quantity</string>
 
 
 </resources>
