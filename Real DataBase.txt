@@ -1,0 +1,206 @@
+Client RealDataBase
+private fun getTasks() {
+        FirebaseHelper
+            .getDatabase()
+            .child("Client")
+//            .child(FirebaseHelper.getIdUser() ?: "")
+            .child("Clients")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        clientlist.clear()
+                        for (snap in snapshot.children) {
+                            val client = snap.getValue(Client::class.java) as Client
+                            clientlist.add(client)
+                        }
+//                        productlist.reverse() // trazer a lista do mais novo para o antigo
+                        initAdapter()
+                    } else {
+
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+Product RealDataBase
+    private fun getTasks() {
+        FirebaseHelper
+            .getDatabase()
+            .child("Product")
+//            .child(FirebaseHelper.getIdUser() ?: "")
+            .child("Product_Item")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        productlist.clear()
+                        for (snap in snapshot.children) {
+                            val product = snap.getValue(Product::class.java) as Product
+                            productlist.add(product)
+                        }
+//                        binding.textinfo.text = ""
+//                        productlist.reverse() // trazer a lista do mais novo para o antigo
+                        initAdapter()
+                    } else {
+//                        binding.textinfo.text = "Nehuma Tarefa encontrada"
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                }
+
+            })
+    }
+
+// Pegar preço produto no banco de dados
+private fun getPrice(barcode: Editable) {
+        db.collection("Product")
+            .whereEqualTo("barcode", "2")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Produto encontrado",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    binding.edtDescriptionPrice.setText(document.data["description"].toString())
+                    binding.txtValuePrice.text = (document.data["price"].toString())
+                }
+            }
+            .addOnFailureListener { exception ->
+//                Log.w(TAG, "Error getting documents.", exception)
+            }
+    }
+
+
+private fun insertProduct_RealTimeDatabase() {
+        FirebaseHelper
+            .getDatabase()
+            .child("Product")
+//            .child(FirebaseHelper.getIdUser() ?: "")
+            .child("Product_Item") // id do usuario
+            .child(product.id)
+            .setValue(product)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    if (newTask) { // nova tarefa
+//                        findNavController().popBackStack() // voltar para a tela anterior
+                        Toast.makeText(
+                            requireContext(),
+                            "Tarefa Salva com sucesso",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        cleaner()
+                        dialogProgress.dismiss()
+                    } else { // iditando tarefa
+                        dialogProgress.dismiss()
+                        Toast.makeText(
+                            requireContext(),
+                            "Tarefa Atualizada com Sucesso",
+                            Toast.LENGTH_SHORT
+                        )
+                    }
+
+                } else {
+                    Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT)
+                        .show()
+
+                }
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+private fun insertClient_RealtimeDatabase() {
+        FirebaseHelper
+            .getDatabase()
+            .child("Client")
+//            .child(FirebaseHelper.getIdUser() ?: "") // id do usuario
+            .child("Clients") // id do usuario
+            .child(client?.id ?: "")
+            .setValue(client)
+            .addOnCompleteListener { task ->
+                if (newClient) { // nova tarefa
+                    if (task.isSuccessful) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Client  Salvo com sucesso",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        cleaner()
+//                        binding.progressBar.isVisible = false
+                    } else { // iditando tarefa
+//                        binding.progressBar.isVisible = false
+                        Toast.makeText(
+                            requireContext(),
+                            "Tarefa Atualizada com Sucesso",
+                            Toast.LENGTH_SHORT
+                        )
+                    }
+                } else {
+//                    binding.progressBar.isVisible = false
+
+                    Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }.addOnFailureListener {
+//                binding.progressBar.isVisible = false
+                Toast.makeText(requireContext(), "Erro ao salvar Tarefa", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+//    private fun getArgs() {
+//        args.let {
+//            if (it.clientArguments != null) {
+//                client = it.clientArguments
+//            }
+//
+//            if (args.clientArguments != null) configTask()
+//        }
+//    }
+//
+//    private fun configTask() {
+//        newClient = false
+////        binding.txtTollbar.text = "Editando uma tarefa"
+//        binding.edtNameClient.setText(client?.name)
+//        binding.edtPhoneClient.setText(client?.phone)
+//        binding.edtEmailClient.setText(client?.email)
+//        binding.edtBirthdayClient.setText(client?.birthday)
+//    }
+
+
+
+-------------------------------------------------------------------------------------------
+
+
+    private fun initClick() {
+//        binding.fabAddClient.setOnClickListener {
+//            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/fragment_add_client")
+//            findNavController().navigate(uri)
+//            binding.root.removeAllViewsInLayout()
+//        }
+    }
+
+
+-------------------------------------------------------------------------------------------
+
+XML
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_client"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/pink"
+        app:tint="@color/white"
+        android:src="@drawable/ic_baseline_add_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />

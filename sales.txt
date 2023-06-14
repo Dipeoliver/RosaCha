@@ -1,0 +1,30 @@
+Date = 15:00:00 17/01/2023
+
+Total price= 1100,00
+Desconto = 100,00
+PreçoFinal = 1000,00
+Entrada = 200,00
+Restante = 800,00
+
+Cliente = null
+UserID = Claudia
+
+Itens{
+barcode = 000001 value = 100,00
+barcode = 000001 value = 100,00
+barcode = 000002 value = 800,00}
+
+TipoPagamento{
+Cartão Credito = false
+Cartão Debito = true
+Boleto = false
+Dinheiro = True
+Crediário = false
+PIX = false}
+
+
+
+
+
+
+ 

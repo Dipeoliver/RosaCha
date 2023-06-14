@@ -1,0 +1,196 @@
+Feitos
+1 colocar seta de voltar na tela de esqueci senha.
+2 colocar focus na tela esqueci senha
+3 Tratar quando tem uma escrita no email que não e um email real
+4 arrumar o layout após delete dos botões de logout
+5 fazer o cleaner dos campos de adicionar produto
+6 verificar o insert do (Client) para colocar usuario padrão
+7 corrigir o layout para exibir os intes na lista 
+8 Fazer o select dos (Client)
+9 Opção de Delete para Client e Product
+10 colocar scrool dentro das telas
+11 fazer o botão add ficar sempre embaixo
+12 ajustar o index dos campos adicionar o produto
+
+04/01/23
+- adicionado mascara de e-mail / Phone / Date
+- Colocar o progressbar por cima tela
+
+06/01/23
+- Mudar o graph para deeplink
+- Tratar para o campo barcode nao estar vazio em price
+
+- Receber o focus no campo Barcode e limpar campos ao nao encontrar produto
+- mascara para sempre ter 2 casas decimais na consulta de price
+
+09/01/23
+- Adicionei mais numeros de parcelas divididas
+- Adicionei scanner Price pela camera
+- Modifiquei visual da ListProduct
+- modificar todos _binding
+- colocar UPPERCASE para lembrar textos 
+
+
+11/01/23
+- ao mudar aba dentro de campos(cliente) ao adicionar novo não aparece direto
+
+
+13/01/23
+- mudar para adicionar cliente e produto em uma nova aba, usando float Button
+- Salvar imagem do produto
+- colocar para não pegar imagem se campo barcode estiver vazio
+- fazer o campo imageview dar um reset e nao salvar nada se vazio
+- Adicionar botão voltar na aba de adicionar produtos
+- arrumar botoes imagem para dicionar camera ou galeria
+
+16/01/23
+- Na aba price exibe foto do produto ao fazer pesquisa
+
+18/01/23
+- lista(clients) esta cortando ultimo item
+
+
+20/01/23
+- Adicionar confirmação para o Delete
+- scroll adicionar produto nao funciona
+
+25/01/23
+- adicionei paginação no cliente / produto para exibir de 10 em 10
+- colocar a lista de clientes e produtos em ordem alfabetica
+
+26/01/23
+
+- Filtragem na lista de clientes pelo nome e  Produtos pela descrição
+
+27/01/23
+- ao voltar no botão de baixo nao carrega a tela novamente 
+- Correção arredondamento de casas decimais dentro "Price"
+
+01/02/23
+- Delete de produtos nao funciona
+- arredondar 2 casa o valor de sales em lista de produtos
+- ao ter lista vazia em clientes da problema, mesmo produto ja arrumado
+- adicionado selecção nas lista por click
+
+02/02/23
+- ao salvar um novo produto se nao tiver foto salva uma padrão
+
+03/02/23
+- ao apagar produto / client apagar foto  tb
+- adicionar para selecionar foto em clients
+- click de voltar fica loop infinito
+
+07/02/23
+- implementar update (client / product)
+
+08/02/23
+- controle de permissão ao acessar camera e arquivos
+- Correção de editar e não perder a foto
+
+15/02/23
+- Adicionar e remover itens so recyclerview
+- Soma dos valores conforme itens da lista
+- Ajustar layout sales para barra de baixo nao subir, botão finalizar ficar correto, colocar scroll
+
+27/02/23
+- Possibilidade de ao efetuar uma venda compartilhar os itens em pdf pelo whats
+- Adicionar o desconto e fazer atualização preços.
+- adicionar busca de clientes (facil)
+- colocar Dialog ao salvar item ja no insert da imagem e depois so dar o dismmis no erro ou no insert do firestore
+- Ao inserir um produto verificar se o mesmo ja não existe e mostrar msg
+- colocar msg de rodape depois de efetuar a venda( vender novamente / ir para lista / compartilhar PDF)
+
+07/03/2023
+- adicionar para conseguir compartilhar com o Whats
+- ao carregar cliente com a lista vazia aparece 2x msg igual (desliguei on resume)
+- inserir map no firebase (sales)
+
+
+09/03/2023
+- deixar a parte da venda sozinha, adionar as abas na HOME para exibir as vendas
+- Adicionar regras para dar um valor de entrada
+- mostrar na tela de venda o valor do desconto em frente a porcentagem
+
+13/03/2023
+- remodelar o PDF para aparecer o valor de entrada
+- Adicionado botão para copiar codigo do barcode dentro de produtos
+- adicionar para aparecer numero de parcelas e prazo dentro PDF
+
+14/03/2023
+- Adicionado para salver qty parcelas/ data vencimento e valor entrada dentro de uma venda
+- arredondamento de casa decimais nos valores double da tabela vendas
+
+21/03/2023
+- Mudar o progress bar do fragment creat account
+- checar todos texto (portugues / ingles)
+
+23/03/2023
+- Ao nao conseguir usar scanner dentro da venda está apagando todos itens do RecyclerView
+- quando venda for 1x colocar mensagem (Venda a Vista)
+- colocar o discount dentro de uma variavel, esta espalhado em varios lugares.
+- adicionar o valor das parcelas em frete a quantidade de parcelas no PDF (passar mais 1 parametro)
+- biblioteca adionar grafico na (home)
+
+29/03/2023
+- ao deletar o cliente e voltar inserir o mesmo dentro do banco novamente e também a foto
+- Ao retornar client na lista o ultimo aparece 2 vezes
+- dentro Pdf.kt mudar texto para a string
+- mostrar dentro PDF o $ de dinheiro
+- ao clicar em buscar produto em price fechar o teclado (fica em cima da tela)
+
+31/03/2023
+- Fazer o grafico se tornar dinamico
+- Adicionar campo Ano dentro de uma venda 
+- Adicioanr campo mês dentro de uma venda
+
+04/04/2023
+- exibir a lista de vendas
+
+05/04/2023
+- seleção de filtro na lista de vendas
+- correção do campo data dentro rv(overflow visual)
+
+12/04/2023
+- mudar o teclado conforme o tipo de filtro (maiuscula / numeros)
+
+13/04/2023
+- Botao dentro do produto habilitar para adicionar novo intem (clone)
+- arrumar a cor de fundo do dialog do busca client
+
+19/04/2023
+- customizar o bottonDialog para bordas arredondadas e colocar imagem de fundo
+- Tirar lixeira de produtos e click 
+
+27/04/2023
+- ao clicar na venda exibir itens vendidos
+- dentro de cada venda poder compartilhar arquivo
+- arrumar a data do dia que vai para PDF e salva banco
+
+05/2023
+- validação de campos
+- campos mudarem na sequencia correta ao dar enter no cadastro
+- verificar se os dialog box estao dentro constains para nao ter dois clicar
+- criar tabela do saldo mensal para carregar grafico mais rapido
+
+-----------------------------------------------------------------------------
+
+A fazer
+- colocar os textos dentro da string (list sales e filtro)
+- transformar os hard code em objetos
+- Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
+- Adicionar Nome dentro Cadastro da pessoa e exibir na tela inicial
+
+
+- ao clicar em buscar client dentro de add sales limpar o campo retorno se ja estiver alguma coisa preenxido.
+
+Ideias a Fazer
+- adicionar quantidade nos itens
+- Salvar banco itens vendidos 
+- Criar uma tela de devolução
+
+
+- mudar arquitetura 
+ 
+erros
+- Ao retornar client na lista o ultimo aparece 2 vezes ( arrumamos mas não solução final)
+- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto (tem de testar para ver se reproduz)

@@ -7,19 +7,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentLoginBinding
-import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
-import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
+import com.clausfonseca.rosacha.utils.Response
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var auth: FirebaseAuth
+
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,11 +38,15 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
         initListeners()
+        configureObservables()
     }
 
     private fun initListeners() {
         binding.btnLogin.setOnClickListener {
-            submitForm()
+//            submitForm()
+            val emailUser = binding.edtEmail.text.toString().trim()
+            val passwordUser = binding.edtPassword.text.toString().trim()
+            viewModel.signIn(emailUser, passwordUser)
         }
         binding.btnRegisterAccount.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
@@ -49,35 +58,66 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun loginUser(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful) {
-                    findNavController().navigate(R.id.action_global_homeFragment)
-                } else {
-                    binding.progressBar2.isVisible = false
-                    Toast.makeText(
+    private fun configureObservables() {
+        viewModel.screenState.observe(viewLifecycleOwner, Observer {
+            handleState(it)
+        })
+    }
+
+    private fun handleState(state: Response<Boolean>) {
+        when (state) {
+            Response.Loading -> binding.progressBar2.isVisible = true
+            Response.Success(false) -> {
+
+                binding.progressBar2.isVisible = false
+                findNavController().navigate(R.id.action_global_homeFragment)
+
+            }
+
+            Response.Error("eroooo2222") -> {
+
+                binding.progressBar2.isVisible = false
+                Toast.makeText(
                         requireContext(),
-                        FirebaseHelper.validError(task.exception?.message ?: ""),
+                        FirebaseHelper.validError(" EROOOOOOOOOOOOOOOOO"),
                         Toast.LENGTH_SHORT
                     ).show()
-                }
             }
-    }
 
-    private fun submitForm() {
-        val email = checkEmptyField(binding.edtEmail, binding.emailContainer, requireContext(), "email")
-        cleanErrorValidation(binding.edtEmail, binding.emailContainer)
-        val password = checkEmptyField(binding.edtPassword, binding.passwordContainer, requireContext(), "password")
-        cleanErrorValidation(binding.edtPassword, binding.passwordContainer)
-
-        val emailUser = binding.edtEmail.text.toString().trim()
-        val passwordUser = binding.edtPassword.text.toString().trim()
-
-        if (password && email) {
-            binding.progressBar2.isVisible = true
-            loginUser(emailUser, passwordUser)
+            else -> {}
         }
+
     }
+
+//    private fun loginUser(email: String, password: String) {
+//        auth.signInWithEmailAndPassword(email, password)
+//            .addOnCompleteListener(requireActivity()) { task ->
+//                if (task.isSuccessful) {
+//                    findNavController().navigate(R.id.action_global_homeFragment)
+//                } else {
+//                    binding.progressBar2.isVisible = false
+//                    Toast.makeText(
+//                        requireContext(),
+//                        FirebaseHelper.validError(task.exception?.message ?: ""),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//            }
+//    }
+//
+//    private fun submitForm() {
+//        val email = checkEmptyField(binding.edtEmail, binding.emailContainer, requireContext(), "email")
+//        cleanErrorValidation(binding.edtEmail, binding.emailContainer)
+//        val password = checkEmptyField(binding.edtPassword, binding.passwordContainer, requireContext(), "password")
+//        cleanErrorValidation(binding.edtPassword, binding.passwordContainer)
+//
+//        val emailUser = binding.edtEmail.text.toString().trim()
+//        val passwordUser = binding.edtPassword.text.toString().trim()
+//
+//        if (password && email) {
+//            binding.progressBar2.isVisible = true
+//            loginUser(emailUser, passwordUser)
+//        }
+//    }
 
 }
