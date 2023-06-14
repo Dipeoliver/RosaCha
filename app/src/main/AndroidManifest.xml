@@ -20,6 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_rosa_cha_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RosaCha"
+        android:name=".RosaChaApplication"
         tools:targetApi="31">
         <provider
             android:name="androidx.core.content.FileProvider"

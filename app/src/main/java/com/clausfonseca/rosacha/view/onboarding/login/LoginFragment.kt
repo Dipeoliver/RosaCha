@@ -67,11 +67,10 @@ class LoginFragment : Fragment() {
     private fun handleState(state: Response<Boolean>) {
         when (state) {
             Response.Loading -> binding.progressBar2.isVisible = true
-            Response.Success(false) -> {
+            Response.Success(true) -> {
 
                 binding.progressBar2.isVisible = false
                 findNavController().navigate(R.id.action_global_homeFragment)
-
             }
 
             Response.Error("eroooo2222") -> {
@@ -86,38 +85,5 @@ class LoginFragment : Fragment() {
 
             else -> {}
         }
-
     }
-
-//    private fun loginUser(email: String, password: String) {
-//        auth.signInWithEmailAndPassword(email, password)
-//            .addOnCompleteListener(requireActivity()) { task ->
-//                if (task.isSuccessful) {
-//                    findNavController().navigate(R.id.action_global_homeFragment)
-//                } else {
-//                    binding.progressBar2.isVisible = false
-//                    Toast.makeText(
-//                        requireContext(),
-//                        FirebaseHelper.validError(task.exception?.message ?: ""),
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
-//    }
-//
-//    private fun submitForm() {
-//        val email = checkEmptyField(binding.edtEmail, binding.emailContainer, requireContext(), "email")
-//        cleanErrorValidation(binding.edtEmail, binding.emailContainer)
-//        val password = checkEmptyField(binding.edtPassword, binding.passwordContainer, requireContext(), "password")
-//        cleanErrorValidation(binding.edtPassword, binding.passwordContainer)
-//
-//        val emailUser = binding.edtEmail.text.toString().trim()
-//        val passwordUser = binding.edtPassword.text.toString().trim()
-//
-//        if (password && email) {
-//            binding.progressBar2.isVisible = true
-//            loginUser(emailUser, passwordUser)
-//        }
-//    }
-
 }
