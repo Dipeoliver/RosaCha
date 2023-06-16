@@ -1,16 +1,14 @@
 package com.clausfonseca.rosacha.view.onboarding.login
 
-import androidx.lifecycle.MutableLiveData
-import com.clausfonseca.rosacha.utils.Response
 import com.clausfonseca.rosacha.utils.SingleLiveEvent
 
 
-class LoginModel {
+class LoginModelState {
 
     val screenState = SingleLiveEvent<LoginState>()
 
     sealed class LoginState {
-        object Loading : LoginState()
+        data class Loading(val isLoading: Boolean) : LoginState()
         object Success : LoginState()
         data class Error(val message: String) : LoginState()
     }

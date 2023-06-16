@@ -1,7 +1,7 @@
 package com.clausfonseca.rosacha.data.repository
 
 import com.clausfonseca.rosacha.domain.repository.AuthRepository
-import com.clausfonseca.rosacha.utils.Response
+import com.clausfonseca.rosacha.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -12,15 +12,15 @@ import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth
 ) : AuthRepository {
-    override fun firebaseSignIn(email: String, password: String): Flow<Response<Boolean>> = flow {
+    override fun firebaseSignIn(email: String, password: String): Flow<Resource<Boolean>> = flow {
         try {
-            emit(Response.Loading)
+            emit(Resource.Loading())
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                 }.await()
-            emit(Response.Success(true))
+            emit(Resource.Success(true))
         } catch (e: Exception) {
-            emit(Response.Error(e.localizedMessage ?: "Unexpected Error!!"))
+            emit(Resource.Error(e))
         }
     }
 }

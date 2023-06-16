@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentLoginBinding
-import com.clausfonseca.rosacha.utils.Response
+import com.clausfonseca.rosacha.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -59,26 +59,26 @@ class LoginFragment : Fragment() {
     }
 
     private fun configureObservables() {
-        viewModel.screenState.observe(viewLifecycleOwner, Observer {
+        viewModel.model.screenState.observe(viewLifecycleOwner, Observer {
             handleState(it)
         })
     }
 
-    private fun handleState(state: Response<Boolean>) {
+    private fun handleState(state: LoginModelState.LoginState?) {
         when (state) {
-            Response.Loading -> binding.progressBar2.isVisible = true
-            Response.Success(true) -> {
+            is LoginModelState.LoginState.Loading -> binding.progressBar2.isVisible = true
 
+            is LoginModelState.LoginState.Success -> {
                 binding.progressBar2.isVisible = false
                 findNavController().navigate(R.id.action_global_homeFragment)
             }
 
-            Response.Error("eroooo2222") -> {
+            is LoginModelState.LoginState.Error -> {
 
                 binding.progressBar2.isVisible = false
                 Toast.makeText(
                         requireContext(),
-                        FirebaseHelper.validError(" EROOOOOOOOOOOOOOOOO"),
+                        FirebaseHelper.validError(state.message),
                         Toast.LENGTH_SHORT
                     ).show()
             }
