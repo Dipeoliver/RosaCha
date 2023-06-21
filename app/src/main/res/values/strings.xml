@@ -202,6 +202,7 @@ Enable camera access in your device settings</string>
     <string name="invalid_password_register_fragment">The password is invalid or the user does not have a password.</string>
     <string name="email_in_use_register_fragment">The email address is already in use by another account.</string>
     <string name="strong_password_register_fragment">The given password is invalid.</string>
+    <string name="network_error">No Internet connection.</string>
     <string name="error_generic">Have one problem, try again later.</string>
 
     <!-- DB Firebase -->

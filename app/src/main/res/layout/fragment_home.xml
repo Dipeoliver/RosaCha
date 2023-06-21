@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="@{xmlViewModel.homeVisibilityOb}"
-        tools:context=".view.dashboard.HomeFragment">
+        tools:context=".view.dashboard.home.HomeFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout2"

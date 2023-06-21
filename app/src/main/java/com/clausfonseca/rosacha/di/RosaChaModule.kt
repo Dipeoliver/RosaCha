@@ -4,6 +4,7 @@ import com.clausfonseca.rosacha.data.repository.AuthRepositoryImpl
 import com.clausfonseca.rosacha.domain.repository.AuthRepository
 import com.clausfonseca.rosacha.domain.usecases.AuthUseCases
 import com.clausfonseca.rosacha.domain.usecases.FirebaseSignIn
+import com.clausfonseca.rosacha.domain.usecases.FirebaseSignOut
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -46,5 +47,6 @@ object RosaChaModule {
     @Provides
     fun provideAuthUseCases(repository: AuthRepositoryImpl) = AuthUseCases(
         firebaseSignIn = FirebaseSignIn(repository = repository),
+        firebaseSignOut = FirebaseSignOut(repository = repository)
     )
 }

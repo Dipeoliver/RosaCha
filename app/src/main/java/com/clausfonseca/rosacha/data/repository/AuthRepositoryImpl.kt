@@ -23,4 +23,16 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Resource.Error(e))
         }
     }
+
+    override fun firebaseSignOut(): Flow<Resource<Boolean>> = flow {
+        try {
+            emit(Resource.Loading())
+            auth.signOut()
+            emit(Resource.Success(true))
+        } catch (e: Exception) {
+            emit(
+                Resource.Error(e)
+            )
+        }
+    }
 }

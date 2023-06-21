@@ -4,5 +4,6 @@ import com.clausfonseca.rosacha.utils.Resource
 
 interface AuthRepository {
     fun firebaseSignIn(email : String, password : String) : Flow<Resource<Boolean>>
+    fun firebaseSignOut() : Flow<Resource<Boolean>>
 
 }

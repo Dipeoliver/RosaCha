@@ -37,6 +37,12 @@ class FirebaseHelper {
                 error.contains("The given password is invalid") -> {
                     R.string.strong_password_register_fragment
                 }
+                error.contains("A network error") -> {
+                    R.string.network_error
+                }
+                error.contains("Given String is empty or null") -> {
+                    R.string.empty_fields
+                }
                 else -> {
                     R.string.error_generic
                 }
