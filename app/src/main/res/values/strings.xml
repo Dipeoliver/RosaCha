@@ -101,6 +101,7 @@
     <!--    layout -->
     <string name="product">Product</string>
     <string name="add_product">Add Product</string>
+    <string name="update_product">Update Product</string>
     <string name="list_product">List of Products</string>
     <string name="edit_product">Edit Product</string>
     <string name="reference">Reference</string>
@@ -223,6 +224,7 @@ Enable camera access in your device settings</string>
     <string name="monthly_sales">monthly sales $</string>
     <string name="price_query">price query</string>
     <string name="quantity">quantity</string>
+    <string name="quantity_product_list">Quantity</string>
 
 
 </resources>

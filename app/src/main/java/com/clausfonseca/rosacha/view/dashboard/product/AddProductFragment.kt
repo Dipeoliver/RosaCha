@@ -71,7 +71,7 @@ class AddProductFragment : Fragment() {
     var bottomSheetDialogCamera: BottomSheetDialog? = null
     private var bottomSheetDialogPermission: BottomSheetDialog? = null
     var uriImagem: Uri? = null
-
+    var quantity = 1;
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -87,6 +87,8 @@ class AddProductFragment : Fragment() {
         dbProducts = getString(R.string.db_product).toString()
         configureButton()
         initListeners()
+        updateQuantity()
+
 
         // ao clicar botão voltar abaixo
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -120,6 +122,16 @@ class AddProductFragment : Fragment() {
         binding.imvPhoto.setOnClickListener {
             if (!binding.edtBarcode.text.isNullOrEmpty()) showBottomSheetDialog()
             else Util.exibirToast(requireContext(), getString(R.string.required_barcode_product))
+        }
+
+        binding.imvAdd.setOnClickListener {
+            quantity += 1
+            updateQuantity()
+        }
+
+        binding.imvSub.setOnClickListener {
+            if (quantity >= 1) quantity -= 1
+            updateQuantity()
         }
     }
 
@@ -238,7 +250,7 @@ class AddProductFragment : Fragment() {
             if (result != null) {
                 if (result.contents != null) {
                     binding.edtBarcode.setText(result.contents)
-                    binding.edtReferenceProduct.requestFocus()
+                    binding.edtDescriptionProduct.requestFocus()
 
                 } else {
                     binding.edtBarcode.setText(getString(R.string.scan_failed))
@@ -431,6 +443,7 @@ class AddProductFragment : Fragment() {
         product.barcode = barcode
         product.reference = referenceProduct
         product.description = description.uppercase()
+        product.quantity = quantity
         product.brand = brand.uppercase()
         product.provider = provider.uppercase()
         product.size = size
@@ -479,6 +492,10 @@ class AddProductFragment : Fragment() {
         bottomSheetDialogCamera?.show()
     }
 
+    private fun updateQuantity(){
+        binding.edtQuantityProduct.setText(quantity.toString())
+    }
+
     private fun cleaner() {
         binding.apply {
             edtBarcode.text = null
@@ -492,6 +509,9 @@ class AddProductFragment : Fragment() {
             edtSalesProduct.text = null
             binding.imvPhoto.setImageResource(R.drawable.no_image)
             binding.imvPlus.visibility = VISIBLE
+            quantity =1
+            updateQuantity()
+            binding.edtBarcode.requestFocus()
         }
     }
 }

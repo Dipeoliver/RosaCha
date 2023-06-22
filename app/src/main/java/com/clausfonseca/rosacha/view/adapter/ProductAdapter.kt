@@ -46,6 +46,7 @@ class ProductAdapter(
         holder.binding.txtBarcode.text = product.barcode
         holder.binding.txtDescription.text = product.description
         holder.binding.txtSalesPrice.text = String.format("%.2f", product.salesPrice)
+        holder.binding.txtQuantityList.text = product.quantity.toString()
 
         if (product.urlImagem == "") {
             Glide.with(context).load(R.drawable.no_image).into(holder.binding.imvProduto)

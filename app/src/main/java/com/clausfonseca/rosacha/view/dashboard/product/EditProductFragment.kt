@@ -66,6 +66,7 @@ class EditProductFragment : Fragment() {
     var url: String? = null
     var oldUrl: String = ""
     private var insertStatus: Boolean = false
+    var quantity = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,6 +87,16 @@ class EditProductFragment : Fragment() {
     }
 
     private fun initListeners() {
+        binding.imvAdd.setOnClickListener {
+            quantity += 1
+            updateQuantity()
+        }
+
+        binding.imvSub.setOnClickListener {
+            if (quantity >= 1) quantity -= 1
+            updateQuantity()
+        }
+
         binding.btnUpdateProduct.setOnClickListener {
             submitForm()
         }
@@ -394,6 +405,7 @@ class EditProductFragment : Fragment() {
             selectedProduct?.barcode = barcode
             selectedProduct?.reference = referenceProduct
             selectedProduct?.description = description.uppercase()
+            selectedProduct?.quantity = quantity
             selectedProduct?.brand = brand.uppercase()
             selectedProduct?.provider = provider.uppercase()
             selectedProduct?.size = size
@@ -444,6 +456,7 @@ class EditProductFragment : Fragment() {
                 // posso fazer update de apenas 1 campo se necessário
                 "reference" to selectedProduct.reference,
                 "description" to selectedProduct.description,
+                "quantity" to selectedProduct.quantity,
                 "brand" to selectedProduct.brand,
                 "provider" to selectedProduct.provider,
                 "size" to selectedProduct.size,
@@ -477,6 +490,8 @@ class EditProductFragment : Fragment() {
         binding.edtColorProduct.setText(selectedProduct?.color.toString())
         binding.edtCostProduct.setText(selectedProduct?.costPrice.toString())
         binding.edtSalesProduct.setText(selectedProduct?.salesPrice.toString())
+        binding.edtQuantityProduct.setText(selectedProduct?.quantity.toString())
+        quantity = selectedProduct?.quantity ?: 0
 
         productId = selectedProduct?.id
         url = selectedProduct?.urlImagem
@@ -543,6 +558,10 @@ class EditProductFragment : Fragment() {
         }
         bottomSheetDialogCamera?.setContentView(sheetBinding.root)
         bottomSheetDialogCamera?.show()
+    }
+
+    private fun updateQuantity(){
+        binding.edtQuantityProduct.setText(quantity.toString())
     }
 
     private fun onBackPressed() {

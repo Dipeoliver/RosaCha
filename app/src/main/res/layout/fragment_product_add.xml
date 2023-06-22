@@ -134,8 +134,31 @@
                     android:hint="@string/reference"
                     android:inputType="textPersonName"
                     android:lines="1"
-                    android:nextFocusDown="@id/edt_brand_product"
+                    android:nextFocusDown="@id/edt_quantity_product"
                     android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/quantityContainer"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                app:helperTextTextColor="@android:color/holo_red_dark"
+                app:layout_constraintEnd_toEndOf="@+id/providerContainer"
+                app:layout_constraintStart_toStartOf="@+id/providerContainer"
+                app:layout_constraintTop_toTopOf="@+id/referenceContainer">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_quantity_product"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_edit"
+                    android:gravity="center"
+                    android:hint="Qty"
+                    android:inputType="numberDecimal"
+                    android:lines="1"
+                    android:nextFocusDown="@id/edt_brand_product"
+                    android:textSize="20sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -426,34 +449,19 @@
                 android:id="@+id/imv_add"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
-                android:layout_marginStart="8dp"
                 android:src="@drawable/ic_keyboard_arrow_up"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
-                app:layout_constraintStart_toEndOf="@+id/textView"
-                app:layout_constraintTop_toTopOf="@+id/textView" />
+                app:layout_constraintBottom_toBottomOf="@+id/quantityContainer"
+                app:layout_constraintStart_toEndOf="@+id/quantityContainer"
+                app:layout_constraintTop_toTopOf="@+id/quantityContainer" />
 
             <ImageView
                 android:id="@+id/imv_sub"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
-                android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_keyboard_arrow_down"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
-                app:layout_constraintEnd_toStartOf="@+id/textView" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="70dp"
-                android:layout_height="0dp"
-                android:background="@drawable/bg_edit"
-                android:textAlignment="center"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/providerContainer"
-                app:layout_constraintHorizontal_bias="0.52"
-                app:layout_constraintStart_toStartOf="@+id/providerContainer"
-                app:layout_constraintTop_toTopOf="@+id/guideline12"
-                android:text="1" />
+                app:layout_constraintBottom_toBottomOf="@+id/quantityContainer"
+                app:layout_constraintEnd_toStartOf="@+id/quantityContainer"
+                app:layout_constraintTop_toTopOf="@+id/quantityContainer" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

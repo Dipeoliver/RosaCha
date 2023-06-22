@@ -10,6 +10,7 @@ data class Product(
     var barcode: String? = "",
     var reference: String? = "",
     var description: String? = "",
+    var quantity: Int? = 1,
     var brand: String? = "",
     var provider: String? = "",
     var size: String? = "",
@@ -26,6 +27,7 @@ data class Product(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -38,16 +40,12 @@ data class Product(
     ) {
     }
 
-    //    gerar um id automático
-    init {
-        this.id = FirebaseHelper.getDatabase().push().key ?: ""
-    }
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(barcode)
         parcel.writeString(reference)
         parcel.writeString(description)
+        parcel.writeValue(quantity)
         parcel.writeString(brand)
         parcel.writeString(provider)
         parcel.writeString(size)
@@ -73,3 +71,4 @@ data class Product(
         }
     }
 }
+
