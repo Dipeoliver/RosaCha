@@ -53,21 +53,23 @@
 
             <TextView
                 android:id="@+id/txt_description"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                tools:text="xxxxxxxxxxxxxxxxxxxxx"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/txtemail"
-                app:layout_constraintTop_toBottomOf="@+id/txtemail" />
+                app:layout_constraintTop_toBottomOf="@+id/txtemail"
+                tools:text="xxxxxxxxxxxxxxxxxxxxx" />
 
             <TextView
                 android:id="@+id/textView29"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="200dp"
+                android:layout_marginStart="190dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/sales_price"
                 android:textStyle="bold"
@@ -112,7 +114,8 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="200dp"
+                android:layout_marginStart="190dp"
+                android:layout_marginTop="2dp"
                 android:text="@string/quantity_product_list"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/imv_produto"
@@ -122,10 +125,12 @@
                 android:id="@+id/txt_quantity_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toEndOf="@+id/textView"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView"
+                app:layout_constraintTop_toTopOf="@+id/textView"
                 tools:text="10" />
 
 

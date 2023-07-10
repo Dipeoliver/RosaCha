@@ -458,6 +458,7 @@ class AddProductFragment : Fragment() {
             getString(R.string.claudenice)
         }
         product.owner = owner
+        product.qtySales = 1
         insertProduct()
     }
 
@@ -492,7 +493,7 @@ class AddProductFragment : Fragment() {
         bottomSheetDialogCamera?.show()
     }
 
-    private fun updateQuantity(){
+    private fun updateQuantity() {
         binding.edtQuantityProduct.setText(quantity.toString())
     }
 
@@ -509,7 +510,7 @@ class AddProductFragment : Fragment() {
             edtSalesProduct.text = null
             binding.imvPhoto.setImageResource(R.drawable.no_image)
             binding.imvPlus.visibility = VISIBLE
-            quantity =1
+            quantity = 1
             updateQuantity()
             binding.edtBarcode.requestFocus()
         }

@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Html
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -76,7 +75,8 @@ class AddSalesFragment : Fragment() {
     private var client: String = ""
     private val dialogProgress = DialogProgress()
     private var bottomSheetDialogPermission: BottomSheetDialog? = null
-    val calendar = Calendar.getInstance()
+    private val calendar = Calendar.getInstance()
+    var qty = 1
 
     var mes = ""
     var actualvalue = 0.0
@@ -100,6 +100,7 @@ class AddSalesFragment : Fragment() {
         onBackPressed()
         initListeners()
         initAdapter()
+        updateQuantity()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -166,17 +167,20 @@ class AddSalesFragment : Fragment() {
     private fun initListeners() {
 //        binding.edtBarcode.requestFocus()
 
+        binding.btnQtyAdd.setOnClickListener {
+            getQuantityDialog()
+        }
         binding.btnScan.setOnClickListener {
             checkPermissions()
-        }
-
-        binding.btnSearchClient.setOnClickListener {
-            getUserDialog()
         }
 
         binding.btnPriceSearch.setOnClickListener {
             submitForm()
         }
+        binding.btnSearchClient.setOnClickListener {
+            getUserDialog()
+        }
+
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
@@ -320,7 +324,7 @@ class AddSalesFragment : Fragment() {
         addSales.price = (soma * 100.0).roundToInt() / 100.0
         addSales.discount = ((discount) * 100.0).roundToInt() / 100.0
         addSales.paid = (moneyPaid * 100.0).roundToInt() / 100.0
-        addSales.totalPrice = ((soma - discount)* 100.0).roundToInt() / 100.0
+        addSales.totalPrice = ((soma - discount) * 100.0).roundToInt() / 100.0
         addSales.client = binding.txtClient.text.toString().uppercase()
         addSales.salesOwner = auth.currentUser?.email
         addSales.salesDate = actualDate
@@ -424,11 +428,12 @@ class AddSalesFragment : Fragment() {
                 val dados = task.data
                 val item = task.toObject(ItensSales::class.java)
                 if (item != null) {
+                    item.qtySales = qty
                     itemsSales.add(item)
                     itemsSalesAdapter.notifyDataSetChanged()
                     soma = 0.0
                     itemsSales.forEach {
-                        soma += it.salesPrice ?: 0.0
+                        soma += (it.salesPrice * it.qtySales)
                     }
 
                     binding.txtTotalPrice.text = String.format("%.2f", soma)
@@ -436,13 +441,15 @@ class AddSalesFragment : Fragment() {
 
                     binding.edtBarcode.setText("")
                     binding.edtBarcode.requestFocus()
-
                     parcelCalc()
+                    qty = 1
+                    updateQuantity()
                 }
             } else {
                 binding.edtBarcode.requestFocus()
                 binding.edtBarcode.selectAll()
-
+                qty = 1
+                updateQuantity()
                 Util.exibirToast(requireContext(), getString(R.string.error_show_product))
             }
         }.addOnFailureListener { error ->
@@ -484,11 +491,11 @@ class AddSalesFragment : Fragment() {
     private fun initAdapter() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.setHasFixedSize(true)
-        itemsSalesAdapter = ItensSalesAdapter(requireContext(), itemsSales) { item ->
+        itemsSalesAdapter = ItensSalesAdapter(requireContext(), itemsSales, qty) { item ->
             // ao apagar um item da lista executa abaixo
             soma = 0.0
             item.forEach {
-                soma += it.salesPrice ?: 0.0
+                soma += (it.salesPrice * it.qtySales)
             }
             binding.txtTotalPrice.text = String.format("%.2f", soma)
             discountCalc()
@@ -563,6 +570,45 @@ class AddSalesFragment : Fragment() {
         }
     }
 
+    private fun getQuantityDialog() {
+
+        val builder = AlertDialog.Builder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.item_dialog_get_qty, null)
+        val editText = dialogLayout.findViewById<EditText>(R.id.edt_qty)
+        val buttonAdd = dialogLayout.findViewById<ImageView>(R.id.imv_add)
+        val buttonSub = dialogLayout.findViewById<ImageView>(R.id.imv_sub)
+        var qtyLocal = 1;
+
+        editText.requestFocus()
+
+        buttonAdd.setOnClickListener {
+            qtyLocal += 1
+            editText.setText(qtyLocal.toString())
+        }
+
+        buttonSub.setOnClickListener {
+            if (qtyLocal >= 1) qtyLocal -= 1
+            editText.setText(qtyLocal.toString())
+        }
+
+        with(builder) {
+            setTitle(Html.fromHtml("<font color='#F92391'>" + "Add the Quantity" + "</font>"))
+            setPositiveButton(getString(R.string.ok)) { _, _ ->
+                qty = qtyLocal
+                updateQuantity()
+            }
+            setNegativeButton(getString(R.string.cancel)) { _, _ ->
+
+            }
+            setView(dialogLayout)
+            show()
+        }
+    }
+
+    private fun updateQuantity() {
+        binding.txtQuantityAdd.text = qty.toString()
+    }
 
     private fun showBottomSheetDialogPermission() {
         bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)

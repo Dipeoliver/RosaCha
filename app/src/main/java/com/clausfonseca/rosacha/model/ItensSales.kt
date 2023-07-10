@@ -9,5 +9,6 @@ data class ItensSales(
     var barcode: String = "",
     var description: String = "",
     var salesPrice: Double = 0.0,
+    var qtySales: Int =1
 
     ) : Parcelable

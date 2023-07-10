@@ -6,23 +6,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentBarChartBinding
-import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
 import com.clausfonseca.rosacha.utils.DialogProgress
-import com.clausfonseca.rosacha.utils.Util
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.XAxis.XAxisPosition
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.utils.ColorTemplate
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
-import kotlin.math.roundToInt
 
 
 class BarChartFragment : Fragment() {
@@ -51,28 +48,47 @@ class BarChartFragment : Fragment() {
         db = FirebaseFirestore.getInstance()
         dbSales = getString(R.string.db_sales)
         barChart = view.findViewById(R.id.bar_Chart)
-        getSales()
 
+        val xAxis: XAxis = barChart.getXAxis()
+        xAxis.position = XAxisPosition.BOTTOM
+        xAxis.axisMinimum = 0f
+        xAxis.axisMaximum = 11f
+        xAxis.granularity = 1f
+        xAxis.labelRotationAngle = 270.0f
+        xAxis.setLabelCount(12,true)
+        xAxis.valueFormatter = MonthValueFormatter()// xVal is a string array
+        xAxis.setDrawGridLines(false)
+
+        val rightAxis: YAxis = barChart.getAxisRight()
+        rightAxis.setDrawGridLines(false)
+        rightAxis.axisMinimum = 0f // this replaces setStartAtZero(true)
+
+        val leftAxis: YAxis = barChart.getAxisLeft()
+        leftAxis.setDrawGridLines(false)
+        leftAxis.axisMinimum = 0f // this replaces setStartAtZero(true)
+
+        getSales()
 
     }
 
     private fun getGraph() {
         val list: ArrayList<BarEntry> = ArrayList()
-        list.add(BarEntry(1f, monthResults[0].toFloat()))
-        list.add(BarEntry(2f, monthResults[1].toFloat()))
-        list.add(BarEntry(3f, monthResults[2].toFloat()))
-        list.add(BarEntry(4f, monthResults[3].toFloat()))
-        list.add(BarEntry(5f, monthResults[4].toFloat()))
-        list.add(BarEntry(6f, monthResults[5].toFloat()))
-        list.add(BarEntry(7f, monthResults[6].toFloat()))
-        list.add(BarEntry(8f, monthResults[7].toFloat()))
-        list.add(BarEntry(9f, monthResults[8].toFloat()))
-        list.add(BarEntry(10f, monthResults[9].toFloat()))
-        list.add(BarEntry(11f, monthResults[10].toFloat()))
-        list.add(BarEntry(12f, monthResults[11].toFloat()))
+        list.add(BarEntry(0f, monthResults[0].toFloat()))
+        list.add(BarEntry(1f, monthResults[1].toFloat()))
+        list.add(BarEntry(2f, monthResults[2].toFloat()))
+        list.add(BarEntry(3f, monthResults[3].toFloat()))
+        list.add(BarEntry(4f, monthResults[4].toFloat()))
+        list.add(BarEntry(5f, monthResults[5].toFloat()))
+        list.add(BarEntry(6f, monthResults[6].toFloat()))
+        list.add(BarEntry(7f, monthResults[7].toFloat()))
+        list.add(BarEntry(8f, monthResults[8].toFloat()))
+        list.add(BarEntry(9f, monthResults[9].toFloat()))
+        list.add(BarEntry(10f, monthResults[10].toFloat()))
+        list.add(BarEntry(11f, monthResults[11].toFloat()))
 
-        val barDataSet = BarDataSet(list, "monthly values")
+        val barDataSet = BarDataSet(list, calendar.get(Calendar.YEAR).toString())
 
+        barDataSet.valueTextSize = 14f
         barDataSet.setColors(ColorTemplate.COLORFUL_COLORS, 255)
 //        barDataSet.setColors(
 //            Color.rgb(192, 192, 192), Color.rgb(169, 169, 169),
@@ -80,12 +96,14 @@ class BarChartFragment : Fragment() {
 //        )
         barDataSet.valueTextColor = Color.BLACK
         val barData = BarData(barDataSet)
-        barChart.setFitBars(true)
+        barChart.setFitBars(false)
         barChart.data = barData
-        barChart.description.text = calendar.get(Calendar.YEAR).toString()
+        barChart.description.text = ""
         barChart.animateY(2000)
-    }
+        barChart.legend.isEnabled = false
 
+//        https://github.com/PhilJay/MPAndroidChart/blob/master/MPChartExample/src/main/java/com/xxmassdeveloper/mpchartexample/CombinedChartActivity.java
+    }
     private fun getSales() {
 //        when (calendar.get(Calendar.MONTH) + 1) {
 //            1 -> mes = "jan"
@@ -142,28 +160,4 @@ class BarChartFragment : Fragment() {
             }
     }
 
-
-//        val dialogProgress = DialogProgress()
-//        dialogProgress.show(childFragmentManager, "0")
-//        calendar.get(Calendar.YEAR)
-
-//        val query = db!!.collection(dbSales).whereEqualTo("year", calendar.get(Calendar.YEAR))
-//
-//        query.addSnapshotListener { results, error ->
-//            dialogProgress.dismiss()
-//            if (results != null) {
-//
-//                for (result in results) {
-//                    Log.d("result", result.toString())
-//                    val month: Int = result.getLong("month")?.toInt() ?: -1
-//
-//                    if (month != -1) {
-//                        monthResults[month - 1] += result.getDouble("totalPrice") ?: 0.0
-//                    }
-//                }
-//                getGraph()
-//                binding.txtMonthSales.text = String.format("%.2f", (monthResults[calendar.get(Calendar.MONTH)]))
-//            }
-//        }
-//    }
 }

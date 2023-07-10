@@ -10,6 +10,7 @@ import com.clausfonseca.rosacha.model.ItensSales
 class ItensSalesAdapter(
     private val context: Context,
     private var itemsSales: MutableList<ItensSales>,
+    private var quantity: Int,
     val itemsSalesSelected: (MutableList<ItensSales>) -> Unit
 ) : RecyclerView.Adapter<ItensSalesAdapter.MyViewHolder>() {
 
@@ -31,6 +32,7 @@ class ItensSalesAdapter(
         holder.binding.txtBarcode.text = item.barcode
         holder.binding.txtDescription.text = item.description
         holder.binding.txtSalesPrice.text = String.format("%.2f", item.salesPrice)
+        holder.binding.txtQuantityValue.text = "${item.qtySales} X"
 
         holder.binding.btnDeleteIten.setOnClickListener {
             itemsSales.remove(item)

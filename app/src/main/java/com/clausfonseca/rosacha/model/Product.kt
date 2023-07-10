@@ -19,7 +19,8 @@ data class Product(
     var salesPrice: Double = 0.0,
     var owner: String? = "",
     var productDate: String? = "",
-    var urlImagem: String? = ""
+    var urlImagem: String? = "",
+    var qtySales: Int = 1
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
