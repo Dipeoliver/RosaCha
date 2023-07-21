@@ -28,6 +28,7 @@ class ItemsSalesDetailAdapter(
         holder.binding.txtBarcodeDetail.text = item.barcode
         holder.binding.txtDescriptionDetail.text = item.description
         holder.binding.txtSalesPriceDetail.text = String.format("%.2f", item.salesPrice)
+        holder.binding.txtQtySales.text = item.qtySales.toString()
     }
 
     override fun getItemCount()= itemsSales.size

@@ -41,6 +41,11 @@ data class Product(
     ) {
     }
 
+    //    gerar um id automático
+    init {
+        this.id = FirebaseHelper.getDatabase().push().key ?: ""
+    }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(barcode)

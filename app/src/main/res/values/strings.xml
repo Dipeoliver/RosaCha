@@ -140,6 +140,7 @@
     <string name="add_sales">Add Sales</string>
     <string name="list_sales">List of Sales</string>
     <string name="edit_sales">Edit Sales</string>
+    <string name="qty">Qty:</string>
 
 
     <!--    Code -->
@@ -225,6 +226,7 @@ Enable camera access in your device settings</string>
     <string name="price_query">price query</string>
     <string name="quantity">quantity</string>
     <string name="quantity_product_list">Quantity</string>
+
 
 
 </resources>

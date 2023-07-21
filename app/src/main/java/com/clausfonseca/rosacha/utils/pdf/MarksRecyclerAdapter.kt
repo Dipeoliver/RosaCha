@@ -14,6 +14,7 @@ class MarksRecyclerAdapter(private val subjectItemList: List<ItensSales>) :
     class MarksViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val itemBarcode: TextView = view.findViewById(R.id.txt_barcode_recy)
         val itemValue: TextView = view.findViewById(R.id.txt_total_value_recy)
+        val itemQty: TextView = view.findViewById(R.id.txt_qty_value_recy)
         val itemDescription: TextView = view.findViewById(R.id.txt_description_recy)
     }
 
@@ -27,6 +28,7 @@ class MarksRecyclerAdapter(private val subjectItemList: List<ItensSales>) :
         holder.itemBarcode.text = subjectItemList[position].barcode
         holder.itemDescription.text = subjectItemList[position].description
         holder.itemValue.text = subjectItemList[position].salesPrice.toString()
+        holder.itemQty.text = subjectItemList[position].qtySales.toString()
     }
 
     override fun getItemCount(): Int {

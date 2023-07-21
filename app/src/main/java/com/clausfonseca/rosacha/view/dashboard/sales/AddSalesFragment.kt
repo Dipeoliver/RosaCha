@@ -24,6 +24,7 @@ import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.model.ItensSales
+import com.clausfonseca.rosacha.model.Product
 import com.clausfonseca.rosacha.model.Sales
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
@@ -179,6 +180,7 @@ class AddSalesFragment : Fragment() {
         }
         binding.btnSearchClient.setOnClickListener {
             getUserDialog()
+
         }
 
 
@@ -299,8 +301,6 @@ class AddSalesFragment : Fragment() {
         integrator.setPrompt(getString(R.string.scan_active))
         integrator.initiateScan()
     }
-
-
     // BARCODE     ------------------------------
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -310,9 +310,6 @@ class AddSalesFragment : Fragment() {
         val date = Calendar.getInstance().time
         val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         actualDate = dateTimeFormat.format(date)
-
-
-
         invoiceNumber =
             dateTimeFormat.format(date)
                 .replace("/", "")
@@ -340,15 +337,50 @@ class AddSalesFragment : Fragment() {
                 dialogProgress.dismiss()
                 val args = Bundle()
                 args.putString("id", invoiceNumber)
+                updateStock()
                 findNavController().navigate(R.id.action_addSalesFragment_to_afterSalesFragment, args)
             }.addOnFailureListener {
                 Util.exibirToast(requireContext(), getString(R.string.error_add_sales))
-//                dialogProgress.dismiss()
             }
         getControlMonthSales()
-
     }
 
+    // UPDATE PRODUCTS QUANTITY IN STOCK -------------------------------------------------
+    private fun updateStock() {
+        itemsSales.forEach {
+            findsalesquantity(it.barcode, it.qtySales)
+        }
+    }
+    private fun findsalesquantity(barcode: String, qtySales: Int) {
+        var qtyactual = 0
+        db.collection(dbProducts).document(barcode).get().addOnSuccessListener { task ->
+
+            if (task.data != null && task.exists()) {
+                val item = task.toObject(Product::class.java)
+                val qty = item?.quantity ?: 0
+                qtyactual = qty - qtySales
+                updateStockQuantity(barcode, qtyactual)
+            }
+        }.addOnFailureListener { error ->
+            Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun updateStockQuantity(barcode: String, newquantity: Int) {
+        val value = hashMapOf(
+            "quantity" to newquantity,
+        )
+
+        db.collection(dbProducts).document(barcode).update(value as Map<String, Any>)
+            .addOnSuccessListener()
+            {
+            }.addOnFailureListener()
+            {
+                Util.exibirToast(requireContext(), "error to update products quantity")
+            }
+    }
+
+    // ------------------------------------------------------------------------------------------------
     private fun getControlMonthSales() {
 
 //        var monthList = listOf<Double>()
@@ -519,6 +551,7 @@ class AddSalesFragment : Fragment() {
 
         //performing positive action
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
+            // cria função pegar a lista de
             insertSales()
         }
 //        //performing cancel action

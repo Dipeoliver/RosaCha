@@ -135,7 +135,7 @@ class BarChartFragment : Fragment() {
                             (it.value as Long).toDouble()
                         } else
                             it.value as Double
-                        Log.d("teste de lista", monthValue.toString())
+//                        Log.d("teste de lista", monthValue.toString())
 
 //                         it.value as Double
                     }
