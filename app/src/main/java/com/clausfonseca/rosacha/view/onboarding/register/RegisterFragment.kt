@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.onboarding.login
+package com.clausfonseca.rosacha.view.onboarding.register
 
 import android.os.Bundle
 import android.view.LayoutInflater

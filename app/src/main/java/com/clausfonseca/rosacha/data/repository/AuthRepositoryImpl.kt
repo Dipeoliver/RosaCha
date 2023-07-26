@@ -1,5 +1,7 @@
 package com.clausfonseca.rosacha.data.repository
 
+import android.widget.Toast
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.domain.repository.AuthRepository
 import com.clausfonseca.rosacha.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
@@ -30,6 +32,18 @@ class AuthRepositoryImpl @Inject constructor(
             auth.signOut()
             emit(Resource.Success(true))
         } catch (e: Exception) {
+            emit(
+                Resource.Error(e)
+            )
+        }
+    }
+
+    override fun firebaseRecoverPassword(email: String): Flow<Resource<Boolean>> = flow {
+        try{
+            emit(Resource.Loading())
+            auth.sendPasswordResetEmail(email)
+            emit(Resource.Success(true))
+        }catch (e: Exception){
             emit(
                 Resource.Error(e)
             )

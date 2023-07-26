@@ -172,22 +172,23 @@ Feitos
 - verificar se os dialog box estao dentro constains para nao ter dois clicar
 - criar tabela do saldo mensal para carregar grafico mais rapido
 
+Julho 2023
+- adicionar quantidade nos itens
+
 -----------------------------------------------------------------------------
 
 A fazer
 - colocar os textos dentro da string (list sales e filtro)
+- Tirar deprecated ho codigo Dialog(list sales)
 - transformar os hard code em objetos
 - Criar uma função para os campos para soma de valores no Sales (reduzir codigo)
-- Adicionar Nome dentro Cadastro da pessoa e exibir na tela inicial
+- Adicionar Nome dentro Cadastro da pessoa e exibir na tela inicial (tabela banco nova)
 
-
-- ao clicar em buscar client dentro de add sales limpar o campo retorno se ja estiver alguma coisa preenxido.
 
 Ideias a Fazer
-- adicionar quantidade nos itens
-- Salvar banco itens vendidos 
-- Criar uma tela de devolução
 
+- Criar uma tela de devolução
+- Salvar banco itens vendidos 
 
 - mudar arquitetura 
  

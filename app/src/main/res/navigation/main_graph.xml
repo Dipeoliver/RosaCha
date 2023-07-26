@@ -29,7 +29,7 @@
             app:uri="android-app://com.clausfonseca.rosacha/login_fragment" />
         <fragment
             android:id="@+id/registerFragment"
-            android:name="com.clausfonseca.rosacha.view.onboarding.login.RegisterFragment"
+            android:name="com.clausfonseca.rosacha.view.onboarding.register.RegisterFragment"
             android:label="fragment_register"
             tools:layout="@layout/fragment_register">
             <action
@@ -38,7 +38,7 @@
         </fragment>
         <fragment
             android:id="@+id/recoverFragment"
-            android:name="com.clausfonseca.rosacha.view.onboarding.login.RecoverFragment"
+            android:name="com.clausfonseca.rosacha.view.onboarding.recover.RecoverFragment"
             android:label="fragment_recover"
             tools:layout="@layout/fragment_recover">
 
