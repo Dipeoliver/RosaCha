@@ -1,11 +1,16 @@
 package com.clausfonseca.rosacha.di
 
 import com.clausfonseca.rosacha.data.repository.AuthRepositoryImpl
+import com.clausfonseca.rosacha.data.repository.ClientRepositoryImpl
 import com.clausfonseca.rosacha.domain.repository.AuthRepository
-import com.clausfonseca.rosacha.domain.usecases.AuthUseCases
-import com.clausfonseca.rosacha.domain.usecases.FirebaseRecoverPassword
-import com.clausfonseca.rosacha.domain.usecases.FirebaseSignIn
-import com.clausfonseca.rosacha.domain.usecases.FirebaseSignOut
+import com.clausfonseca.rosacha.domain.usecases.auth.AuthUseCases
+import com.clausfonseca.rosacha.domain.usecases.auth.FirebaseRecoverPassword
+import com.clausfonseca.rosacha.domain.usecases.auth.FirebaseRegisterUser
+import com.clausfonseca.rosacha.domain.usecases.auth.FirebaseSignIn
+import com.clausfonseca.rosacha.domain.usecases.auth.FirebaseSignOut
+import com.clausfonseca.rosacha.domain.usecases.client.ClientUseCases
+import com.clausfonseca.rosacha.domain.usecases.client.FirebaseGetUrl
+import com.clausfonseca.rosacha.domain.usecases.client.StorageGetUrl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -26,7 +31,7 @@ object RosaChaModule {
 
     @Singleton
     @Provides
-    fun provideFirebaseFirestore(): FirebaseFirestore {
+    fun provideFirebaseFireStore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
 
@@ -35,8 +40,6 @@ object RosaChaModule {
     fun provideFirebaseFirebaseStorage(): FirebaseStorage {
         return FirebaseStorage.getInstance()
     }
-
-
 
     @Singleton
     @Provides
@@ -49,6 +52,15 @@ object RosaChaModule {
     fun provideAuthUseCases(repository: AuthRepositoryImpl) = AuthUseCases(
         firebaseSignIn = FirebaseSignIn(repository = repository),
         firebaseSignOut = FirebaseSignOut(repository = repository),
-        firebaseRecoverPassword = FirebaseRecoverPassword(repository = repository)
+        firebaseRecoverPassword = FirebaseRecoverPassword(repository = repository),
+        firebaseRegisterUser =  FirebaseRegisterUser(repository= repository)
     )
+
+    @Singleton
+    @Provides
+    fun provideClientUseCases(repository: ClientRepositoryImpl) = ClientUseCases(
+        getUrlFile = FirebaseGetUrl(repository = repository),
+        getStorageUrl = StorageGetUrl(repository = repository),
+    )
+
 }

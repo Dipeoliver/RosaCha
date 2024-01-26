@@ -10,8 +10,8 @@ private fun getTasks() {
                     if (snapshot.exists()) {
                         clientlist.clear()
                         for (snap in snapshot.children) {
-                            val client = snap.getValue(Client::class.java) as Client
-                            clientlist.add(client)
+                            val clientModel = snap.getValue(Client::class.java) as Client
+                            clientlist.add(clientModel)
                         }
 //                        productlist.reverse() // trazer a lista do mais novo para o antigo
                         initAdapter()
@@ -123,8 +123,8 @@ private fun insertClient_RealtimeDatabase() {
             .child("Client")
 //            .child(FirebaseHelper.getIdUser() ?: "") // id do usuario
             .child("Clients") // id do usuario
-            .child(client?.id ?: "")
-            .setValue(client)
+            .child(clientModel?.id ?: "")
+            .setValue(clientModel)
             .addOnCompleteListener { task ->
                 if (newClient) { // nova tarefa
                     if (task.isSuccessful) {
@@ -159,7 +159,7 @@ private fun insertClient_RealtimeDatabase() {
 //    private fun getArgs() {
 //        args.let {
 //            if (it.clientArguments != null) {
-//                client = it.clientArguments
+//                clientModel = it.clientArguments
 //            }
 //
 //            if (args.clientArguments != null) configTask()
@@ -169,10 +169,10 @@ private fun insertClient_RealtimeDatabase() {
 //    private fun configTask() {
 //        newClient = false
 ////        binding.txtTollbar.text = "Editando uma tarefa"
-//        binding.edtNameClient.setText(client?.name)
-//        binding.edtPhoneClient.setText(client?.phone)
-//        binding.edtEmailClient.setText(client?.email)
-//        binding.edtBirthdayClient.setText(client?.birthday)
+//        binding.edtNameClient.setText(clientModel?.name)
+//        binding.edtPhoneClient.setText(clientModel?.phone)
+//        binding.edtEmailClient.setText(clientModel?.email)
+//        binding.edtBirthdayClient.setText(clientModel?.birthday)
 //    }
 
 

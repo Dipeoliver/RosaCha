@@ -117,7 +117,7 @@
     </fragment>
     <fragment
         android:id="@+id/addClient_fragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.client.addClient.AddClientFragment"
         android:label="fragment_add_client"
         tools:layout="@layout/fragment_client_add">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_add_client" />
@@ -131,7 +131,7 @@
     </fragment>
     <fragment
         android:id="@+id/listClientFragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.client.ListClientFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.client.listClient.ListClientFragment"
         android:label="fragment_client_list"
         tools:layout="@layout/fragment_client_list">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_client_list" />
@@ -139,12 +139,12 @@
 
     <fragment
         android:id="@+id/editClientFragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.client.EditClientFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.client.editClient.EditClientFragment"
         android:label="fragment_client_edit"
         tools:layout="@layout/fragment_client_edit">
         <argument
             android:name="selectedClient"
-            app:argType="com.clausfonseca.rosacha.model.Client" />
+            app:argType="com.clausfonseca.rosacha.model.ClientModel" />
     </fragment>
     <fragment
         android:id="@+id/listProductFragment"

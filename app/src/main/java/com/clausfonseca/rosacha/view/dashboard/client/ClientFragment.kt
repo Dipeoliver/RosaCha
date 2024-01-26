@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentClientBinding
 import com.clausfonseca.rosacha.view.adapter.ViewPagerAdapter
+import com.clausfonseca.rosacha.view.dashboard.client.listClient.ListClientFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -39,8 +40,6 @@ class ClientFragment : Fragment() {
         binding.viewPager.adapter = adapter
 
         adapter.addFragment(ListClientFragment(), getString(R.string.list_client))
-//        adapter.addFragment(AddClientFragment(), getString(R.string.add_client))
-//        adapter.addFragment(EditClientFragment(), getString(R.string.edit_client))
 
         binding.viewPager.offscreenPageLimit = adapter.itemCount
 

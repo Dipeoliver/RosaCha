@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -17,19 +16,13 @@ import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentHomeBinding
 import com.clausfonseca.rosacha.view.adapter.ViewPagerAdapter
 import com.clausfonseca.rosacha.view.chart.BarChartFragment
-import com.clausfonseca.rosacha.view.dashboard.DashboardViewModel
-import com.clausfonseca.rosacha.view.onboarding.login.LoginModelState
-import com.clausfonseca.rosacha.view.onboarding.login.LoginViewModel
+import com.clausfonseca.rosacha.view.onboarding.CommonModelState
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var auth: FirebaseAuth
 //    private val viewModel by viewModels<DashboardViewModel>() // mudar valores o xml visivel
 
     private val viewModel: HomeViewModel by viewModels()
@@ -44,7 +37,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        auth = Firebase.auth
         initClicks()
         onBackPressed()
         configTabLayout()
@@ -90,23 +82,25 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun handleState(state: LoginModelState.LoginState?) {
+    private fun handleState(state: CommonModelState.CommonState?) {
         when (state) {
+            is CommonModelState.CommonState.Loading -> {
 
-            is LoginModelState.LoginState.Success -> {
+            }
+
+            is CommonModelState.CommonState.Success -> {
                 findNavController().popBackStack()
                 val uri = Uri.parse("android-app://com.clausfonseca.rosacha/login_fragment")
                 findNavController().navigate(uri)
             }
 
-            is LoginModelState.LoginState.Error -> {
+            is CommonModelState.CommonState.Error -> {
                 Toast.makeText(
                     requireContext(),
                     FirebaseHelper.validError(state.message),
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
             else -> {}
         }
     }

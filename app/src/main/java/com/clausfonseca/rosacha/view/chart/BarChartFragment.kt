@@ -44,31 +44,89 @@ class BarChartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         dbMonthSales = getString(R.string.db_month_sales)
         db = FirebaseFirestore.getInstance()
         dbSales = getString(R.string.db_sales)
         barChart = view.findViewById(R.id.bar_Chart)
+        graphConfig()
+        getSales()
+    }
 
-        val xAxis: XAxis = barChart.getXAxis()
+    private fun graphConfig() {
+        val xAxis: XAxis = barChart.xAxis
         xAxis.position = XAxisPosition.BOTTOM
         xAxis.axisMinimum = 0f
         xAxis.axisMaximum = 11f
         xAxis.granularity = 1f
         xAxis.labelRotationAngle = 270.0f
-        xAxis.setLabelCount(12,true)
+        xAxis.setLabelCount(12, true)
         xAxis.valueFormatter = MonthValueFormatter()// xVal is a string array
         xAxis.setDrawGridLines(false)
 
-        val rightAxis: YAxis = barChart.getAxisRight()
+        val rightAxis: YAxis = barChart.axisRight
         rightAxis.setDrawGridLines(false)
         rightAxis.axisMinimum = 0f // this replaces setStartAtZero(true)
 
-        val leftAxis: YAxis = barChart.getAxisLeft()
+        val leftAxis: YAxis = barChart.axisLeft
         leftAxis.setDrawGridLines(false)
         leftAxis.axisMinimum = 0f // this replaces setStartAtZero(true)
+    }
 
-        getSales()
+    private fun getSales() {
+//        when (calendar.get(Calendar.MONTH) + 1) {
+//            1 -> mes = "jan"
+//            2 -> mes = "feb"
+//            3 -> mes = "mar"
+//            4 -> mes = "apr"
+//            5 -> mes = "may"
+//            6 -> mes = "jun"
+//            7 -> mes = "jul"
+//            8 -> mes = "aug"
+//            9 -> mes = "sep"
+//            10 -> mes = "oct"
+//            11 -> mes = "nov"
+//            12 -> mes = "dec"
+//        }
+//        ouvinte7()
 
+        val dialogProgress = DialogProgress()
+        dialogProgress.show(childFragmentManager, "0")
+
+        val docRef = db?.collection(dbMonthSales)?.document(calendar.get(Calendar.YEAR).toString())
+        docRef?.get()
+            ?.addOnSuccessListener() { results ->
+                dialogProgress.dismiss()
+
+                results.data?.forEach {
+                    if (it.value is Double || it.value is Long) {
+                        monthValue = if (it.value is Long) {
+                            (it.value as Long).toDouble()
+                        } else
+                            it.value as Double
+//                        Log.d("teste de lista", monthValue.toString())
+
+//                         it.value as Double
+                    }
+                    when (it.key.toString()) {
+                        "jan" -> monthResults[0] = monthValue
+                        "feb" -> monthResults[1] = monthValue
+                        "mar" -> monthResults[2] = monthValue
+                        "apr" -> monthResults[3] = monthValue
+                        "may" -> monthResults[4] = monthValue
+                        "jun" -> monthResults[5] = monthValue
+                        "jul" -> monthResults[6] = monthValue
+                        "aug" -> monthResults[7] = monthValue
+                        "sep" -> monthResults[8] = monthValue
+                        "oct" -> monthResults[9] = monthValue
+                        "nov" -> monthResults[10] = monthValue
+                        "dec" -> monthResults[11] = monthValue
+                        else -> ""
+                    }
+                }
+                getGraph()
+                binding.txtMonthSales.text = String.format("%.2f", (monthResults[calendar.get(Calendar.MONTH)]))
+            }
     }
 
     private fun getGraph() {
@@ -104,60 +162,4 @@ class BarChartFragment : Fragment() {
 
 //        https://github.com/PhilJay/MPAndroidChart/blob/master/MPChartExample/src/main/java/com/xxmassdeveloper/mpchartexample/CombinedChartActivity.java
     }
-    private fun getSales() {
-//        when (calendar.get(Calendar.MONTH) + 1) {
-//            1 -> mes = "jan"
-//            2 -> mes = "feb"
-//            3 -> mes = "mar"
-//            4 -> mes = "apr"
-//            5 -> mes = "may"
-//            6 -> mes = "jun"
-//            7 -> mes = "jul"
-//            8 -> mes = "aug"
-//            9 -> mes = "sep"
-//            10 -> mes = "oct"
-//            11 -> mes = "nov"
-//            12 -> mes = "dec"
-//        }
-//        ouvinte7()
-
-        val dialogProgress = DialogProgress()
-        dialogProgress.show(childFragmentManager, "0")
-
-        val docRef = db!!.collection(dbMonthSales).document(calendar.get(Calendar.YEAR).toString())
-        docRef.get()
-            .addOnSuccessListener() { results ->
-                dialogProgress.dismiss()
-
-                results.data?.forEach {
-                    if (it.value is Double || it.value is Long) {
-                        monthValue = if (it.value is Long) {
-                            (it.value as Long).toDouble()
-                        } else
-                            it.value as Double
-//                        Log.d("teste de lista", monthValue.toString())
-
-//                         it.value as Double
-                    }
-                    when (it.key.toString()) {
-                        "jan" -> monthResults[0] = monthValue
-                        "feb" -> monthResults[1] = monthValue
-                        "mar" -> monthResults[2] = monthValue
-                        "apr" -> monthResults[3] = monthValue
-                        "may" -> monthResults[4] = monthValue
-                        "jun" -> monthResults[5] = monthValue
-                        "jul" -> monthResults[6] = monthValue
-                        "aug" -> monthResults[7] = monthValue
-                        "sep" -> monthResults[8] = monthValue
-                        "oct" -> monthResults[9] = monthValue
-                        "nov" -> monthResults[10] = monthValue
-                        "dec" -> monthResults[11] = monthValue
-                        else -> ""
-                    }
-                }
-                getGraph()
-                binding.txtMonthSales.text = String.format("%.2f", (monthResults[calendar.get(Calendar.MONTH)]))
-            }
-    }
-
 }

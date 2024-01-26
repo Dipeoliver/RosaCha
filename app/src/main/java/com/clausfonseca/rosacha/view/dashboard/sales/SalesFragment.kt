@@ -41,9 +41,7 @@ class SalesFragment : Fragment() {
         val adapter = ViewPagerAdapter(requireActivity())
         binding.viewPager.adapter = adapter
 
-//        adapter.addFragment(AddSalesFragment(), getString(R.string.add_sales))
         adapter.addFragment(ListSalesFragment(), getString(R.string.list_sales))
-//        adapter.addFragment(EditSalesFragment(), getString(R.string.edit_sales))
 
         binding.viewPager.offscreenPageLimit = adapter.itemCount
 

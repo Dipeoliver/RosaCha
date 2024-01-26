@@ -43,11 +43,11 @@
     <string name="name">Name</string>
     <string name="email">E-mail</string>
     <string name="phone">Phone</string>
-    <string name="email_example">client@client.com.br</string>
+    <string name="email_example">clientModel@clientModel.com.br</string>
     <string name="phone_example">+(55)12991111111</string>
     <string name="total_sales">TOTAL:  $</string>
     <string name="date">Date: </string>
-    <string name="client">Client:</string>
+    <string name="clientModel">Client:</string>
     <string name="id">ID</string>
     <string name="required_field">Required field</string>
 
@@ -75,7 +75,7 @@
     <string name="home">Home</string>
     <string name="title_home">Monthly Sales</string>
 
-    <!-- Client Fragment-->
+    <!-- ClientModel Fragment-->
     <!--    layout -->
     <string name="add_client">Add Client</string>
     <string name="edit_client">Edit Client</string>

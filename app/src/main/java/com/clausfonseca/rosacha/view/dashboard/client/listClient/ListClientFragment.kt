@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.client
+package com.clausfonseca.rosacha.view.dashboard.client.listClient
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -21,11 +21,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentClientListBinding
-import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Swipe.SwipeGesture
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
+import com.clausfonseca.rosacha.view.dashboard.client.ClientFragmentDirections
+import com.clausfonseca.rosacha.view.dashboard.client.addClient.AddClientViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
@@ -39,7 +41,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
     private lateinit var binding: FragmentClientListBinding
     private lateinit var clientAdapter: ClientAdapter
-    private val clientlist = mutableListOf<Client>()
+    private val clientlist = mutableListOf<ClientModel>()
     private val viewModel: AddClientViewModel by viewModels()
 
     private lateinit var firebaseStorage: FirebaseStorage
@@ -91,16 +93,16 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         }
     }
 
-    private fun selectedClient(client: Client) {
+    private fun selectedClient(clientModel: ClientModel) {
         findNavController().navigate(
             ClientFragmentDirections.actionClientFragmentToEditClientFragment(
-                client
+                clientModel
             )
         )
-//        findNavController().navigate(ClientFragmentDirections.actionFragmentClientToFragmentEdit(client))
+//        findNavController().navigate(ClientFragmentDirections.actionFragmentClientToFragmentEdit(clientModel))
 
 //        val args = Bundle()
-//        args.putParcelable("client", client)
+//        args.putParcelable("clientModel", clientModel)
 //        findNavController().navigate(R.id.action_fragment_client_to_fragment_edit, args)
     }
 
@@ -114,17 +116,17 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         swipeToGesture(binding.rvClient)
     }
 
-    private fun optionSelect(client: Client, select: Int) {
+    private fun optionSelect(clientModel: ClientModel, select: Int) {
         when (select) {
             ClientAdapter.SELECT_REMOVE -> {
-                configDialog(client)
+                configDialog(clientModel)
             }
             ClientAdapter.SELECT_EDIT -> {
             }
         }
     }
 
-    private fun configDialog(client: Client) {
+    private fun configDialog(clientModel: ClientModel) {
 
         val builder = AlertDialog.Builder(requireContext())
 
@@ -133,13 +135,13 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         builder.setTitle(Html.fromHtml("<font color='#F92391'>" + getString(R.string.attention) + "</font>"));
 
         //set message for alert dialog
-//        builder.setMessage(Html.fromHtml("<font color='#FB2391'>Realmente deseja excluir o cliente: ${client.name}</font>"));
-        builder.setMessage(getString(R.string.want_delete_client) + " " + client.name)
+//        builder.setMessage(Html.fromHtml("<font color='#FB2391'>Realmente deseja excluir o cliente: ${clientModel.name}</font>"));
+        builder.setMessage(getString(R.string.want_delete_client) + " " + clientModel.name)
         builder.setIcon(R.drawable.baseline_warning_24)
 
         //performing positive action
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            deleteClient(client)
+            deleteClient(clientModel)
         }
 //        //performing cancel action
 //        builder.setNeutralButton("Cancel"){dialogInterface , which ->
@@ -259,8 +261,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                 if (results.size() > 0) {
                     clientlist.clear()
                     for (result in results) {
-                        val client = result.toObject(Client::class.java)
-                        clientlist.add(client)
+                        val clientModel = result.toObject(ClientModel::class.java)
+                        clientlist.add(clientModel)
                     }
                     clientAdapter.notifyDataSetChanged()
                 }
@@ -275,9 +277,9 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
     // Firestore DataBase --------------------------------------------------
 
-    private fun insertClient(client: Client) {
-        viewModel.db.collection(dbClients).document(client.phone.toString())
-            .set(client).addOnCompleteListener {
+    private fun insertClient(clientModel: ClientModel) {
+        FirebaseFirestore.getInstance().collection(dbClients).document(clientModel.phone.toString())
+            .set(clientModel).addOnCompleteListener {
 //                Util.exibirToast(requireContext(), getString(R.string.add_success_client))
             }.addOnFailureListener {
                 Util.exibirToast(requireContext(), getString(R.string.error_save_client))
@@ -298,8 +300,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                 // result é uma lista
                 for (result in results) {
                     val key = result.id // pegar o nome  da pasta do documento
-                    val client = result.toObject(Client::class.java)
-                    clientlist.add(client)
+                    val clientModel = result.toObject(ClientModel::class.java)
+                    clientlist.add(clientModel)
                 }
                 // pegar ultimo item da query
                 val lastresult = results.documents[results.size() - 1]
@@ -332,8 +334,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                     db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
 
                 for (result in results) {
-                    val client = result.toObject(Client::class.java)
-                    clientlist.add(client)
+                    val clientModel = result.toObject(ClientModel::class.java)
+                    clientlist.add(clientModel)
                 }
                 // notificar que teve atualizalçao
                 clientAdapter.notifyDataSetChanged()
@@ -345,12 +347,12 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         }
     }
 
-    private fun deleteClient(client: Client) {
+    private fun deleteClient(clientModel: ClientModel) {
         val reference = db!!.collection(dbClients)
-        client.phone?.let {
+        clientModel.phone?.let {
             reference.document(it).delete().addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
-//                    client.phone?.let { it1 -> removeImage(it1) }
+//                    clientModel.phone?.let { it1 -> removeImage(it1) }
 //                    Util.exibirToast(requireContext(), getString(R.string.information_delete_client))
                     getClients()
                 } else {

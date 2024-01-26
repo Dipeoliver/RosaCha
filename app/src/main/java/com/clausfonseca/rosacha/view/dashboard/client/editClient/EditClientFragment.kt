@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.client
+package com.clausfonseca.rosacha.view.dashboard.client.editClient
 
 import android.Manifest
 import android.app.Activity
@@ -13,9 +13,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +32,7 @@ import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentClientEditBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
-import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
@@ -44,6 +41,7 @@ import com.clausfonseca.rosacha.utils.mask.DateMask
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
 import com.clausfonseca.rosacha.utils.mask.validateEmailRegex
+import com.clausfonseca.rosacha.view.dashboard.client.addClient.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -59,7 +57,7 @@ class EditClientFragment : Fragment() {
 
     private lateinit var binding: FragmentClientEditBinding
     private lateinit var firebaseStorage: FirebaseStorage
-    private var selectedClient: Client? = null
+    private var selectedClientModel: ClientModel? = null
     private var pictureName: String? = ""
     private val db = FirebaseFirestore.getInstance()
     private var dbClients: String = ""
@@ -81,10 +79,10 @@ class EditClientFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        selectedClient = EditClientFragmentArgs.fromBundle(requireArguments()).selectedClient
+        selectedClientModel = EditClientFragmentArgs.fromBundle(requireArguments()).selectedClient
 
         // outro metodo de recuperar dados de outro fragment
-        // selectedClient = requireArguments().getParcelable<Client>("client")
+        // selectedClientModel = requireArguments().getParcelable<ClientModel>("client")
 
         firebaseStorage = Firebase.storage
         dbClients = getString(R.string.db_client)
@@ -262,24 +260,24 @@ class EditClientFragment : Fragment() {
                 Util.exibirToast(requireContext(), getString(R.string.invalid_email_register_fragment))
 
             } else {
-                selectedClient = Client()
+                selectedClientModel = ClientModel()
                 val date = Calendar.getInstance().time
                 val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
                 val clientDate = dateTimeFormat.format(date)
 
-                selectedClient?.name = name.uppercase()
-                selectedClient?.phone = phone
-                selectedClient?.email = email
-                selectedClient?.birthday = birthday
-                selectedClient?.clientDate = clientDate
-                selectedClient?.urlImagem = url
-                selectedClient?.id = clientId
+                selectedClientModel?.name = name.uppercase()
+                selectedClientModel?.phone = phone
+                selectedClientModel?.email = email
+                selectedClientModel?.birthday = birthday
+                selectedClientModel?.clientDate = clientDate
+                selectedClientModel?.urlImagem = url
+                selectedClientModel?.id = clientId
 
                 if (oldId != phone) {
                     removeImage(oldId.toString())
                 }
 
-                updateClient(selectedClient!!)
+                updateClient(selectedClientModel!!)
             }
         } else {
             Util.exibirToast(requireContext(), getString(R.string.required_fields))
@@ -287,22 +285,22 @@ class EditClientFragment : Fragment() {
 
     }
 
-    private fun updateClient(selectedClient: Client) {
+    private fun updateClient(selectedClientModel: ClientModel) {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
-        if (selectedClient != null) {
+        if (selectedClientModel != null) {
 
             val reference = db!!.collection(dbClients)
 
             val client = hashMapOf(
                 // posso fazer update de apenas 1 campo se necessário
-                "name" to selectedClient.name,
-                "email" to selectedClient.email,
-                "birthday" to selectedClient.birthday,
-                "clientDate" to selectedClient.clientDate,
-                "urlImagem" to selectedClient.urlImagem
+                "name" to selectedClientModel.name,
+                "email" to selectedClientModel.email,
+                "birthday" to selectedClientModel.birthday,
+                "clientDate" to selectedClientModel.clientDate,
+                "urlImagem" to selectedClientModel.urlImagem
             )
-            reference.document(selectedClient.phone.toString()).update(client as Map<String, Any>).addOnSuccessListener {
+            reference.document(selectedClientModel.phone.toString()).update(client as Map<String, Any>).addOnSuccessListener {
                 Util.exibirToast(requireContext(), getString(R.string.update_data))
                 dialogProgress.dismiss()
                 val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
@@ -315,16 +313,16 @@ class EditClientFragment : Fragment() {
     }
 
     private fun recoverClient() {
-        binding.edtNameClientEdit.setText(selectedClient?.name.toString())
-        binding.edtPhoneClientEdit.setText(selectedClient?.phone.toString())
-        binding.edtBirthdayClientEdit.setText(selectedClient?.birthday.toString())
-        binding.edtEmailClientEdit.setText(selectedClient?.email.toString())
-        clientId = selectedClient?.id
+        binding.edtNameClientEdit.setText(selectedClientModel?.name.toString())
+        binding.edtPhoneClientEdit.setText(selectedClientModel?.phone.toString())
+        binding.edtBirthdayClientEdit.setText(selectedClientModel?.birthday.toString())
+        binding.edtEmailClientEdit.setText(selectedClientModel?.email.toString())
+        clientId = selectedClientModel?.id
 
-        oldId = selectedClient?.phone.toString()
+        oldId = selectedClientModel?.phone.toString()
 
-        val url = selectedClient?.urlImagem
-        oldUrl = selectedClient?.urlImagem.toString()
+        val url = selectedClientModel?.urlImagem
+        oldUrl = selectedClientModel?.urlImagem.toString()
 
         if (url == "" || url == null) Glide.with(requireContext()).load(R.drawable.no_image)
             .into(binding.imvPhotoClientEdit)

@@ -1,12 +1,9 @@
 package com.clausfonseca.rosacha.view.onboarding.recover
 
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
-import com.clausfonseca.rosacha.domain.usecases.AuthUseCases
+import com.clausfonseca.rosacha.domain.usecases.auth.AuthUseCases
 import com.clausfonseca.rosacha.utils.Resource
-import com.clausfonseca.rosacha.view.onboarding.login.LoginModelState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,6 +31,8 @@ class RecoverViewModel  @Inject constructor(
                         model.screenState.value = RecoverModelState.RecoverState.Loading(false)
                         model.screenState.value = RecoverModelState.RecoverState.Success
                     }
+
+                    else -> {}
                 }
             }
         }

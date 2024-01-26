@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.home
+package com.clausfonseca.rosacha.view.onboarding.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,24 +10,23 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class RegisterViewModel @Inject constructor(
     private val authUseCases: AuthUseCases
 ) : ViewModel() {
-    val model = CommonModelState()
 
-    fun signOut() {
+    val model = CommonModelState()
+    fun registerUser(email: String, password: String){
         viewModelScope.launch {
-            authUseCases.firebaseSignOut.invoke().collect {
+            authUseCases.firebaseRegisterUser.invoke(email,password).collect {
+
                 when (it) {
-                    is Resource.Error -> {
+                    is Resource.Error ->{
                         model.screenState.value = CommonModelState.CommonState.Loading(false)
                         model.screenState.value = CommonModelState.CommonState.Error(it.exception?.message ?: "Unexpected error")
                     }
-
                     is Resource.Loading -> {
                         model.screenState.value = CommonModelState.CommonState.Loading(true)
                     }
-
                     is Resource.Success -> {
                         model.screenState.value = CommonModelState.CommonState.Loading(false)
                         model.screenState.value = CommonModelState.CommonState.Success

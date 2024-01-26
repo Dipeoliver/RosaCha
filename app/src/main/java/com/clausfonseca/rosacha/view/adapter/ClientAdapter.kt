@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.ItemRecyclerClientListBinding
-import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.model.ClientModel
 
 class ClientAdapter(
     private val context: android.content.Context,
-    private val clientList: List<Client>,
+    private val clientModelList: List<ClientModel>,
     var clickClient: ClickClient,
     var lastItemRecyclerView: LastItemRecyclerView,
-    val clientSelected: (Client, Int) -> Unit
+    val clientSelected: (ClientModel, Int) -> Unit
 ) : RecyclerView.Adapter<ClientAdapter.MyViewHolder>() {
 
     companion object {
@@ -37,10 +37,10 @@ class ClientAdapter(
         RecyclerView.ViewHolder(binding.root)
 
 
-    override fun getItemCount() = clientList.size
+    override fun getItemCount() = clientModelList.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val client = clientList[position]
+        val client = clientModelList[position]
         holder.binding.txtName.text = client.name
         holder.binding.txtPhone.text = client.phone
         holder.binding.txtEmail.text = client.email
@@ -69,7 +69,7 @@ class ClientAdapter(
     }
 
     interface ClickClient {
-        fun clickClient(client: Client) {
+        fun clickClient(clientModel: ClientModel) {
         }
     }
 }

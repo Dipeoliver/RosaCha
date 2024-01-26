@@ -42,6 +42,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_edit"
             android:hint="@string/email"
+            android:nextFocusDown="@id/edt_password"
             android:inputType="textEmailAddress"
             android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -70,6 +71,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_edit"
             android:hint="@string/password_fragment"
+            android:imeOptions="actionDone"
             android:inputType="textPassword"
             android:lines="1"
             android:maxLength="15" />

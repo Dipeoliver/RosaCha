@@ -231,7 +231,7 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
     }
 
     private fun showConformationIndexDialog() {
-        val filter = arrayOf("Client", "Date", "Id", "Price")
+        val filter = arrayOf("ClientModel", "Date", "Id", "Price")
 
         var selectedFilter = filter[selecteDItemIndex]
         MaterialAlertDialogBuilder(requireContext())
@@ -263,7 +263,7 @@ class ListSalesFragment : Fragment(), SalesAdapter.LastItemRecyclerView {
 
                     else -> {
                         dbFilter = "client"
-                        binding.svSales.queryHint = "filter by Client"
+                        binding.svSales.queryHint = "filter by ClientModel"
                         binding.svSales.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS + InputType.TYPE_CLASS_TEXT
                     }
                 }

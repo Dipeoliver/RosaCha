@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.dashboard.client.AddClientFragment">
+    tools:context=".view.dashboard.clientModel.addClient.AddClientFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
@@ -160,6 +160,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_edit"
             android:hint="@string/birthday_client"
+            android:imeOptions="actionDone"
             android:inputType="number"
             android:lines="1"/>
     </com.google.android.material.textfield.TextInputLayout>

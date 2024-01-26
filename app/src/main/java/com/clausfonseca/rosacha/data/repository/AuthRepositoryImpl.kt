@@ -1,14 +1,11 @@
 package com.clausfonseca.rosacha.data.repository
 
-import android.widget.Toast
-import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.domain.repository.AuthRepository
 import com.clausfonseca.rosacha.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import java.lang.Exception
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -42,6 +39,18 @@ class AuthRepositoryImpl @Inject constructor(
         try{
             emit(Resource.Loading())
             auth.sendPasswordResetEmail(email)
+            emit(Resource.Success(true))
+        }catch (e: Exception){
+            emit(
+                Resource.Error(e)
+            )
+        }
+    }
+
+    override fun firebaseRegisterUser(email: String, password: String): Flow<Resource<Boolean>> = flow{
+        try{
+            emit(Resource.Loading())
+            auth.createUserWithEmailAndPassword(email, password)
             emit(Resource.Success(true))
         }catch (e: Exception){
             emit(

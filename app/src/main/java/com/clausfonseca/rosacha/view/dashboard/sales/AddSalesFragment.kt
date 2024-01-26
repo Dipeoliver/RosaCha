@@ -33,7 +33,7 @@ import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
 import com.clausfonseca.rosacha.view.adapter.ItensSalesAdapter
-import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
+import com.clausfonseca.rosacha.view.dashboard.client.addClient.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth

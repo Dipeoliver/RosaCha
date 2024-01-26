@@ -1,9 +1,8 @@
 package com.clausfonseca.rosacha.view.onboarding.login
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.clausfonseca.rosacha.domain.usecases.AuthUseCases
+import com.clausfonseca.rosacha.domain.usecases.auth.AuthUseCases
 import com.clausfonseca.rosacha.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

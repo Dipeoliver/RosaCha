@@ -76,12 +76,12 @@ Feitos
 - ao salvar um novo produto se nao tiver foto salva uma padrão
 
 03/02/23
-- ao apagar produto / client apagar foto  tb
+- ao apagar produto / clientModel apagar foto  tb
 - adicionar para selecionar foto em clients
 - click de voltar fica loop infinito
 
 07/02/23
-- implementar update (client / product)
+- implementar update (clientModel / product)
 
 08/02/23
 - controle de permissão ao acessar camera e arquivos
@@ -133,7 +133,7 @@ Feitos
 
 29/03/2023
 - ao deletar o cliente e voltar inserir o mesmo dentro do banco novamente e também a foto
-- Ao retornar client na lista o ultimo aparece 2 vezes
+- Ao retornar clientModel na lista o ultimo aparece 2 vezes
 - dentro Pdf.kt mudar texto para a string
 - mostrar dentro PDF o $ de dinheiro
 - ao clicar em buscar produto em price fechar o teclado (fica em cima da tela)
@@ -155,7 +155,7 @@ Feitos
 
 13/04/2023
 - Botao dentro do produto habilitar para adicionar novo intem (clone)
-- arrumar a cor de fundo do dialog do busca client
+- arrumar a cor de fundo do dialog do busca clientModel
 
 19/04/2023
 - customizar o bottonDialog para bordas arredondadas e colocar imagem de fundo
@@ -193,5 +193,5 @@ Ideias a Fazer
 - mudar arquitetura 
  
 erros
-- Ao retornar client na lista o ultimo aparece 2 vezes ( arrumamos mas não solução final)
-- ao fazer upload client e clicar rapido 2x botao salvar da crash e perde a foto (tem de testar para ver se reproduz)
+- Ao retornar clientModel na lista o ultimo aparece 2 vezes ( arrumamos mas não solução final)
+- ao fazer upload clientModel e clicar rapido 2x botao salvar da crash e perde a foto (tem de testar para ver se reproduz)

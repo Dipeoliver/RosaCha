@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.domain.usecases
+package com.clausfonseca.rosacha.domain.usecases.auth
 
 import com.clausfonseca.rosacha.domain.repository.AuthRepository
 import javax.inject.Inject

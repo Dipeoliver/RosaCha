@@ -2,7 +2,6 @@ package com.clausfonseca.rosacha.view.dashboard.product
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -14,8 +13,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -40,7 +37,7 @@ import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
 import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
-import com.clausfonseca.rosacha.view.dashboard.client.AddClientFragment
+import com.clausfonseca.rosacha.view.dashboard.client.addClient.AddClientFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth

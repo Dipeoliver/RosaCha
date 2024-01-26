@@ -86,7 +86,8 @@ class RecoverFragment : Fragment() {
     private fun handleState(state: RecoverModelState.RecoverState?) {
         when (state) {
             is RecoverModelState.RecoverState.Loading -> {
-//                if (!dialogProgress.isAdded) dialogProgress.show(childFragmentManager, "1")
+                if (state.isLoading) dialogProgress.show(childFragmentManager, "0")
+                else dialogProgress.dismiss()
             }
 
             is RecoverModelState.RecoverState.Success -> {
@@ -95,13 +96,10 @@ class RecoverFragment : Fragment() {
                     getString(com.clausfonseca.rosacha.R.string.sent_email),
                     Toast.LENGTH_SHORT
                 ).show()
-//                dialogProgress.dismiss()
-//                findNavController().navigate(R.id.action_global_homeFragment)
                 findNavController().popBackStack()
             }
 
             is RecoverModelState.RecoverState.Error -> {
-//                dialogProgress.dismiss()
                 Toast.makeText(
                     requireContext(),
                     FirebaseHelper.validError(state.message),

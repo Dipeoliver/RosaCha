@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 
-class Client(
+class ClientModel(
     var id: String? = "",
     var name: String? = "",
     var phone: String? = "",
@@ -44,12 +44,12 @@ class Client(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Client> {
-        override fun createFromParcel(parcel: Parcel): Client {
-            return Client(parcel)
+    companion object CREATOR : Parcelable.Creator<ClientModel> {
+        override fun createFromParcel(parcel: Parcel): ClientModel {
+            return ClientModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<Client?> {
+        override fun newArray(size: Int): Array<ClientModel?> {
             return arrayOfNulls(size)
         }
     }

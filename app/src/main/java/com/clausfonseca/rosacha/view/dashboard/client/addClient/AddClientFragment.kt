@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.client
+package com.clausfonseca.rosacha.view.dashboard.client.addClient
 
 import android.Manifest
 import android.app.Activity
@@ -13,12 +13,10 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -33,10 +31,11 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.clausfonseca.rosacha.R
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentClientAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
-import com.clausfonseca.rosacha.model.Client
+import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
@@ -44,21 +43,24 @@ import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
 import com.clausfonseca.rosacha.utils.mask.DateMask
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
+import com.clausfonseca.rosacha.view.onboarding.CommonModelState
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 
+@AndroidEntryPoint
 class AddClientFragment : Fragment() {
 
     private lateinit var binding: FragmentClientAddBinding
-    private lateinit var firebaseStorage: FirebaseStorage
-    private lateinit var client: Client
+
+    private lateinit var clientModel: ClientModel
     private var dbClients: String = ""
     private val viewModel: AddClientViewModel by viewModels()
     private var pictureName: String? = ""
@@ -82,11 +84,11 @@ class AddClientFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        firebaseStorage = Firebase.storage
         dbClients = getString(R.string.db_client)
         initListeners()
         configureComponents()
         onBackPressed()
+        configureObservables()
 
     }
 
@@ -166,6 +168,7 @@ class AddClientFragment : Fragment() {
         startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), 11)
     }
 
+
     // para corrigir problema de falta de imagem selecionada
     fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
@@ -176,74 +179,155 @@ class AddClientFragment : Fragment() {
     }
     // endregion
 
+    private fun configureObservables() {
+        viewModel.model.screenState.observe(viewLifecycleOwner) {
+            handleState(it)
+        }
+    }
+
+    private fun progressState(isloading: Boolean) {
+        if (isloading) dialogProgress.show(childFragmentManager, "0")
+        else dialogProgress.dismiss()
+    }
+
+    private fun handleState(state: CommonModelState.CommonState?) {
+        when (state) {
+            is CommonModelState.CommonState.Loading -> {
+                progressState(state.isLoading)
+            }
+            is CommonModelState.CommonState.SuccessStorageUrl ->{
+
+                validateData(state.data)
+
+                // esta o erro generico e tem de criar um novo stage.
+            }
+
+            is CommonModelState.CommonState.Success -> {
+
+                if (viewModel.model.dataUrl) {
+                    Util.exibirToast(requireContext(), getString(R.string.error_already_registered_client))
+                    dialogProgress.dismiss()
+                    binding.edtPhoneClient.requestFocus()
+                } else {
+                    activity?.let {
+                        Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.no_image)
+                            .apply(RequestOptions.overrideOf(800, 480))
+                            .listener(object : RequestListener<Bitmap> {
+
+                                override fun onLoadFailed(
+                                    e: GlideException?,
+                                    model: Any?,
+                                    target: Target<Bitmap>?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
+                                    dialogProgress.dismiss()
+                                    return false
+                                }
+
+                                override fun onResourceReady(
+                                    bitmap: Bitmap?,
+                                    model: Any?,
+                                    target: Target<Bitmap>?,
+                                    dataSource: DataSource?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+
+                                    // REVISAR AQUI
+                                    viewModel.getUrlStorage(dbClients,pictureName?:"",bitmap?: Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888) )
+                                    return false
+                                }
+                            }).submit()
+                    }
+                }
+
+            }
+
+            is CommonModelState.CommonState.Error -> {
+                Toast.makeText(
+                    requireContext(),
+                    FirebaseHelper.validError(state.message),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            else -> {
+                println()
+            }
+        }
+    }
+
+
     // region - FirebaseStorage
     // com recurso para diminuir a imagem
     fun uploadImagem() {
         dialogProgress.show(childFragmentManager, "0")
         pictureName = binding.edtPhoneClient.text.toString()
+        viewModel.getFileUrl(pictureName ?: "")
 
-        val reference = viewModel.db.collection("@string/").document(pictureName.toString())
-        reference.get().addOnSuccessListener { item ->
-            if (item.exists()) {
-                Util.exibirToast(requireContext(), getString(R.string.error_already_registered_client))
-                dialogProgress.dismiss()
-                binding.edtPhoneClient.requestFocus()
-            } else {
-                activity?.let {
-                    Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.no_image)
-                        .apply(RequestOptions.overrideOf(800, 480))
-                        .listener(object : RequestListener<Bitmap> {
 
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Bitmap>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
-                                dialogProgress.dismiss()
-                                return false
-                            }
-
-                            override fun onResourceReady(
-                                bitmap: Bitmap?,
-                                model: Any?,
-                                target: Target<Bitmap>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-
-                                val baos = ByteArrayOutputStream()
-                                bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                                val data = baos.toByteArray()
-                                val reference =
-                                    firebaseStorage.reference
-                                        .child(dbClients)
-                                        .child("$pictureName.jpg")
-                                val uploadTask = reference.putBytes(data)
-                                uploadTask.continueWithTask { task ->
-                                    if (!task.isSuccessful) {
-                                        task.exception.let { it ->
-                                            throw it!!
-                                        }
-                                    }
-                                    reference.downloadUrl
-                                }.addOnSuccessListener { task ->
-                                    val url = task.toString()
-                                    validateData(url)
-                                }.addOnFailureListener { error ->
-                                    Util.exibirToast(
-                                        requireContext(),
-                                        getString(R.string.error_upload_image) + ":" + error.message.toString()
-                                    )
-                                    dialogProgress.dismiss()
-                                }
-                                return false
-                            }
-                        }).submit()
-                }
-            }
-        }
+//        val reference = viewModel.db.collection("@string/").document(pictureName.toString()+".jpg")
+//        reference.get().addOnSuccessListener { item ->
+//            if (item.exists()) {
+//                Util.exibirToast(requireContext(), getString(R.string.error_already_registered_client))
+//                dialogProgress.dismiss()
+//                binding.edtPhoneClient.requestFocus()
+//            } else {
+//                activity?.let {
+//                    Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.no_image)
+//                        .apply(RequestOptions.overrideOf(800, 480))
+//                        .listener(object : RequestListener<Bitmap> {
+//
+//                            override fun onLoadFailed(
+//                                e: GlideException?,
+//                                model: Any?,
+//                                target: Target<Bitmap>?,
+//                                isFirstResource: Boolean
+//                            ): Boolean {
+//                                Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
+//                                dialogProgress.dismiss()
+//                                return false
+//                            }
+//
+//                            override fun onResourceReady(
+//                                bitmap: Bitmap?,
+//                                model: Any?,
+//                                target: Target<Bitmap>?,
+//                                dataSource: DataSource?,
+//                                isFirstResource: Boolean
+//                            ): Boolean {
+//
+//                                val baos = ByteArrayOutputStream()
+//                                bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+//                                val data = baos.toByteArray()
+//                                val reference =
+//                                    firebaseStorage.reference
+//                                        .child(dbClients)
+//                                        .child("$pictureName.jpg")
+//                                val uploadTask = reference.putBytes(data)
+//                                uploadTask.continueWithTask { task ->
+//                                    if (!task.isSuccessful) {
+//                                        task.exception.let { it ->
+//                                            throw it!!
+//                                        }
+//                                    }
+//                                    reference.downloadUrl
+//                                }.addOnSuccessListener { task ->
+//                                    val url = task.toString()
+//                                    validateData(url)
+//                                }.addOnFailureListener { error ->
+//                                    Util.exibirToast(
+//                                        requireContext(),
+//                                        getString(R.string.error_upload_image) + ":" + error.message.toString()
+//                                    )
+//                                    dialogProgress.dismiss()
+//                                }
+//                                return false
+//                            }
+//                        }).submit()
+//                }
+//            }
+//        }
     }
     // endregion
 
@@ -255,23 +339,27 @@ class AddClientFragment : Fragment() {
         val birthday = binding.edtBirthdayClient.text.toString().trim()
         val email = binding.edtEmailClient.text.toString().trim().lowercase()
 
-        client = Client()
+        clientModel = ClientModel()
         val date = Calendar.getInstance().time
         val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         val clientDate = dateTimeFormat.format(date)
 
-        client.name = name.uppercase()
-        client.phone = phone
-        client.email = email
-        client.birthday = birthday
-        client.clientDate = clientDate
-        client.urlImagem = url
+        clientModel.name = name.uppercase()
+        clientModel.phone = phone
+        clientModel.email = email
+        clientModel.birthday = birthday
+        clientModel.clientDate = clientDate
+        clientModel.urlImagem = url
         insertClient()
     }
 
+    // Fazer aqui !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
     private fun insertClient() {
-        viewModel.db.collection(dbClients).document(client.phone.toString())
-            .set(client).addOnCompleteListener {
+        FirebaseFirestore.getInstance().collection(dbClients).document(clientModel.phone.toString())
+            .set(clientModel).addOnCompleteListener {
                 Util.exibirToast(requireContext(), getString(R.string.add_success_client))
                 cleaner()
                 dialogProgress.dismiss()

@@ -325,6 +325,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edit"
                     android:hint="@string/sales_price"
+                    android:imeOptions="actionDone"
                     android:inputType="number|numberDecimal"
                     android:lines="1"
                     android:textSize="13sp" />
