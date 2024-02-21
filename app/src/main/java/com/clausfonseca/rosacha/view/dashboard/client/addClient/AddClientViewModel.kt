@@ -49,7 +49,7 @@ class AddClientViewModel @Inject constructor(
                     }
 
                     is Resource.Loading -> {
-                        model.screenState.value = CommonModelState.CommonState.Loading(true)
+                        model.screenState.value = CommonModelState.CommonState.Loading(false)
                     }
 
                     is Resource.Success -> { it

@@ -7,7 +7,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,36 +24,39 @@ class ClientRepositoryImpl @Inject constructor(
 
     // implementar o select do nome  para buscar no firebase se a foto existe e salvar o url no cadastro
 // do usuario.
-    override fun getUrlFile(pictureName: String): Flow<Resource<Boolean>> = flow {
+    override fun getUrlFile(pictureName: String): Flow<Resource<Boolean>> = callbackFlow {
 
         try {
-            emit(Resource.Loading())
+            trySend(Resource.Loading())
             val reference = fireStore.collection("@string/").document("$pictureName.jpg")
             reference.get().addOnSuccessListener { item ->
                 if (item.exists()) {
                     CoroutineScope(Dispatchers.Main).launch {
                         withContext(Dispatchers.IO) {
-                            emit(Resource.Success(true))
+                            trySend(Resource.Success(true)).isSuccess
                         }
                     }
                 } else {
                     CoroutineScope(Dispatchers.Main).launch {
                         withContext(Dispatchers.IO) {
-                            emit(Resource.Success(false))
+                            trySend(Resource.Success(false)).isSuccess
                         }
                     }
                 }
             }
         } catch (e: Exception) {
-            emit(
+            trySend(
                 Resource.Error(e)
             )
         }
+        awaitClose {
+            println()
+        }
     }
 
-    override fun getUrlStorage(dbClient: String, pictureName: String, bitmap: Bitmap): Flow<Resource<String>> = flow {
+    override fun getUrlStorage(dbClient: String, pictureName: String, bitmap: Bitmap): Flow<Resource<String>> = callbackFlow {
         try {
-            emit(Resource.Loading())
+            trySend(Resource.Loading())
 
             val baos = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
@@ -73,21 +78,24 @@ class ClientRepositoryImpl @Inject constructor(
                 val url = task.toString()
                 CoroutineScope(Dispatchers.Main).launch {
                     withContext(Dispatchers.IO) {
-                        emit(Resource.Success(url))
+                        trySend(Resource.Success(url)).isSuccess
                     }
                 }
             }.addOnFailureListener { error ->
                 CoroutineScope(Dispatchers.Main).launch {
                     withContext(Dispatchers.IO) {
-                        emit(Resource.Success(error.toString()))
+                        trySend(Resource.Success(error.toString())).isSuccess
                     }
                 }
             }
 
         } catch (e: Exception) {
-            emit(
+            trySend(
                 Resource.Error(e)
             )
+        }
+        awaitClose {
+            println()
         }
     }
 }

@@ -18,6 +18,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
@@ -69,6 +72,8 @@ class AddClientFragment : Fragment() {
     var bottomSheetDialogCamera: BottomSheetDialog? = null
     val dialogProgress = DialogProgress()
     var email: String = ""
+
+    private val REQUEST_CAMERA_PERMISSION = 1001
 
     companion object {
         const val REQUEST_PERMISSION_CODE = 1
@@ -162,15 +167,24 @@ class AddClientFragment : Fragment() {
         startActivityForResult(intent, 22)
     }
 
-    // selecionar imagem da galeria
+    // apos obter imagem da galeria salva a uri e carrega o RoundedImageView
+    private val getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri: Uri? = result.data?.data
+            bottomSheetDialogCamera?.dismiss()
+            binding.imvPhotoClient.setImageURI(uri)
+            uriImagem = uri
+        }
+    }
+    // obter imagem galeria
     private fun obterImagemdaGaleria() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), 11)
+        getContent.launch(intent)
     }
 
 
     // para corrigir problema de falta de imagem selecionada
-    fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
+    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
         val path =
@@ -185,17 +199,15 @@ class AddClientFragment : Fragment() {
         }
     }
 
-    private fun progressState(isloading: Boolean) {
-        if (isloading) dialogProgress.show(childFragmentManager, "0")
-        else dialogProgress.dismiss()
-    }
-
     private fun handleState(state: CommonModelState.CommonState?) {
         when (state) {
             is CommonModelState.CommonState.Loading -> {
-                progressState(state.isLoading)
+                if (state.isLoading) dialogProgress.show(childFragmentManager, "0")
+                else dialogProgress.dismiss()
+//                progressState(state.isLoading)
             }
-            is CommonModelState.CommonState.SuccessStorageUrl ->{
+
+            is CommonModelState.CommonState.SuccessStorageUrl -> {
 
                 validateData(state.data)
 
@@ -234,7 +246,11 @@ class AddClientFragment : Fragment() {
                                 ): Boolean {
 
                                     // REVISAR AQUI
-                                    viewModel.getUrlStorage(dbClients,pictureName?:"",bitmap?: Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888) )
+                                    viewModel.getUrlStorage(
+                                        dbClients,
+                                        pictureName ?: "",
+                                        bitmap ?: Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+                                    )
                                     return false
                                 }
                             }).submit()
@@ -261,7 +277,7 @@ class AddClientFragment : Fragment() {
     // region - FirebaseStorage
     // com recurso para diminuir a imagem
     fun uploadImagem() {
-        dialogProgress.show(childFragmentManager, "0")
+
         pictureName = binding.edtPhoneClient.text.toString()
         viewModel.getFileUrl(pictureName ?: "")
 
@@ -356,7 +372,6 @@ class AddClientFragment : Fragment() {
     // Fazer aqui !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
     private fun insertClient() {
         FirebaseFirestore.getInstance().collection(dbClients).document(clientModel.phone.toString())
             .set(clientModel).addOnCompleteListener {
@@ -371,53 +386,27 @@ class AddClientFragment : Fragment() {
     // endregion
 
     // region - RequestCameraAccess
-    private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(
-                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                REQUEST_PERMISSION_CODE
-            )
-            return
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                obterImagemdaCamera()
+            } else {
+                bottomSheetDialogCamera?.dismiss()
+                showBottomSheetDialogPermission()
+            }
         }
-        obterImagemdaCamera()
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_PERMISSION_CODE) {
-            when (grantResults[0]) {
-                PackageManager.PERMISSION_GRANTED -> {
-                    when (grantResults[1]) {
-                        PackageManager.PERMISSION_GRANTED -> {
-                            checkPermissions()
-                        }
-
-                        PackageManager.PERMISSION_DENIED -> {
-                            bottomSheetDialogCamera?.dismiss()
-                            showBottomSheetDialogPermission()
-                        }
-                    }
-                }
-
-                PackageManager.PERMISSION_DENIED -> {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        bottomSheetDialogCamera?.dismiss()
-                        showBottomSheetDialogPermission()
-                    }
-                }
+    private fun checkPermissions() {
+        when (PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) -> {
+                obterImagemdaCamera()
+            }
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
     }
-// endregion
+
 
     // region - FieldValidation
     private fun submitForm() {
