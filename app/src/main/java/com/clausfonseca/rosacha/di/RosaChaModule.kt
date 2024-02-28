@@ -10,6 +10,7 @@ import com.clausfonseca.rosacha.domain.usecases.auth.FirebaseSignIn
 import com.clausfonseca.rosacha.domain.usecases.auth.FirebaseSignOut
 import com.clausfonseca.rosacha.domain.usecases.client.ClientUseCases
 import com.clausfonseca.rosacha.domain.usecases.client.FirebaseGetUrl
+import com.clausfonseca.rosacha.domain.usecases.client.FirebaseInsertClient
 import com.clausfonseca.rosacha.domain.usecases.client.StorageGetUrl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -53,7 +54,7 @@ object RosaChaModule {
         firebaseSignIn = FirebaseSignIn(repository = repository),
         firebaseSignOut = FirebaseSignOut(repository = repository),
         firebaseRecoverPassword = FirebaseRecoverPassword(repository = repository),
-        firebaseRegisterUser =  FirebaseRegisterUser(repository= repository)
+        firebaseRegisterUser = FirebaseRegisterUser(repository = repository)
     )
 
     @Singleton
@@ -61,6 +62,7 @@ object RosaChaModule {
     fun provideClientUseCases(repository: ClientRepositoryImpl) = ClientUseCases(
         getUrlFile = FirebaseGetUrl(repository = repository),
         getStorageUrl = StorageGetUrl(repository = repository),
+        insertClient = FirebaseInsertClient(repository = repository),
     )
 
 }

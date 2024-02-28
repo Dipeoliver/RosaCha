@@ -1,8 +1,11 @@
 package com.clausfonseca.rosacha.data.repository
 
 import android.graphics.Bitmap
+import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.domain.repository.ClientRepository
+import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.Resource
+import com.clausfonseca.rosacha.utils.Util
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
@@ -50,7 +53,6 @@ class ClientRepositoryImpl @Inject constructor(
             )
         }
         awaitClose {
-            println()
         }
     }
 
@@ -95,7 +97,40 @@ class ClientRepositoryImpl @Inject constructor(
             )
         }
         awaitClose {
-            println()
         }
     }
+
+    override fun insertClient(dbClient: String, clientModel: ClientModel): Flow<Resource<Boolean>> = callbackFlow {
+
+        try {
+            trySend(Resource.Loading())
+            FirebaseFirestore.getInstance().collection(dbClient).document(clientModel.phone.toString())
+                .set(clientModel).addOnCompleteListener {
+                    if (it.isSuccessful || it.isComplete) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            withContext(Dispatchers.IO) {
+                                trySend(Resource.Success(true)).isSuccess
+                            }
+                        }
+                    } else {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            withContext(Dispatchers.IO) {
+                                trySend(Resource.Success(false)).isSuccess
+                            }
+                        }
+                    }
+                }.addOnFailureListener {
+                    trySend(
+                        Resource.Error(it)
+                    )
+                }
+        } catch (e: Exception) {
+            trySend(
+                Resource.Error(e)
+            )
+        }
+        awaitClose {
+        }
+    }
+
 }

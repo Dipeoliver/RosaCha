@@ -16,11 +16,10 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
@@ -39,24 +38,23 @@ import com.clausfonseca.rosacha.databinding.FragmentClientAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
 import com.clausfonseca.rosacha.model.ClientModel
+import com.clausfonseca.rosacha.utils.DeepLinkUrlConstants.CLIENT_FRAGMENT_URL
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
 import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
+import com.clausfonseca.rosacha.utils.extencionFunctions.getDbClient
 import com.clausfonseca.rosacha.utils.mask.DateMask
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
 import com.clausfonseca.rosacha.view.onboarding.CommonModelState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 @AndroidEntryPoint
 class AddClientFragment : Fragment() {
@@ -64,16 +62,13 @@ class AddClientFragment : Fragment() {
     private lateinit var binding: FragmentClientAddBinding
 
     private lateinit var clientModel: ClientModel
-    private var dbClients: String = ""
     private val viewModel: AddClientViewModel by viewModels()
     private var pictureName: String? = ""
-    var uriImagem: Uri? = null
-    var bottomSheetDialogPermission: BottomSheetDialog? = null
-    var bottomSheetDialogCamera: BottomSheetDialog? = null
-    val dialogProgress = DialogProgress()
+    private var uriImagem: Uri? = null
+    private var bottomSheetDialogPermission: BottomSheetDialog? = null
+    private var bottomSheetDialogCamera: BottomSheetDialog? = null
+    private val dialogProgress = DialogProgress()
     var email: String = ""
-
-    private val REQUEST_CAMERA_PERMISSION = 1001
 
     companion object {
         const val REQUEST_PERMISSION_CODE = 1
@@ -89,12 +84,10 @@ class AddClientFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dbClients = getString(R.string.db_client)
         initListeners()
         configureComponents()
         onBackPressed()
         configureObservables()
-
     }
 
     private fun initListeners() {
@@ -108,9 +101,36 @@ class AddClientFragment : Fragment() {
         }
 
         binding.btnBack.setOnClickListener {
-            val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
+            val uri = Uri.parse(CLIENT_FRAGMENT_URL)
             findNavController().navigate(uri)
         }
+    }
+
+    private fun configureComponents() {
+        //Mask to Phone
+        val country = PhoneNumberFormatType.PT_BR // OR PhoneNumberFormatType.PT_BR
+        val phoneFormatter = PhoneMask(WeakReference(binding.edtPhoneClient), country)
+        binding.edtPhoneClient.addTextChangedListener(phoneFormatter)
+//        binding.edtPhoneClient.addTextChangedListener(DateMask.mask(binding.edtPhoneClient, DateMask.FORMAT_FONE))
+
+        //Mask to Date
+        binding.edtBirthdayClient.addTextChangedListener(
+            DateMask.mask(
+                binding.edtBirthdayClient,
+                DateMask.FORMAT_DATE
+            )
+        )
+    }
+
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
+                    findNavController().navigate(uri)
+                }
+            })
     }
 
 
@@ -142,40 +162,44 @@ class AddClientFragment : Fragment() {
     private fun obterImagemdaCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // versão nova
-            val contentValues = ContentValues()
-            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            val resolver = activity?.contentResolver
-            uriImagem =
-                resolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val contentValues = ContentValues()
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        val resolver = activity?.contentResolver
+        uriImagem = resolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-        } else { // versão antiga
+        if (uriImagem == null) {
             val authorization = "com.clausfonseca.rosacha"
-            val directory =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val path = directory.path ?: ""
-            val imageName = "$path/$dbClients$pictureName.jpg"
-            if (imageName == "/$dbClients.jpg") {
-                val imageName = directory.path + "/" + dbClients + System.currentTimeMillis() + ".jpg"
-            }
+            val directory = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            val imageName = "$directory/${getDbClient(requireContext())}${System.currentTimeMillis()}.jpg"
             val file = File(imageName)
-            uriImagem =
-                activity?.let { FileProvider.getUriForFile(it.baseContext, authorization, file) }
+            uriImagem = activity?.let { FileProvider.getUriForFile(it.baseContext, authorization, file) }
         }
+
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
-        startActivityForResult(intent, 22)
+        cameraLauncher.launch(intent)
     }
+
+    private val cameraLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                bottomSheetDialogCamera?.dismiss()
+                binding.imvPhotoClient.setImageURI(uriImagem)
+            }
+        }
+
 
     // apos obter imagem da galeria salva a uri e carrega o RoundedImageView
-    private val getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri: Uri? = result.data?.data
-            bottomSheetDialogCamera?.dismiss()
-            binding.imvPhotoClient.setImageURI(uri)
-            uriImagem = uri
+    private val getContent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri: Uri? = result.data?.data
+                bottomSheetDialogCamera?.dismiss()
+                binding.imvPhotoClient.setImageURI(uri)
+                uriImagem = uri
+            }
         }
-    }
+
     // obter imagem galeria
     private fun obterImagemdaGaleria() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
@@ -184,14 +208,30 @@ class AddClientFragment : Fragment() {
 
 
     // para corrigir problema de falta de imagem selecionada
-    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path =
-            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
-        return Uri.parse(path.toString())
+
+    // Transformar para uma  extension function.
+    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri? {
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "Image name")
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { //this one
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+            }
+        }
+
+        val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+        uri?.let {
+            val outputStream = context.contentResolver.openOutputStream(it)
+            outputStream?.let { os ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                os.close()
+            }
+        }
+        return uri
     }
     // endregion
+
 
     private fun configureObservables() {
         viewModel.model.screenState.observe(viewLifecycleOwner) {
@@ -204,14 +244,10 @@ class AddClientFragment : Fragment() {
             is CommonModelState.CommonState.Loading -> {
                 if (state.isLoading) dialogProgress.show(childFragmentManager, "0")
                 else dialogProgress.dismiss()
-//                progressState(state.isLoading)
             }
 
             is CommonModelState.CommonState.SuccessStorageUrl -> {
-
                 validateData(state.data)
-
-                // esta o erro generico e tem de criar um novo stage.
             }
 
             is CommonModelState.CommonState.Success -> {
@@ -247,7 +283,7 @@ class AddClientFragment : Fragment() {
 
                                     // REVISAR AQUI
                                     viewModel.getUrlStorage(
-                                        dbClients,
+                                        getDbClient(requireContext()),
                                         pictureName ?: "",
                                         bitmap ?: Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
                                     )
@@ -256,94 +292,32 @@ class AddClientFragment : Fragment() {
                             }).submit()
                     }
                 }
-
             }
 
             is CommonModelState.CommonState.Error -> {
-                Toast.makeText(
-                    requireContext(),
-                    FirebaseHelper.validError(state.message),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Util.exibirToast(requireContext(), getString(FirebaseHelper.validError(state.message)))
+            }
+
+            is CommonModelState.CommonState.InsertClient -> {
+                if (state.data) {
+                    Util.exibirToast(requireContext(), getString(R.string.add_success_client))
+                    cleaner()
+                } else {
+                    Util.exibirToast(requireContext(), getString(R.string.error_save_client))
+                }
             }
 
             else -> {
-                println()
             }
         }
     }
 
 
     // region - FirebaseStorage
-    // com recurso para diminuir a imagem
-    fun uploadImagem() {
 
+    fun uploadImagem() {
         pictureName = binding.edtPhoneClient.text.toString()
         viewModel.getFileUrl(pictureName ?: "")
-
-
-//        val reference = viewModel.db.collection("@string/").document(pictureName.toString()+".jpg")
-//        reference.get().addOnSuccessListener { item ->
-//            if (item.exists()) {
-//                Util.exibirToast(requireContext(), getString(R.string.error_already_registered_client))
-//                dialogProgress.dismiss()
-//                binding.edtPhoneClient.requestFocus()
-//            } else {
-//                activity?.let {
-//                    Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.no_image)
-//                        .apply(RequestOptions.overrideOf(800, 480))
-//                        .listener(object : RequestListener<Bitmap> {
-//
-//                            override fun onLoadFailed(
-//                                e: GlideException?,
-//                                model: Any?,
-//                                target: Target<Bitmap>?,
-//                                isFirstResource: Boolean
-//                            ): Boolean {
-//                                Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
-//                                dialogProgress.dismiss()
-//                                return false
-//                            }
-//
-//                            override fun onResourceReady(
-//                                bitmap: Bitmap?,
-//                                model: Any?,
-//                                target: Target<Bitmap>?,
-//                                dataSource: DataSource?,
-//                                isFirstResource: Boolean
-//                            ): Boolean {
-//
-//                                val baos = ByteArrayOutputStream()
-//                                bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-//                                val data = baos.toByteArray()
-//                                val reference =
-//                                    firebaseStorage.reference
-//                                        .child(dbClients)
-//                                        .child("$pictureName.jpg")
-//                                val uploadTask = reference.putBytes(data)
-//                                uploadTask.continueWithTask { task ->
-//                                    if (!task.isSuccessful) {
-//                                        task.exception.let { it ->
-//                                            throw it!!
-//                                        }
-//                                    }
-//                                    reference.downloadUrl
-//                                }.addOnSuccessListener { task ->
-//                                    val url = task.toString()
-//                                    validateData(url)
-//                                }.addOnFailureListener { error ->
-//                                    Util.exibirToast(
-//                                        requireContext(),
-//                                        getString(R.string.error_upload_image) + ":" + error.message.toString()
-//                                    )
-//                                    dialogProgress.dismiss()
-//                                }
-//                                return false
-//                            }
-//                        }).submit()
-//                }
-//            }
-//        }
     }
     // endregion
 
@@ -356,7 +330,7 @@ class AddClientFragment : Fragment() {
         val email = binding.edtEmailClient.text.toString().trim().lowercase()
 
         clientModel = ClientModel()
-        val date = Calendar.getInstance().time
+        val date = Calendar.getInstance().time // colocar extension function
         val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         val clientDate = dateTimeFormat.format(date)
 
@@ -366,23 +340,9 @@ class AddClientFragment : Fragment() {
         clientModel.birthday = birthday
         clientModel.clientDate = clientDate
         clientModel.urlImagem = url
-        insertClient()
+        viewModel.insertClient(getDbClient(requireContext()), clientModel)
     }
 
-    // Fazer aqui !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-    private fun insertClient() {
-        FirebaseFirestore.getInstance().collection(dbClients).document(clientModel.phone.toString())
-            .set(clientModel).addOnCompleteListener {
-                Util.exibirToast(requireContext(), getString(R.string.add_success_client))
-                cleaner()
-                dialogProgress.dismiss()
-            }.addOnFailureListener {
-                Util.exibirToast(requireContext(), getString(R.string.error_save_client))
-                dialogProgress.dismiss()
-            }
-    }
     // endregion
 
     // region - RequestCameraAccess
@@ -401,6 +361,7 @@ class AddClientFragment : Fragment() {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) -> {
                 obterImagemdaCamera()
             }
+
             else -> {
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
@@ -431,7 +392,7 @@ class AddClientFragment : Fragment() {
                 val drawable =
                     ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
                 val bitmap = drawable?.toBitmap()
-                uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
+                uriImagem = bitmap?.let { getImageUriFromBitmap(requireContext(), it) }
                 uploadImagem()
             }
         }
@@ -480,35 +441,7 @@ class AddClientFragment : Fragment() {
         bottomSheetDialogCamera?.show()
     }
 
-// endregion
-
-    private fun configureComponents() {
-        //Mask to Phone
-        val country = PhoneNumberFormatType.PT_BR // OR PhoneNumberFormatType.PT_BR
-        val phoneFormatter = PhoneMask(WeakReference(binding.edtPhoneClient), country)
-        binding.edtPhoneClient.addTextChangedListener(phoneFormatter)
-//        binding.edtPhoneClient.addTextChangedListener(DateMask.mask(binding.edtPhoneClient, DateMask.FORMAT_FONE))
-
-        //Mask to Date
-        binding.edtBirthdayClient.addTextChangedListener(
-            DateMask.mask(
-                binding.edtBirthdayClient,
-                DateMask.FORMAT_DATE
-            )
-        )
-    }
-
-    private fun onBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    val uri = Uri.parse("android-app://com.clausfonseca.rosacha/client_fragment")
-                    findNavController().navigate(uri)
-                }
-            })
-    }
-
+    // endregion
     private fun cleaner() {
         binding.apply {
             edtNameClient.text = null
