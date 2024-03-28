@@ -59,12 +59,11 @@ import java.util.Locale
 @AndroidEntryPoint
 class AddClientFragment : Fragment() {
 
-    private lateinit var binding: FragmentClientAddBinding
-
-    private lateinit var clientModel: ClientModel
     private val viewModel: AddClientViewModel by viewModels()
+    private lateinit var binding: FragmentClientAddBinding
+    private lateinit var clientModel: ClientModel
     private var pictureName: String? = ""
-    private var uriImagem: Uri? = null
+    private var uriImage: Uri? = null
     private var bottomSheetDialogPermission: BottomSheetDialog? = null
     private var bottomSheetDialogCamera: BottomSheetDialog? = null
     private val dialogProgress = DialogProgress()
@@ -73,7 +72,6 @@ class AddClientFragment : Fragment() {
     companion object {
         const val REQUEST_PERMISSION_CODE = 1
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -88,6 +86,83 @@ class AddClientFragment : Fragment() {
         configureComponents()
         onBackPressed()
         configureObservables()
+    }
+
+    private fun configureObservables() {
+        viewModel.model.screenState.observe(viewLifecycleOwner) {
+            handleState(it)
+        }
+    }
+
+    private fun handleState(state: CommonModelState.CommonState?) {
+        when (state) {
+            is CommonModelState.CommonState.Loading -> {
+                if (state.isLoading) dialogProgress.show(childFragmentManager, "0")
+                else dialogProgress.dismiss()
+            }
+
+            is CommonModelState.CommonState.SuccessStorageUrl -> {
+                validateData(state.data)
+            }
+
+            is CommonModelState.CommonState.Success -> {
+
+                if (viewModel.model.dataUrl) {
+                    Util.exibirToast(requireContext(), getString(R.string.error_already_registered_client))
+                    dialogProgress.dismiss()
+                    binding.edtPhoneClient.requestFocus()
+                } else {
+                    activity?.let {
+                        Glide.with(it.baseContext).asBitmap().load(uriImage).error(R.drawable.no_image)
+                            .apply(RequestOptions.overrideOf(800, 480))
+                            .listener(object : RequestListener<Bitmap> {
+
+                                override fun onLoadFailed(
+                                    e: GlideException?,
+                                    model: Any?,
+                                    target: Target<Bitmap>?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
+                                    dialogProgress.dismiss()
+                                    return false
+                                }
+
+                                override fun onResourceReady(
+                                    bitmap: Bitmap?,
+                                    model: Any?,
+                                    target: Target<Bitmap>?,
+                                    dataSource: DataSource?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    viewModel.getUrlStorage(
+                                        getDbClient(requireContext()),
+                                        pictureName ?: "",
+                                        bitmap ?: Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+                                    )
+                                    return false
+                                }
+                            }).submit()
+                    }
+                }
+            }
+
+            is CommonModelState.CommonState.Error -> {
+                Util.exibirToast(requireContext(), getString(FirebaseHelper.validError(state.message)))
+            }
+
+            is CommonModelState.CommonState.InsertClient -> {
+                if (state.data) {
+                    Util.exibirToast(requireContext(), getString(R.string.add_success_client))
+                    cleaner()
+                } else {
+                    Util.exibirToast(requireContext(), getString(R.string.error_save_client))
+                }
+            }
+
+            else -> {
+            }
+        }
     }
 
     private fun initListeners() {
@@ -142,16 +217,16 @@ class AddClientFragment : Fragment() {
         if (requestCode == 11 || requestCode == 22) {
             super.onActivityResult(requestCode, resultCode, data)
             if (resultCode == Activity.RESULT_OK) {
-                binding.imvPlus.visibility = View.GONE
+//                binding.imvPlus.visibility = View.GONE
 
                 if (requestCode == 11 && data != null) {  // galeria
-                    uriImagem = data.data
+                    uriImage = data.data
 
-                    binding.imvPhotoClient.setImageURI(uriImagem)
+                    binding.imvPhotoClient.setImageURI(uriImage)
 
-                } else if (requestCode == 22 && uriImagem != null) {// camera
+                } else if (requestCode == 22 && uriImage != null) {// camera
 
-                    binding.imvPhotoClient.setImageURI(uriImagem)
+                    binding.imvPhotoClient.setImageURI(uriImage)
                 }
                 bottomSheetDialogCamera?.dismiss()
             }
@@ -165,18 +240,18 @@ class AddClientFragment : Fragment() {
         val contentValues = ContentValues()
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
         val resolver = activity?.contentResolver
-        uriImagem = resolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        uriImage = resolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-        if (uriImagem == null) {
+        if (uriImage == null) {
             val authorization = "com.clausfonseca.rosacha"
             val directory = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             val imageName = "$directory/${getDbClient(requireContext())}${System.currentTimeMillis()}.jpg"
             val file = File(imageName)
-            uriImagem = activity?.let { FileProvider.getUriForFile(it.baseContext, authorization, file) }
+            uriImage = activity?.let { FileProvider.getUriForFile(it.baseContext, authorization, file) }
         }
 
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImage)
         cameraLauncher.launch(intent)
     }
 
@@ -184,7 +259,7 @@ class AddClientFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 bottomSheetDialogCamera?.dismiss()
-                binding.imvPhotoClient.setImageURI(uriImagem)
+                binding.imvPhotoClient.setImageURI(uriImage)
             }
         }
 
@@ -196,7 +271,7 @@ class AddClientFragment : Fragment() {
                 val uri: Uri? = result.data?.data
                 bottomSheetDialogCamera?.dismiss()
                 binding.imvPhotoClient.setImageURI(uri)
-                uriImagem = uri
+                uriImage = uri
             }
         }
 
@@ -233,91 +308,14 @@ class AddClientFragment : Fragment() {
     // endregion
 
 
-    private fun configureObservables() {
-        viewModel.model.screenState.observe(viewLifecycleOwner) {
-            handleState(it)
-        }
-    }
 
-    private fun handleState(state: CommonModelState.CommonState?) {
-        when (state) {
-            is CommonModelState.CommonState.Loading -> {
-                if (state.isLoading) dialogProgress.show(childFragmentManager, "0")
-                else dialogProgress.dismiss()
-            }
-
-            is CommonModelState.CommonState.SuccessStorageUrl -> {
-                validateData(state.data)
-            }
-
-            is CommonModelState.CommonState.Success -> {
-
-                if (viewModel.model.dataUrl) {
-                    Util.exibirToast(requireContext(), getString(R.string.error_already_registered_client))
-                    dialogProgress.dismiss()
-                    binding.edtPhoneClient.requestFocus()
-                } else {
-                    activity?.let {
-                        Glide.with(it.baseContext).asBitmap().load(uriImagem).error(R.drawable.no_image)
-                            .apply(RequestOptions.overrideOf(800, 480))
-                            .listener(object : RequestListener<Bitmap> {
-
-                                override fun onLoadFailed(
-                                    e: GlideException?,
-                                    model: Any?,
-                                    target: Target<Bitmap>?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
-                                    Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
-                                    dialogProgress.dismiss()
-                                    return false
-                                }
-
-                                override fun onResourceReady(
-                                    bitmap: Bitmap?,
-                                    model: Any?,
-                                    target: Target<Bitmap>?,
-                                    dataSource: DataSource?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
-
-                                    // REVISAR AQUI
-                                    viewModel.getUrlStorage(
-                                        getDbClient(requireContext()),
-                                        pictureName ?: "",
-                                        bitmap ?: Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-                                    )
-                                    return false
-                                }
-                            }).submit()
-                    }
-                }
-            }
-
-            is CommonModelState.CommonState.Error -> {
-                Util.exibirToast(requireContext(), getString(FirebaseHelper.validError(state.message)))
-            }
-
-            is CommonModelState.CommonState.InsertClient -> {
-                if (state.data) {
-                    Util.exibirToast(requireContext(), getString(R.string.add_success_client))
-                    cleaner()
-                } else {
-                    Util.exibirToast(requireContext(), getString(R.string.error_save_client))
-                }
-            }
-
-            else -> {
-            }
-        }
-    }
 
 
     // region - FirebaseStorage
 
-    fun uploadImagem() {
+    private fun getFileUrl() {
         pictureName = binding.edtPhoneClient.text.toString()
-        viewModel.getFileUrl(pictureName ?: "")
+        viewModel.getFileUrl(getDbClient(requireContext()),pictureName ?: "")
     }
     // endregion
 
@@ -385,15 +383,15 @@ class AddClientFragment : Fragment() {
         cleanErrorValidation(binding.edtEmailClient, binding.emailContainer)
 
         if (name && phone && email) {
-            if (uriImagem != null) {
-                uploadImagem()
+            if (uriImage != null) {
+                getFileUrl()
             } else {
                 // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
                 val drawable =
                     ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
                 val bitmap = drawable?.toBitmap()
-                uriImagem = bitmap?.let { getImageUriFromBitmap(requireContext(), it) }
-                uploadImagem()
+                uriImage = bitmap?.let { getImageUriFromBitmap(requireContext(), it) }
+                getFileUrl()
             }
         }
     }

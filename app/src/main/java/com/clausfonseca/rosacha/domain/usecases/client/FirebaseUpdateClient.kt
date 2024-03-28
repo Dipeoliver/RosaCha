@@ -4,8 +4,9 @@ import com.clausfonseca.rosacha.domain.repository.ClientRepository
 import com.clausfonseca.rosacha.model.ClientModel
 import javax.inject.Inject
 
-class FirebaseGetUrl  @Inject constructor(
+class FirebaseUpdateClient @Inject constructor(
     private val repository: ClientRepository
 ) {
-    operator fun invoke(dbClient: String, fileUrl: String) = repository.getUrlFile(dbClient, fileUrl)
+    operator fun invoke(dbClient: String, clientModel: ClientModel) =
+        repository.updateClient(dbClient, clientModel)
 }

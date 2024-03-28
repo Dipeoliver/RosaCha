@@ -11,15 +11,15 @@ import kotlinx.coroutines.flow.Flow
 
 interface ClientRepository {
 
-
-    fun getUrlFile(pictureName: String): Flow<Resource<Boolean>>
+    fun getUrlFile(dbClient: String, pictureName: String): Flow<Resource<Boolean>>
 
     fun getUrlStorage(dbClient: String, pictureName: String, bitmap: Bitmap): Flow<Resource<String>>
 
     fun insertClient(dbClient: String, clientModel: ClientModel): Flow<Resource<Boolean>>
 
-//    removeImage
-//    updateClient
-//        firebaseStorage = Firebase.storage
-//    recoverClient
+    fun removeImageClient(dbClient: String, id: String): Flow<Resource<Boolean>>
+
+    fun updateClient(dbClient: String, clientModel: ClientModel):  Flow<Resource<Boolean>>
+
+
 }

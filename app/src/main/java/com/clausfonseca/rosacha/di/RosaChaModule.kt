@@ -11,6 +11,8 @@ import com.clausfonseca.rosacha.domain.usecases.auth.FirebaseSignOut
 import com.clausfonseca.rosacha.domain.usecases.client.ClientUseCases
 import com.clausfonseca.rosacha.domain.usecases.client.FirebaseGetUrl
 import com.clausfonseca.rosacha.domain.usecases.client.FirebaseInsertClient
+import com.clausfonseca.rosacha.domain.usecases.client.FirebaseRemoveImage
+import com.clausfonseca.rosacha.domain.usecases.client.FirebaseUpdateClient
 import com.clausfonseca.rosacha.domain.usecases.client.StorageGetUrl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -63,6 +65,9 @@ object RosaChaModule {
         getUrlFile = FirebaseGetUrl(repository = repository),
         getStorageUrl = StorageGetUrl(repository = repository),
         insertClient = FirebaseInsertClient(repository = repository),
+        updateClient = FirebaseUpdateClient(repository= repository),
+        removeImage = FirebaseRemoveImage(repository = repository),
     )
+
 
 }

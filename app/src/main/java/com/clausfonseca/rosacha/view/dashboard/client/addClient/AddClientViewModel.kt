@@ -17,9 +17,9 @@ class AddClientViewModel @Inject constructor(
 ) : ViewModel() {
     val model = CommonModelState()
 
-    fun getFileUrl(fileUrl: String) {
+    fun getFileUrl(dbClient: String, fileUrl: String) {
         viewModelScope.launch {
-            clientUseCases.getUrlFile.invoke(fileUrl).collect {
+            clientUseCases.getUrlFile.invoke(dbClient, fileUrl).collect {
                 when (it) {
                     is Resource.Error -> {
                         model.screenState.value = CommonModelState.CommonState.Loading(false)

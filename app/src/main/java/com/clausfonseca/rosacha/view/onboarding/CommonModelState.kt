@@ -7,16 +7,16 @@ class CommonModelState {
 
     var dataUrl = false
 
-    var url =""
+    var url = ""
 
     sealed class CommonState {
         data class Loading(val isLoading: Boolean) : CommonState()
-        object Success : CommonState()
-
-        data class SuccessStorageUrl(val data: String): CommonState()
+        data object Success : CommonState()
+        data object RemoveImageSuccess : CommonState()
+        data class SuccessStorageUrl(val data: String) : CommonState()
         data class Error(val message: String) : CommonState()
 
-        data class InsertClient (val data: Boolean): CommonState()
+        data class InsertClient(val data: Boolean) : CommonState()
 
     }
 }
