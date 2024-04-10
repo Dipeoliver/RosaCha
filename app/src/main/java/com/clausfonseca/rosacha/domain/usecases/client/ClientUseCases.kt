@@ -6,4 +6,5 @@ data class ClientUseCases (
     val insertClient: FirebaseInsertClient,
     val updateClient: FirebaseUpdateClient,
     val removeImage : FirebaseRemoveImage,
+    val removeClient : FirebaseRemoveClient,
 )

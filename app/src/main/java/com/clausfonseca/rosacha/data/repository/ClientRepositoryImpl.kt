@@ -165,7 +165,7 @@ class ClientRepositoryImpl @Inject constructor(
                 "clientDate" to clientModel.clientDate,
                 "urlImagem" to clientModel.urlImagem,
 
-            )
+                )
 
             trySend(Resource.Loading())
             fireStore.collection(dbClient).document(clientModel.phone.toString())
@@ -190,5 +190,33 @@ class ClientRepositoryImpl @Inject constructor(
         awaitClose {
         }
     }
+
+    override fun removeClient(dbClient: String, clientModel: ClientModel): Flow<Resource<Boolean>> = callbackFlow {
+        try {
+            trySend(Resource.Loading())
+
+            val reference = fireStore.collection(dbClient)
+            clientModel.phone?.let { it ->
+                reference.document(it).delete().addOnCompleteListener() { task ->
+
+                    if (task.isSuccessful) {
+                        trySend(Resource.Success(true)).isSuccess
+                    }
+                }.addOnFailureListener { error ->
+                    trySend(
+                        Resource.Error(error)
+                    )
+                }
+            }
+
+        } catch (e: Exception) {
+            trySend(
+                Resource.Error(e)
+            )
+        }
+        awaitClose {
+        }
+    }
+
 
 }

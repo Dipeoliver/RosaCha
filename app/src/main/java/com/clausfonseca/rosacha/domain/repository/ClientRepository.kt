@@ -21,5 +21,7 @@ interface ClientRepository {
 
     fun updateClient(dbClient: String, clientModel: ClientModel):  Flow<Resource<Boolean>>
 
+    fun removeClient(dbClient: String, clientModel: ClientModel):  Flow<Resource<Boolean>>
+
 
 }

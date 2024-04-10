@@ -15,8 +15,8 @@ class CommonModelState {
         data object RemoveImageSuccess : CommonState()
         data class SuccessStorageUrl(val data: String) : CommonState()
         data class Error(val message: String) : CommonState()
-
         data class InsertClient(val data: Boolean) : CommonState()
+        data object RemoveClientSuccess : CommonState()
 
     }
 }

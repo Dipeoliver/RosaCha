@@ -25,9 +25,11 @@ import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Swipe.SwipeGesture
 import com.clausfonseca.rosacha.utils.Util
+import com.clausfonseca.rosacha.utils.extencionFunctions.getDbClient
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
 import com.clausfonseca.rosacha.view.dashboard.client.ClientFragmentDirections
 import com.clausfonseca.rosacha.view.dashboard.client.addClient.AddClientViewModel
+import com.clausfonseca.rosacha.view.onboarding.CommonModelState
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,14 +37,17 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     ClientAdapter.ClickClient {
 
     private lateinit var binding: FragmentClientListBinding
     private lateinit var clientAdapter: ClientAdapter
     private val clientlist = mutableListOf<ClientModel>()
-    private val viewModel: AddClientViewModel by viewModels()
+    private val viewModel: ListClientViewModel by viewModels()
+    private val dialogProgress = DialogProgress()
 
     private lateinit var firebaseStorage: FirebaseStorage
     private var dbClients: String = ""
@@ -121,6 +126,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             ClientAdapter.SELECT_REMOVE -> {
                 configDialog(clientModel)
             }
+
             ClientAdapter.SELECT_EDIT -> {
             }
         }
@@ -141,7 +147,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
         //performing positive action
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            deleteClient(clientModel)
+            removeClient(clientModel)
         }
 //        //performing cancel action
 //        builder.setNeutralButton("Cancel"){dialogInterface , which ->
@@ -171,7 +177,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                             clientlist.removeAt(position)
                             clientAdapter.notifyItemRemoved(position)
 
-                            deleteClient(client)
+                            removeClient(client)
                             clientAdapter.notifyDataSetChanged()
 
                             val snackBar = Snackbar.make(
@@ -347,22 +353,40 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         }
     }
 
-    private fun deleteClient(clientModel: ClientModel) {
-        val reference = db!!.collection(dbClients)
-        clientModel.phone?.let {
-            reference.document(it).delete().addOnCompleteListener() { task ->
-                if (task.isSuccessful) {
-//                    clientModel.phone?.let { it1 -> removeImage(it1) }
-//                    Util.exibirToast(requireContext(), getString(R.string.information_delete_client))
-                    getClients()
-                } else {
-                    Util.exibirToast(
-                        requireContext(),
-                        getString(R.string.error_delete_client) + ":" + task.exception.toString()
-                    )
-                }
-            }
+    private fun configureObservables() {
+        viewModel.model.screenState.observe(viewLifecycleOwner) {
+            handleState(it)
         }
+    }
+
+    private fun handleState(state: CommonModelState.CommonState?) {
+        when (state) {
+            is CommonModelState.CommonState.Loading -> {
+                if (state.isLoading) dialogProgress.show(childFragmentManager, "0")
+                else dialogProgress.dismiss()
+            }
+
+            is CommonModelState.CommonState.RemoveClientSuccess -> {
+                getClients()
+            }
+
+            is CommonModelState.CommonState.Error -> {
+                Util.exibirToast(
+                        requireContext(),
+                        getString(R.string.error_delete_client) + ":" + state.message
+                    )
+            }
+
+            else -> {
+
+            }
+
+
+        }
+    }
+
+    private fun removeClient(clientModel: ClientModel) {
+        viewModel.removeClient(dbClient = getDbClient(requireContext()), clientModel = clientModel)
     }
 
     fun removeImage(id: String) {
