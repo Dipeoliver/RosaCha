@@ -376,12 +376,9 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                         getString(R.string.error_delete_client) + ":" + state.message
                     )
             }
-
             else -> {
 
             }
-
-
         }
     }
 
