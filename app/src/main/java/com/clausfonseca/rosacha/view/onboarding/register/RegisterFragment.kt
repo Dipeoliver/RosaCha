@@ -17,12 +17,7 @@ import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
 import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
-import com.clausfonseca.rosacha.view.onboarding.CommonModelState
-import com.clausfonseca.rosacha.view.onboarding.recover.RecoverModelState
-import com.clausfonseca.rosacha.view.onboarding.recover.RecoverViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.clausfonseca.rosacha.view.common.CommonModelState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -16,7 +16,7 @@ import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentHomeBinding
 import com.clausfonseca.rosacha.view.adapter.ViewPagerAdapter
 import com.clausfonseca.rosacha.view.chart.BarChartFragment
-import com.clausfonseca.rosacha.view.onboarding.CommonModelState
+import com.clausfonseca.rosacha.view.common.CommonModelState
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 

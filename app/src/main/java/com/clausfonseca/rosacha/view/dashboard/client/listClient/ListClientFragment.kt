@@ -1,10 +1,8 @@
 package com.clausfonseca.rosacha.view.dashboard.client.listClient
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
-import android.text.Html
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
@@ -28,15 +26,11 @@ import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.getDbClient
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
 import com.clausfonseca.rosacha.view.dashboard.client.ClientFragmentDirections
-import com.clausfonseca.rosacha.view.dashboard.client.addClient.AddClientViewModel
-import com.clausfonseca.rosacha.view.onboarding.CommonModelState
+import com.clausfonseca.rosacha.view.common.CommonModelState
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -49,11 +43,11 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     private val viewModel: ListClientViewModel by viewModels()
     private val dialogProgress = DialogProgress()
 
-    private lateinit var firebaseStorage: FirebaseStorage
     private var dbClients: String = ""
     var db: FirebaseFirestore? = null
     var nextquery: Query? = null
     var isFilterOn = false
+    var client = ClientModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,17 +61,17 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         super.onViewCreated(view, savedInstanceState)
         db = FirebaseFirestore.getInstance()
         dbClients = getString(R.string.db_client)
-        firebaseStorage = Firebase.storage
         initListeners()
         initAdapter()
-        getClients()
+        viewModel.getClients(getDbClient(requireContext()), clientlist)
         searchClient()
         onBackPressed()
+        configureObservables()
     }
 
     override fun lastItemRecyclerView(isShow: Boolean) {
         if (isFilterOn)
-        else getMoreClients()
+        else getMoreClients()                 // $$$$$$  colocar viewModel 17/05
     }
 
     private fun onBackPressed() {
@@ -104,64 +98,15 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                 clientModel
             )
         )
-//        findNavController().navigate(ClientFragmentDirections.actionFragmentClientToFragmentEdit(clientModel))
-
-//        val args = Bundle()
-//        args.putParcelable("clientModel", clientModel)
-//        findNavController().navigate(R.id.action_fragment_client_to_fragment_edit, args)
     }
 
     private fun initAdapter() {
         binding.rvClient.layoutManager = LinearLayoutManager(requireContext())
         binding.rvClient.setHasFixedSize(true)
         clientAdapter = ClientAdapter(requireContext(), clientlist, this, this) { client, select ->
-            optionSelect(client, select)
         }
         binding.rvClient.adapter = clientAdapter
         swipeToGesture(binding.rvClient)
-    }
-
-    private fun optionSelect(clientModel: ClientModel, select: Int) {
-        when (select) {
-            ClientAdapter.SELECT_REMOVE -> {
-                configDialog(clientModel)
-            }
-
-            ClientAdapter.SELECT_EDIT -> {
-            }
-        }
-    }
-
-    private fun configDialog(clientModel: ClientModel) {
-
-        val builder = AlertDialog.Builder(requireContext())
-
-        //set title for alert dialog
-//        builder.setTitle("Atenção")
-        builder.setTitle(Html.fromHtml("<font color='#F92391'>" + getString(R.string.attention) + "</font>"));
-
-        //set message for alert dialog
-//        builder.setMessage(Html.fromHtml("<font color='#FB2391'>Realmente deseja excluir o cliente: ${clientModel.name}</font>"));
-        builder.setMessage(getString(R.string.want_delete_client) + " " + clientModel.name)
-        builder.setIcon(R.drawable.baseline_warning_24)
-
-        //performing positive action
-        builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            removeClient(clientModel)
-        }
-//        //performing cancel action
-//        builder.setNeutralButton("Cancel"){dialogInterface , which ->
-//            Toast.makeText(applicationContext,"clicked cancel\n operation cancel",Toast.LENGTH_LONG).show()
-//        }
-        //performing negative action
-        builder.setNegativeButton(getString(R.string.no)) { dialogInterface, _ ->
-            dialogInterface.dismiss()
-        }
-        // Create the AlertDialog
-        val alertDialog: AlertDialog = builder.create()
-        // Set other dialog properties
-        alertDialog.setCancelable(false)
-        alertDialog.show()
     }
 
     private fun swipeToGesture(itemRv: RecyclerView?) {
@@ -173,12 +118,11 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                     when (direction) {
                         ItemTouchHelper.LEFT -> {
 
-                            val client = clientlist[position]
+                            client = clientlist[position]
                             clientlist.removeAt(position)
                             clientAdapter.notifyItemRemoved(position)
 
-                            removeClient(client)
-                            clientAdapter.notifyDataSetChanged()
+                            viewModel.removeClient(dbClient = getDbClient(requireContext()), clientModel = client)
 
                             val snackBar = Snackbar.make(
                                 binding.rvClient, getString(R.string.item_deleted_client), 5000
@@ -189,20 +133,15 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
                                 override fun onShown(transientBottomBar: Snackbar?) {
                                     transientBottomBar?.setAction(getString(R.string.undo_client)) {
-//                                        clientlist.add(position, client)
                                         clientlist.clear()
-                                        insertClient(client)
-                                        getClients()
-//                                        clientAdapter.notifyItemInserted(position)
-//                                        clientAdapter.notifyDataSetChanged()
+                                        viewModel.insertClient(getDbClient(requireContext()), client)
+                                        viewModel.getClients(getDbClient(requireContext()), clientlist)
                                         actionBtnTapped = true
                                     }
                                     super.onShown(transientBottomBar)
                                 }
                             }).apply {
-
                                 animationMode = Snackbar.ANIMATION_MODE_FADE
-
                             }
                             snackBar.setActionTextColor(
                                 ContextCompat.getColor(
@@ -212,7 +151,6 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
                                     )
                             )
                             snackBar.show()
-
                         }
 
                         ItemTouchHelper.RIGHT -> {
@@ -236,14 +174,13 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         binding.svClient.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-//                Log.d("Diego-onQueryTextSubmit", query.toString())
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 isFilterOn = true
-                filterSearchClient(newText.toString())
-//                Log.d("Diego-onQueryTextChange", newText.toString())
+                viewModel.filterSearchClients(getDbClient(requireContext()), newText ?: "", clientlist)
+//                filterSearchClient(newText.toString())    // $$$$$$  colocar viewModel 17/05
                 return true
             }
         })
@@ -251,80 +188,11 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             android.widget.SearchView.OnCloseListener {
             override fun onClose(): Boolean {
                 binding.svClient.onActionViewCollapsed()
-                clientlist.clear()
-                clientAdapter.notifyDataSetChanged()
-                getClients()
+                viewModel.getClients(getDbClient(requireContext()), clientlist)
                 isFilterOn = false
                 return true
             }
         })
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun filterSearchClient(newText: String) {
-        db!!.collection(dbClients).orderBy("name").startAt(newText)
-            .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
-                if (results.size() > 0) {
-                    clientlist.clear()
-                    for (result in results) {
-                        val clientModel = result.toObject(ClientModel::class.java)
-                        clientlist.add(clientModel)
-                    }
-                    clientAdapter.notifyDataSetChanged()
-                }
-            }?.addOnFailureListener { error ->
-                Toast.makeText(
-                    requireContext(),
-                    "Error ${error.message.toString()}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-    }
-
-    // Firestore DataBase --------------------------------------------------
-
-    private fun insertClient(clientModel: ClientModel) {
-        FirebaseFirestore.getInstance().collection(dbClients).document(clientModel.phone.toString())
-            .set(clientModel).addOnCompleteListener {
-//                Util.exibirToast(requireContext(), getString(R.string.add_success_client))
-            }.addOnFailureListener {
-                Util.exibirToast(requireContext(), getString(R.string.error_save_client))
-            }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun getClients() {
-        val dialogProgress = DialogProgress()
-        dialogProgress.show(childFragmentManager, "0")
-
-        db!!.collection(dbClients).orderBy("name").limit(10).get().addOnSuccessListener { results ->
-            dialogProgress.dismiss()
-
-            if (results.size() > 0) {
-                clientlist.clear()
-
-                // result é uma lista
-                for (result in results) {
-                    val key = result.id // pegar o nome  da pasta do documento
-                    val clientModel = result.toObject(ClientModel::class.java)
-                    clientlist.add(clientModel)
-                }
-                // pegar ultimo item da query
-                val lastresult = results.documents[results.size() - 1]
-                nextquery =
-                    db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
-
-                clientAdapter.notifyDataSetChanged()
-
-            } else {
-                dialogProgress.dismiss()
-                Util.exibirToast(requireContext(), getString(R.string.no_list_client))
-            }
-        }.addOnFailureListener { error ->
-            dialogProgress.dismiss()
-
-            Util.exibirToast(requireContext(), getString(R.string.error_show_client) + ":" + error.message.toString())
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -334,10 +202,10 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             // o if e para verificar se chegou o fim da lista
             if (results.size() > 0) {
                 // pegar ultimo item da query
-                val lastresult = results.documents[results.size() - 1]
+                val lastResult = results.documents[results.size() - 1]
 
                 nextquery =
-                    db!!.collection(dbClients).orderBy("name").startAfter(lastresult).limit(10)
+                    db!!.collection(dbClients).orderBy("name").startAfter(lastResult).limit(10)
 
                 for (result in results) {
                     val clientModel = result.toObject(ClientModel::class.java)
@@ -367,52 +235,33 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             }
 
             is CommonModelState.CommonState.RemoveClientSuccess -> {
-                getClients()
+                viewModel.removeImageFireStorage(getDbClient(requireContext()), client.phone.toString())
+                viewModel.getClients(getDbClient(requireContext()), clientlist)
             }
 
-            is CommonModelState.CommonState.Error -> {
+            is CommonModelState.CommonState.DeleteClientError -> {
                 Util.exibirToast(
-                        requireContext(),
-                        getString(R.string.error_delete_client) + ":" + state.message
-                    )
+                    requireContext(),
+                    getString(R.string.error_delete_client) + ":" + state.message
+                )
             }
+
+            is CommonModelState.CommonState.InsertClientError -> {
+                Util.exibirToast(requireContext(), getString(R.string.error_save_client))
+            }
+
+            is CommonModelState.CommonState.GetClientsLoaded, CommonModelState.CommonState.FilterClientSuccess -> {
+                clientlist.clear()
+                clientlist.addAll(viewModel.model.clientsResult)
+                clientAdapter.notifyDataSetChanged()
+            }
+
             else -> {
-
             }
         }
     }
-
-    private fun removeClient(clientModel: ClientModel) {
-        viewModel.removeClient(dbClient = getDbClient(requireContext()), clientModel = clientModel)
-    }
-
-    fun removeImage(id: String) {
-        val reference = firebaseStorage.reference.child(dbClients).child("${id}.jpg")
-        reference.delete().addOnSuccessListener { task ->
-        }.addOnFailureListener { error ->
-            Util.exibirToast(
-                requireContext(),
-                getString(R.string.error_delete_image) + ":" + error.message.toString()
-            )
-        }
-    }
-
-// Menu-----------------------------------------------------------------
-//    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-//        menuInflater.inflate(R.menu.search, menu)
-//    }
-//
-//    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-//        return when (menuItem.itemId) {
-//            R.id.action_search -> {
-//                Toast.makeText(requireContext(), "ok", Toast.LENGTH_SHORT).show()
-//                true
-//            }
-//            else -> true
-//        }
-//    }
-// Menu-----------------------------------------------------------------
 }
+
 
 
 

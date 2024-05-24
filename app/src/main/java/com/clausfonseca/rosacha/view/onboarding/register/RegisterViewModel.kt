@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.clausfonseca.rosacha.domain.usecases.auth.AuthUseCases
 import com.clausfonseca.rosacha.utils.Resource
-import com.clausfonseca.rosacha.view.onboarding.CommonModelState
+import com.clausfonseca.rosacha.view.common.CommonModelState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

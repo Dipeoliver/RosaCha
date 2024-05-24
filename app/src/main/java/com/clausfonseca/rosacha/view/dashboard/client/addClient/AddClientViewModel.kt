@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.clausfonseca.rosacha.domain.usecases.client.ClientUseCases
 import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.Resource
-import com.clausfonseca.rosacha.view.onboarding.CommonModelState
+import com.clausfonseca.rosacha.view.common.CommonModelState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -71,13 +71,11 @@ class AddClientViewModel @Inject constructor(
                         model.screenState.value = CommonModelState.CommonState.Loading(false)
                         model.screenState.value = CommonModelState.CommonState.Error(it.exception?.message ?: "Unexpected error")
                     }
-
                     is Resource.Loading -> {
 //                        model.screenState.value = CommonModelState.CommonState.Loading(true)
                         // As linhas comentadas são porque segue um fluxo de acesso ao banco e não recriar o loading mais de
 //                        uma vez
                     }
-
                     is Resource.Success -> { it
                         model.dataUrl = it.data == true
                         model.screenState.value = CommonModelState.CommonState.Loading(false)

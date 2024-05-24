@@ -1,0 +1,7 @@
+Dia 22/05 finalizamos a arquitetura do carregamento da lista de clientes passando para o viewModel.  OK
+Dia 24/05 finalizamos a arquitetura do insertClient apos deletar usuario                             OK
+Dia 24/05 finalizamos a arquitetura do filtro da lista de clientes                                   OK
+
+A fazer
+Dentro da lista de clientes fazer a arquitetura do carregamento da lista ao fazer scroll (carregamento de 10 em 10)
+

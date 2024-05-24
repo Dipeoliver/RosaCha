@@ -47,7 +47,7 @@ import com.clausfonseca.rosacha.utils.extencionFunctions.getDbClient
 import com.clausfonseca.rosacha.utils.mask.DateMask
 import com.clausfonseca.rosacha.utils.mask.PhoneMask
 import com.clausfonseca.rosacha.utils.mask.PhoneNumberFormatType
-import com.clausfonseca.rosacha.view.onboarding.CommonModelState
+import com.clausfonseca.rosacha.view.common.CommonModelState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
