@@ -6,6 +6,7 @@ import com.clausfonseca.rosacha.domain.usecases.client.ClientUseCases
 import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.Resource
 import com.clausfonseca.rosacha.view.common.CommonModelState
+import com.google.firebase.firestore.DocumentSnapshot
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -85,6 +86,32 @@ class ListClientViewModel @Inject constructor(
             }
         }
     }
+
+    fun getMoreClients(dbClient: String, clientList: MutableList<ClientModel>) {
+        viewModelScope.launch {
+            clientUseCases.getMoreClients.invoke(dbClient, clientList).collect {
+                when (it) {
+                    is Resource.Error -> {
+                        model.screenState.value = CommonModelState.CommonState.Loading(false)
+                        model.screenState.value =
+                            CommonModelState.CommonState.Error(it.exception?.message ?: "Error to loading more clients")
+                    }
+
+                    is Resource.Loading -> {
+                        model.screenState.value = CommonModelState.CommonState.Loading(false)
+                    }
+
+                    is Resource.Success -> {
+//                        model.clientsResult.clear()
+                        model.clientsResult.addAll(it.data ?: mutableListOf())
+                        model.screenState.value = CommonModelState.CommonState.Loading(false)
+                        model.screenState.value = CommonModelState.CommonState.GetMoreClientsLoaded
+                    }
+                }
+            }
+        }
+    }
+
 
     fun insertClient(dbClient: String, clientModel: ClientModel) {
         viewModelScope.launch {

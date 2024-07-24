@@ -3,6 +3,7 @@ package com.clausfonseca.rosacha.domain.repository
 import android.graphics.Bitmap
 import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.Resource
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.flow.Flow
 
 interface ClientRepository {
@@ -13,6 +14,11 @@ interface ClientRepository {
 
     fun getClients(dbClient: String, clientList: MutableList<ClientModel>): Flow<Resource<MutableList<ClientModel>>>
 
+    fun getMoreClients(
+        dbClient: String,
+        clientList: MutableList<ClientModel>
+    ): Flow<Resource<MutableList<ClientModel>>>
+
     fun insertClient(dbClient: String, clientModel: ClientModel): Flow<Resource<Boolean>>
 
     fun removeImageClient(dbClient: String, id: String): Flow<Resource<Boolean>>
@@ -21,5 +27,9 @@ interface ClientRepository {
 
     fun updateClient(dbClient: String, clientModel: ClientModel): Flow<Resource<Boolean>>
 
-    fun filterSearchClient(dbClient: String, fieldText: String, clientList: MutableList<ClientModel>): Flow<Resource<MutableList<ClientModel>>>
+    fun filterSearchClient(
+        dbClient: String,
+        fieldText: String,
+        clientList: MutableList<ClientModel>
+    ): Flow<Resource<MutableList<ClientModel>>>
 }

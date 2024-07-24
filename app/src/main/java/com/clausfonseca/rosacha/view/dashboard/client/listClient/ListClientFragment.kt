@@ -70,8 +70,9 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     }
 
     override fun lastItemRecyclerView(isShow: Boolean) {
-        if (isFilterOn)
-        else getMoreClients()                 // $$$$$$  colocar viewModel 17/05
+//        if (!isFilterOn)
+//            getMoreClients()
+        //        else viewModel.getMoreClients(getDbClient(requireContext()), clientlist)              // $$$$$$  colocar viewModel 17/05
     }
 
     private fun onBackPressed() {
@@ -197,9 +198,8 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
     @SuppressLint("NotifyDataSetChanged")
     private fun getMoreClients() {
-        nextquery?.get()?.addOnSuccessListener { results ->
 
-            // o if e para verificar se chegou o fim da lista
+        nextquery?.get()?.addOnSuccessListener { results ->
             if (results.size() > 0) {
                 // pegar ultimo item da query
                 val lastResult = results.documents[results.size() - 1]
@@ -219,6 +219,15 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         }?.addOnFailureListener() { error ->
             Util.exibirToast(requireContext(), error.message.toString())
         }
+//        if (viewModel.model.queryResult?.get()?.result?.size()!! > 0) {
+//            for (result in viewModel.model.queryResult?.get()?.result!!) {
+//                val clientModel = result.toObject(ClientModel::class.java)
+//                clientlist.add(clientModel)
+////                }
+////                // notificar que teve atualizalçao
+//                clientAdapter.notifyDataSetChanged()
+//            }
+//        }
     }
 
     private fun configureObservables() {
@@ -237,6 +246,7 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             is CommonModelState.CommonState.RemoveClientSuccess -> {
                 viewModel.removeImageFireStorage(getDbClient(requireContext()), client.phone.toString())
                 viewModel.getClients(getDbClient(requireContext()), clientlist)
+
             }
 
             is CommonModelState.CommonState.DeleteClientError -> {
@@ -253,6 +263,14 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             is CommonModelState.CommonState.GetClientsLoaded, CommonModelState.CommonState.FilterClientSuccess -> {
                 clientlist.clear()
                 clientlist.addAll(viewModel.model.clientsResult)
+                clientAdapter.notifyDataSetChanged()
+
+
+            }
+
+            is CommonModelState.CommonState.GetMoreClientsLoaded -> {
+//                clientlist.clear()
+//                clientlist.addAll(viewModel.model.clientsResult)
                 clientAdapter.notifyDataSetChanged()
             }
 

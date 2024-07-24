@@ -1,5 +1,4 @@
 package com.clausfonseca.rosacha.utils
-
 sealed class Resource<T>(
     val data: T? = null,
     val exception: Exception? = null

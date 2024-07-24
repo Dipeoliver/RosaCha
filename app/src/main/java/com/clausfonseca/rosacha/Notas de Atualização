@@ -5,3 +5,6 @@ Dia 24/05 finalizamos a arquitetura do filtro da lista de clientes              
 A fazer
 Dentro da lista de clientes fazer a arquitetura do carregamento da lista ao fazer scroll (carregamento de 10 em 10)
 
+
+Na Data 28/06 tentamos fazer o getmoreclients atraves da arquitetura mas sem sucesso
+No proximo encontro iremos voltar o mesmo para o fragmento e seguir o projeto

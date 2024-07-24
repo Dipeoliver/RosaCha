@@ -109,6 +109,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
             ProductAdapter.SELECT_REMOVE -> {
                 configDialog(product)
             }
+
             ProductAdapter.SELECT_EDIT -> {
             }
         }
@@ -191,6 +192,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
                             )
                             snackBar.show()
                         }
+
                         ItemTouchHelper.RIGHT -> {
                             val clientPosition = productlist[position]
                             selectedProduct(clientPosition)
@@ -283,8 +285,11 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
                 }
                 // pegar ultimo item da query
                 val lastresult = results.documents[results.size() - 1]
-                nextquery = db!!.collection(dbProducts).orderBy("description").startAfter(lastresult).limit(10)
-
+                nextquery = db!!.collection(dbProducts)
+                    .orderBy("description")
+                    .startAfter(lastresult)
+                    .limit(10)
+                Log.d("nextQuery", "${nextquery}")
                 productAdapter.notifyDataSetChanged()
 
             } else {
@@ -299,12 +304,12 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
 
     private fun getMoreProducts() {
         nextquery?.get()?.addOnSuccessListener { results ->
-
+            Log.d("****nextqueryProduct", "${(nextquery?.get()?.addOnSuccessListener {})}")
             // o if e para verificar se chegou o fim da lista
             if (results.size() > 0) {
                 // pegar ultimo item da query
                 val lastresult = results.documents[results.size() - 1]
-
+                Log.d("DIEGO", "$lastresult")
                 nextquery = db!!.collection(dbProducts).orderBy("description").startAfter(lastresult).limit(10)
 
                 for (result in results) {

@@ -2,6 +2,7 @@ package com.clausfonseca.rosacha.view.common
 
 import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.SingleLiveEvent
+import com.google.firebase.firestore.Query
 
 class CommonModelState {
     val screenState = SingleLiveEvent<CommonState>()
@@ -9,6 +10,8 @@ class CommonModelState {
     var dataUrl = false
 
     var url = ""
+
+    var queryResult: Query? = null
 
     var clientsResult: MutableList<ClientModel> = mutableListOf()
 
@@ -25,9 +28,11 @@ class CommonModelState {
         data object FilterClientSuccess : CommonState()
         data object ReinsertClientSuccess : CommonState()
         data object GetClientsLoaded : CommonState()
+        data object GetMoreClientsLoaded : CommonState()
         data object RemoveClientSuccess : CommonState()
         data object RemoveImageSuccess : CommonState()
         data object Success : CommonState()
+
 
     }
 }
