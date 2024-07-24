@@ -12,7 +12,7 @@
     <item
         android:id="@+id/product_fragment"
         android:icon="@drawable/ic_baseline_post_add_24"
-        android:title="@string/product" />/>
+        android:title="@string/productModel" />/>
     <item
         android:id="@+id/price_fragment"
         android:icon="@drawable/ic_baseline_search_24"

@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 
 
-data class Product(
+data class ProductModel(
     var id: String? = "",
     var barcode: String? = "",
     var reference: String? = "",
@@ -67,12 +67,12 @@ data class Product(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Product> {
-        override fun createFromParcel(parcel: Parcel): Product {
-            return Product(parcel)
+    companion object CREATOR : Parcelable.Creator<ProductModel> {
+        override fun createFromParcel(parcel: Parcel): ProductModel {
+            return ProductModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<Product?> {
+        override fun newArray(size: Int): Array<ProductModel?> {
             return arrayOfNulls(size)
         }
     }

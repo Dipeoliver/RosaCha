@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.product
+package com.clausfonseca.rosacha.view.dashboard.productModel
 
 import android.Manifest
 import android.app.Activity
@@ -31,7 +31,7 @@ import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductEditBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
-import com.clausfonseca.rosacha.model.Product
+import com.clausfonseca.rosacha.model.ProductModel
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
@@ -50,7 +50,7 @@ import java.util.*
 class EditProductFragment : Fragment() {
     private lateinit var binding: FragmentProductEditBinding
     private lateinit var firebaseStorage: FirebaseStorage
-    private var selectedProduct: Product? = null
+    private var selectedProductModel: ProductModel? = null
     private var pictureName: String? = ""
     private var dbProducts: String = ""
     private var uriImage: Uri? = null
@@ -75,7 +75,7 @@ class EditProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        selectedProduct = EditProductFragmentArgs.fromBundle(requireArguments()).selectedProduct
+        selectedProductModel = EditProductFragmentArgs.fromBundle(requireArguments()).selectedProductModel
         firebaseStorage = Firebase.storage
         dbProducts = getString(R.string.db_product).toString()
         recoverProduct()
@@ -119,13 +119,13 @@ class EditProductFragment : Fragment() {
                 binding.edtBarcode.isEnabled = false
                 binding.btnCopy.setImageDrawable(resources.getDrawable(R.drawable.baseline_content_copy_24))
                 binding.btnUpdateProduct.text = "UPDATE"
-                binding.txtProductTitle.text = "Update Product"
+                binding.txtProductTitle.text = "Update ProductModel"
                 insertStatus = false
             } else {
                 binding.edtBarcode.isEnabled = true
                 binding.btnCopy.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_cancel_24))
                 binding.btnUpdateProduct.text = "INSERT"
-                binding.txtProductTitle.text = "Insert Product"
+                binding.txtProductTitle.text = "Insert ProductModel"
                 insertStatus = true
             }
             copyBarcode()
@@ -393,46 +393,46 @@ class EditProductFragment : Fragment() {
         if (barcode.isNotEmpty() && description.isNotEmpty() && size.isNotEmpty() && costPrice.isNotEmpty() && salesPrice.isNotEmpty()
         ) {
 //            dialogProgress.show(childFragmentManager, "0")
-            selectedProduct = Product()
+            selectedProductModel = ProductModel()
 
             val date = Calendar.getInstance().time
             val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
             val productDate = dateTimeFormat.format(date)
 
-            selectedProduct?.barcode = barcode
-            selectedProduct?.reference = referenceProduct
-            selectedProduct?.description = description.uppercase()
-            selectedProduct?.quantity = quantity
-            selectedProduct?.brand = brand.uppercase()
-            selectedProduct?.provider = provider.uppercase()
-            selectedProduct?.size = size
-            selectedProduct?.color = color.uppercase()
-            selectedProduct?.costPrice = costPrice.toDouble()
-            selectedProduct?.salesPrice = salesPrice.toDouble()
-            selectedProduct?.productDate = productDate
-            selectedProduct?.urlImagem = url
-            selectedProduct?.id = productId
+            selectedProductModel?.barcode = barcode
+            selectedProductModel?.reference = referenceProduct
+            selectedProductModel?.description = description.uppercase()
+            selectedProductModel?.quantity = quantity
+            selectedProductModel?.brand = brand.uppercase()
+            selectedProductModel?.provider = provider.uppercase()
+            selectedProductModel?.size = size
+            selectedProductModel?.color = color.uppercase()
+            selectedProductModel?.costPrice = costPrice.toDouble()
+            selectedProductModel?.salesPrice = salesPrice.toDouble()
+            selectedProductModel?.productDate = productDate
+            selectedProductModel?.urlImagem = url
+            selectedProductModel?.id = productId
             owner = if (statusOwner == 0) {
                 getString(R.string.claudia)
             } else {
                 getString(R.string.claudenice)
             }
-            selectedProduct?.owner = owner
+            selectedProductModel?.owner = owner
 
 
             // Verificação para ver se esta inserindo ou atualizando o produto
             if (insertStatus == false) {
-                updateProduct(selectedProduct!!)
+                updateProduct(selectedProductModel!!)
             } else {
-                insertProduct(selectedProduct!!)
+                insertProduct(selectedProductModel!!)
 
             }
         }
     }
 
-    private fun insertProduct(product: Product) {
-        db!!.collection(dbProducts).document(product.barcode.toString())
-            .set(product).addOnCompleteListener {
+    private fun insertProduct(productModel: ProductModel) {
+        db!!.collection(dbProducts).document(productModel.barcode.toString())
+            .set(productModel).addOnCompleteListener {
                 Util.exibirToast(requireContext(), getString(R.string.add_success_product))
                 val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
                 findNavController().navigate(uri)
@@ -441,31 +441,31 @@ class EditProductFragment : Fragment() {
             }
     }
 
-    private fun updateProduct(selectedProduct: Product) {
+    private fun updateProduct(selectedProductModel: ProductModel) {
         val dialogProgress = DialogProgress()
         dialogProgress.show(childFragmentManager, "0")
 
-        if (selectedProduct != null) {
+        if (selectedProductModel != null) {
 
             val reference = db!!.collection(dbProducts)
 
             val client = hashMapOf(
                 // posso fazer update de apenas 1 campo se necessário
-                "reference" to selectedProduct.reference,
-                "description" to selectedProduct.description,
-                "quantity" to selectedProduct.quantity,
-                "brand" to selectedProduct.brand,
-                "provider" to selectedProduct.provider,
-                "size" to selectedProduct.size,
-                "color" to selectedProduct.color,
-                "costPrice" to selectedProduct.costPrice,
-                "salesPrice" to selectedProduct.salesPrice,
-                "productDate" to selectedProduct.productDate,
-                "urlImagem" to selectedProduct.urlImagem,
-                "owner" to selectedProduct.owner,
-                "id" to selectedProduct.id
+                "reference" to selectedProductModel.reference,
+                "description" to selectedProductModel.description,
+                "quantity" to selectedProductModel.quantity,
+                "brand" to selectedProductModel.brand,
+                "provider" to selectedProductModel.provider,
+                "size" to selectedProductModel.size,
+                "color" to selectedProductModel.color,
+                "costPrice" to selectedProductModel.costPrice,
+                "salesPrice" to selectedProductModel.salesPrice,
+                "productDate" to selectedProductModel.productDate,
+                "urlImagem" to selectedProductModel.urlImagem,
+                "owner" to selectedProductModel.owner,
+                "id" to selectedProductModel.id
             )
-            reference.document(selectedProduct.barcode.toString()).update(client as Map<String, Any>).addOnSuccessListener {
+            reference.document(selectedProductModel.barcode.toString()).update(client as Map<String, Any>).addOnSuccessListener {
                 Util.exibirToast(requireContext(), getString(R.string.update_data))
                 dialogProgress.dismiss()
                 val uri = Uri.parse("android-app://com.clausfonseca.rosacha/product_fragment")
@@ -478,24 +478,24 @@ class EditProductFragment : Fragment() {
     }
 
     private fun recoverProduct() {
-        binding.edtBarcode.setText(selectedProduct?.barcode.toString())
-        binding.edtReferenceProduct.setText(selectedProduct?.reference.toString())
-        binding.edtDescriptionProduct.setText(selectedProduct?.description.toString())
-        binding.edtBrandProduct.setText(selectedProduct?.brand.toString())
-        binding.edtProviderProduct.setText(selectedProduct?.provider.toString())
-        binding.edtSizeProduct.setText(selectedProduct?.size.toString())
-        binding.edtColorProduct.setText(selectedProduct?.color.toString())
-        binding.edtCostProduct.setText(selectedProduct?.costPrice.toString())
-        binding.edtSalesProduct.setText(selectedProduct?.salesPrice.toString())
-        binding.edtQuantityProduct.setText(selectedProduct?.quantity.toString())
-        quantity = selectedProduct?.quantity ?: 0
+        binding.edtBarcode.setText(selectedProductModel?.barcode.toString())
+        binding.edtReferenceProduct.setText(selectedProductModel?.reference.toString())
+        binding.edtDescriptionProduct.setText(selectedProductModel?.description.toString())
+        binding.edtBrandProduct.setText(selectedProductModel?.brand.toString())
+        binding.edtProviderProduct.setText(selectedProductModel?.provider.toString())
+        binding.edtSizeProduct.setText(selectedProductModel?.size.toString())
+        binding.edtColorProduct.setText(selectedProductModel?.color.toString())
+        binding.edtCostProduct.setText(selectedProductModel?.costPrice.toString())
+        binding.edtSalesProduct.setText(selectedProductModel?.salesPrice.toString())
+        binding.edtQuantityProduct.setText(selectedProductModel?.quantity.toString())
+        quantity = selectedProductModel?.quantity ?: 0
 
-        productId = selectedProduct?.id
-        url = selectedProduct?.urlImagem
-        oldUrl = selectedProduct?.urlImagem.toString()
+        productId = selectedProductModel?.id
+        url = selectedProductModel?.urlImagem
+        oldUrl = selectedProductModel?.urlImagem.toString()
 
 
-        if (selectedProduct?.owner == getString(R.string.claudia)) {
+        if (selectedProductModel?.owner == getString(R.string.claudia)) {
             binding.claudia.isChecked = true
         } else {
             binding.claudenice.isChecked = true

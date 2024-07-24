@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.product
+package com.clausfonseca.rosacha.view.dashboard.productModel
 
 import android.Manifest
 import android.app.Activity
@@ -32,7 +32,7 @@ import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
-import com.clausfonseca.rosacha.model.Product
+import com.clausfonseca.rosacha.model.ProductModel
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
@@ -58,7 +58,7 @@ class AddProductFragment : Fragment() {
     private lateinit var binding: FragmentProductAddBinding
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var auth: FirebaseAuth
-    private lateinit var product: Product
+    private lateinit var productModel: ProductModel
     private var dbProducts: String = ""
     private val db = FirebaseFirestore.getInstance()
     private var pictureName: String? = ""
@@ -431,38 +431,38 @@ class AddProductFragment : Fragment() {
         val costPrice = binding.edtCostProduct.text.toString().trim()
         val salesPrice = binding.edtSalesProduct.text.toString().trim()
 
-        product = Product()
+        productModel = ProductModel()
 
         val date = Calendar.getInstance().time
         val dateTimeFormat = SimpleDateFormat(getString(R.string.type_date), Locale.getDefault())
         val productDate = dateTimeFormat.format(date)
 
-        product.barcode = barcode
-        product.reference = referenceProduct
-        product.description = description.uppercase()
-        product.quantity = quantity
-        product.brand = brand.uppercase()
-        product.provider = provider.uppercase()
-        product.size = size
-        product.color = color.uppercase()
-        product.costPrice = costPrice.toDouble()
-        product.salesPrice = salesPrice.toDouble()
-        product.productDate = productDate
-        product.urlImagem = url
+        productModel.barcode = barcode
+        productModel.reference = referenceProduct
+        productModel.description = description.uppercase()
+        productModel.quantity = quantity
+        productModel.brand = brand.uppercase()
+        productModel.provider = provider.uppercase()
+        productModel.size = size
+        productModel.color = color.uppercase()
+        productModel.costPrice = costPrice.toDouble()
+        productModel.salesPrice = salesPrice.toDouble()
+        productModel.productDate = productDate
+        productModel.urlImagem = url
         owner = if (statusOwner == 0) {
             getString(R.string.claudia)
         } else {
             getString(R.string.claudenice)
         }
-        product.owner = owner
-        product.qtySales = 1
+        productModel.owner = owner
+        productModel.qtySales = 1
         insertProduct()
     }
 
     // Inserir produto no Firestore
     private fun insertProduct() {
-        db.collection(dbProducts).document(product.barcode.toString())
-            .set(product).addOnCompleteListener {
+        db.collection(dbProducts).document(productModel.barcode.toString())
+            .set(productModel).addOnCompleteListener {
                 Util.exibirToast(requireContext(), getString(R.string.add_success_product))
                 cleaner()
                 dialogProgress.dismiss()

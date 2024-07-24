@@ -97,9 +97,9 @@
     <string name="information_delete_client">Client Deleted Successfully</string>
     <string name="list_client">List of Client</string>
 
-    <!-- Product Fragment-->
+    <!-- ProductModel Fragment-->
     <!--    layout -->
-    <string name="product">Product</string>
+    <string name="productModel">Product</string>
     <string name="add_product">Add Product</string>
     <string name="update_product">Update Product</string>
     <string name="list_product">List of Products</string>
@@ -114,15 +114,15 @@
     <string name="provider">Provider</string>
     <!--    Code -->
     <string name="error_show_product">Error displaying Product</string>
-    <string name="error_already_registered_product">Error, product already registered</string>
+    <string name="error_already_registered_product">Error, productModel already registered</string>
     <string name="add_success_product">Product successfully added</string>
     <string name="error_save_product">Error saving Product</string>
     <string name="required_barcode_product">Error, fill in barcode field first</string>
     <string name="copy_barcode_product">Barcode copied</string>
-    <string name="error_update_data_product">Error when updating product</string>
+    <string name="error_update_data_product">Error when updating productModel</string>
     <string name="no_list_product">There are no products to display</string>
     <string name="information_delete_product">Product Deleted Successfully</string>
-    <string name="error_delete_product">Error deleting product</string>
+    <string name="error_delete_product">Error deleting productModel</string>
 
     <!-- Sales Fragment-->
     <!--    layout -->

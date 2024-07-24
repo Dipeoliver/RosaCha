@@ -81,7 +81,7 @@ Feitos
 - click de voltar fica loop infinito
 
 07/02/23
-- implementar update (clientModel / product)
+- implementar update (clientModel / productModel)
 
 08/02/23
 - controle de permissão ao acessar camera e arquivos

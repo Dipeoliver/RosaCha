@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.product
+package com.clausfonseca.rosacha.view.dashboard.productModel
 
 import android.os.Bundle
 import android.view.LayoutInflater

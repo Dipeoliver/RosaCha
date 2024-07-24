@@ -7,15 +7,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.ItemRecyclerProductListBinding
-import com.clausfonseca.rosacha.model.Product
-import com.clausfonseca.rosacha.view.dashboard.product.ListProductFragment
+import com.clausfonseca.rosacha.model.ProductModel
+import com.clausfonseca.rosacha.view.dashboard.productModel.ListProductFragment
 
 class ProductAdapter(
     private val context: Context,
-    private val productList: List<Product>,
+    private val productModelList: List<ProductModel>,
     var clickProduto: ListProductFragment,
     var lastItemRecyclerView: ListProductFragment,
-    val productSelected: (Product, Int) -> Unit
+    val productSelected: (ProductModel, Int) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.MyViewHolder>() {
 
     companion object {
@@ -38,11 +38,11 @@ class ProductAdapter(
     inner class MyViewHolder(val binding: ItemRecyclerProductListBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    override fun getItemCount() = productList.size
+    override fun getItemCount() = productModelList.size
 
     //    exibir as informações de cada tarefa
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val product = productList[position]
+        val product = productModelList[position]
         holder.binding.txtBarcode.text = product.barcode
         holder.binding.txtDescription.text = product.description
         holder.binding.txtSalesPrice.text = String.format("%.2f", product.salesPrice)
@@ -64,7 +64,7 @@ class ProductAdapter(
     }
 //
 //    interface ClickProduto {
-//        fun clickProduto(product: Product)
+//        fun clickProduto(product: ProductModel)
 //    }
 
     interface LastItemRecyclerView {

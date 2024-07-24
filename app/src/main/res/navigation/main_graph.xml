@@ -80,7 +80,7 @@
 
     <fragment
         android:id="@+id/product_fragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.product.ProductFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.productModel.ProductFragment"
         android:label="ProductFragment"
         tools:layout="@layout/fragment_product">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/product_fragment" />
@@ -124,7 +124,7 @@
     </fragment>
     <fragment
         android:id="@+id/addProduct_fragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.product.AddProductFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.productModel.AddProductFragment"
         android:label="fragment_add_product"
         tools:layout="@layout/fragment_product_add">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/addProduct_fragment" />
@@ -148,7 +148,7 @@
     </fragment>
     <fragment
         android:id="@+id/listProductFragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.product.ListProductFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.productModel.ListProductFragment"
         android:label="fragment_product_list"
         tools:layout="@layout/fragment_product_list">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_product_list" />
@@ -156,12 +156,12 @@
 
     <fragment
         android:id="@+id/editProductFragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.product.EditProductFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.productModel.EditProductFragment"
         android:label="fragment_product_edit"
         tools:layout="@layout/fragment_product_edit">
         <argument
-            android:name="selectedProduct"
-            app:argType="com.clausfonseca.rosacha.model.Product" />
+            android:name="selectedProductModel"
+            app:argType="com.clausfonseca.rosacha.model.ProductModel" />
     </fragment>
     <fragment
         android:id="@+id/listSalesFragment"

@@ -24,7 +24,7 @@ import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentSalesAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.model.ItensSales
-import com.clausfonseca.rosacha.model.Product
+import com.clausfonseca.rosacha.model.ProductModel
 import com.clausfonseca.rosacha.model.Sales
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
@@ -356,7 +356,7 @@ class AddSalesFragment : Fragment() {
         db.collection(dbProducts).document(barcode).get().addOnSuccessListener { task ->
 
             if (task.data != null && task.exists()) {
-                val item = task.toObject(Product::class.java)
+                val item = task.toObject(ProductModel::class.java)
                 val qty = item?.quantity ?: 0
                 qtyactual = qty - qtySales
                 updateStockQuantity(barcode, qtyactual)

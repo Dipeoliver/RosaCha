@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.product
+package com.clausfonseca.rosacha.view.dashboard.productModel
 
 import android.app.AlertDialog
 import android.net.Uri
@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductListBinding
-import com.clausfonseca.rosacha.model.Product
+import com.clausfonseca.rosacha.model.ProductModel
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Swipe.SwipeGesture
 import com.clausfonseca.rosacha.utils.Util
@@ -43,7 +43,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     private lateinit var auth: FirebaseAuth
     private var dbProducts: String = ""
 
-    private val productlist = mutableListOf<Product>()
+    private val productlist = mutableListOf<ProductModel>()
     var db: FirebaseFirestore? = null
     var nextquery: Query? = null
     var isFilterOn = false
@@ -90,8 +90,8 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
         }
     }
 
-    private fun selectedProduct(product: Product) {
-        findNavController().navigate(ProductFragmentDirections.actionProductFragmentToEditProductFragment(product))
+    private fun selectedProduct(productModel: ProductModel) {
+        findNavController().navigate(ProductFragmentDirections.actionProductFragmentToEditProductFragment(productModel))
     }
 
     private fun initAdapter() {
@@ -104,10 +104,10 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
         swipeToGesture(binding.rvProduct)
     }
 
-    private fun optionSelect(product: Product, select: Int) {
+    private fun optionSelect(productModel: ProductModel, select: Int) {
         when (select) {
             ProductAdapter.SELECT_REMOVE -> {
-                configDialog(product)
+                configDialog(productModel)
             }
 
             ProductAdapter.SELECT_EDIT -> {
@@ -115,7 +115,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
         }
     }
 
-    private fun configDialog(product: Product) {
+    private fun configDialog(productModel: ProductModel) {
 
         val builder = AlertDialog.Builder(requireContext())
 
@@ -124,12 +124,12 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
         builder.setTitle(Html.fromHtml("<font color='#F92391'>" + getString(R.string.attention) + "</font>"));
 
         //set message for alert dialog
-        builder.setMessage(getString(R.string.want_delete_client) + " " + product.description)
+        builder.setMessage(getString(R.string.want_delete_client) + " " + productModel.description)
         builder.setIcon(R.drawable.baseline_warning_24)
 
         //performing positive action
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            deleteProduct(product)
+            deleteProduct(productModel)
         }
 //        //performing cancel action
 //        builder.setNeutralButton("Cancel"){dialogInterface , which ->
@@ -243,8 +243,8 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
                 if (results.size() > 0) {
                     productlist.clear()
                     for (result in results) {
-                        val product = result.toObject(Product::class.java)
-                        productlist.add(product)
+                        val productModel = result.toObject(ProductModel::class.java)
+                        productlist.add(productModel)
                     }
                     productAdapter.notifyDataSetChanged()
                 }
@@ -258,9 +258,9 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     }
 
     // Firestore DataBase --------------------------------------------------
-    private fun insertProduct(product: Product) {
-        db!!.collection(dbProducts).document(product.barcode.toString())
-            .set(product).addOnCompleteListener {
+    private fun insertProduct(productModel: ProductModel) {
+        db!!.collection(dbProducts).document(productModel.barcode.toString())
+            .set(productModel).addOnCompleteListener {
 //                Util.exibirToast(requireContext(), getString(R.string.add_success_client))
             }.addOnFailureListener {
                 Util.exibirToast(requireContext(), getString(R.string.error_save_client))
@@ -280,8 +280,8 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
 
                 // result é uma lista
                 for (result in results) {
-                    val product = result.toObject(Product::class.java)
-                    productlist.add(product)
+                    val productModel = result.toObject(ProductModel::class.java)
+                    productlist.add(productModel)
                 }
                 // pegar ultimo item da query
                 val lastresult = results.documents[results.size() - 1]
@@ -313,8 +313,8 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
                 nextquery = db!!.collection(dbProducts).orderBy("description").startAfter(lastresult).limit(10)
 
                 for (result in results) {
-                    val product = result.toObject(Product::class.java)
-                    productlist.add(product)
+                    val productModel = result.toObject(ProductModel::class.java)
+                    productlist.add(productModel)
                 }
                 // notificar que teve atualizalçao
                 productAdapter.notifyDataSetChanged()
@@ -326,12 +326,12 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
         }
     }
 
-    private fun deleteProduct(product: Product) {
+    private fun deleteProduct(productModel: ProductModel) {
         val reference = db!!.collection(dbProducts)
-        product.barcode?.let {
+        productModel.barcode?.let {
             reference.document(it).delete().addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
-//                    removeImage(product.barcode!!)
+//                    removeImage(productModel.barcode!!)
 //                    Util.exibirToast(requireContext(), getString(R.string.information_delete_product))
                     getProducts()
                 } else {

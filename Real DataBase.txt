@@ -38,8 +38,8 @@ Product RealDataBase
                     if (snapshot.exists()) {
                         productlist.clear()
                         for (snap in snapshot.children) {
-                            val product = snap.getValue(Product::class.java) as Product
-                            productlist.add(product)
+                            val productModel = snap.getValue(Product::class.java) as Product
+                            productlist.add(productModel)
                         }
 //                        binding.textinfo.text = ""
 //                        productlist.reverse() // trazer a lista do mais novo para o antigo
@@ -84,8 +84,8 @@ private fun insertProduct_RealTimeDatabase() {
             .child("Product")
 //            .child(FirebaseHelper.getIdUser() ?: "")
             .child("Product_Item") // id do usuario
-            .child(product.id)
-            .setValue(product)
+            .child(productModel.id)
+            .setValue(productModel)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     if (newTask) { // nova tarefa
