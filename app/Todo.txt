@@ -177,6 +177,21 @@ Julho 2023
 
 -----------------------------------------------------------------------------
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------
 A fazer
 - colocar os textos dentro da string (list sales e filtro)
 - Tirar deprecated ho codigo Dialog(list sales)

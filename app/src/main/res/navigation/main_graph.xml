@@ -80,7 +80,7 @@
 
     <fragment
         android:id="@+id/product_fragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.productModel.ProductFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.product.ProductFragment"
         android:label="ProductFragment"
         tools:layout="@layout/fragment_product">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/product_fragment" />
@@ -124,7 +124,7 @@
     </fragment>
     <fragment
         android:id="@+id/addProduct_fragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.productModel.AddProductFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.product.addProduct.AddProductFragment"
         android:label="fragment_add_product"
         tools:layout="@layout/fragment_product_add">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/addProduct_fragment" />
@@ -148,7 +148,7 @@
     </fragment>
     <fragment
         android:id="@+id/listProductFragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.productModel.ListProductFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.product.listProduct.ListProductFragment"
         android:label="fragment_product_list"
         tools:layout="@layout/fragment_product_list">
         <deepLink app:uri="android-app://com.clausfonseca.rosacha/fragment_product_list" />
@@ -156,7 +156,7 @@
 
     <fragment
         android:id="@+id/editProductFragment"
-        android:name="com.clausfonseca.rosacha.view.dashboard.productModel.EditProductFragment"
+        android:name="com.clausfonseca.rosacha.view.dashboard.product.editProduct.EditProductFragment"
         android:label="fragment_product_edit"
         tools:layout="@layout/fragment_product_edit">
         <argument

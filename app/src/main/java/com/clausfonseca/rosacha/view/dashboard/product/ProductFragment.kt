@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.productModel
+package com.clausfonseca.rosacha.view.dashboard.product
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.FragmentProductBinding
 import com.clausfonseca.rosacha.view.adapter.ViewPagerAdapter
+import com.clausfonseca.rosacha.view.dashboard.product.listProduct.ListProductFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ProductFragment : Fragment() {

@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.databinding.ItemRecyclerProductListBinding
 import com.clausfonseca.rosacha.model.ProductModel
-import com.clausfonseca.rosacha.view.dashboard.productModel.ListProductFragment
+import com.clausfonseca.rosacha.view.dashboard.product.listProduct.ListProductFragment
 
 class ProductAdapter(
     private val context: Context,

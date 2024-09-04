@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.productModel
+package com.clausfonseca.rosacha.view.dashboard.product.listProduct
 
 import android.app.AlertDialog
 import android.net.Uri
@@ -25,6 +25,7 @@ import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Swipe.SwipeGesture
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.view.adapter.ProductAdapter
+import com.clausfonseca.rosacha.view.dashboard.product.ProductFragmentDirections
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth

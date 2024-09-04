@@ -1,4 +1,4 @@
-package com.clausfonseca.rosacha.view.dashboard.productModel
+package com.clausfonseca.rosacha.view.dashboard.product.addProduct
 
 import android.Manifest
 import android.app.Activity
@@ -8,19 +8,22 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
-import android.view.*
-import android.view.View.GONE
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -29,6 +32,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.clausfonseca.rosacha.R
+import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
 import com.clausfonseca.rosacha.databinding.FragmentProductAddBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetRequestPermissionBinding
 import com.clausfonseca.rosacha.databinding.ItemCustomBottonSheetTakePictureBinding
@@ -37,38 +41,31 @@ import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.checkEmptyField
 import com.clausfonseca.rosacha.utils.extencionFunctions.cleanErrorValidation
-import com.clausfonseca.rosacha.view.dashboard.client.addClient.AddClientFragment
+import com.clausfonseca.rosacha.utils.extencionFunctions.getDbProduct
+import com.clausfonseca.rosacha.view.common.CommonModelState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
-import com.google.zxing.integration.android.IntentIntegrator
-import com.google.zxing.integration.android.IntentResult
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
+@AndroidEntryPoint
 @Suppress("DEPRECATION")
 class AddProductFragment : Fragment() {
-
+    private val viewModel: AddProductViewModel by viewModels()
     private lateinit var binding: FragmentProductAddBinding
-    private lateinit var firebaseStorage: FirebaseStorage
-    private lateinit var auth: FirebaseAuth
+    private var uriImage: Uri? = null
     private lateinit var productModel: ProductModel
-    private var dbProducts: String = ""
-    private val db = FirebaseFirestore.getInstance()
     private var pictureName: String? = ""
     private var statusOwner: Int = 0
     private var owner: String = ""
-    val dialogProgress = DialogProgress()
-    var bottomSheetDialogCamera: BottomSheetDialog? = null
+    private val dialogProgress = DialogProgress()
+    private var bottomSheetDialogCamera: BottomSheetDialog? = null
     private var bottomSheetDialogPermission: BottomSheetDialog? = null
-    var uriImagem: Uri? = null
-    var quantity = 1;
+    private var quantity = 1
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,17 +74,14 @@ class AddProductFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View, savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
-        firebaseStorage = Firebase.storage
-        auth = Firebase.auth
-        dbProducts = getString(R.string.db_product).toString()
-        configureButton()
         initListeners()
         updateQuantity()
+        configureObservables()
 
-
-        // ao clicar botão voltar abaixo
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -97,6 +91,85 @@ class AddProductFragment : Fragment() {
                 }
             })
     }
+
+    private fun configureObservables() {
+        viewModel.model.screenState.observe(viewLifecycleOwner) {
+            handleState(it)
+        }
+    }
+
+    private fun handleState(state: CommonModelState.CommonState?) {
+        when (state) {
+            is CommonModelState.CommonState.Loading -> {
+                if (state.isLoading) dialogProgress.show(childFragmentManager, "0")
+                else dialogProgress.dismiss()
+            }
+
+            is CommonModelState.CommonState.SuccessStorageUrl -> {
+                validateData(state.data)
+            }
+
+            is CommonModelState.CommonState.Success -> {
+
+                if (viewModel.model.dataUrl) {
+                    Util.exibirToast(requireContext(), getString(R.string.error_already_registered_product))
+                    dialogProgress.dismiss()
+                    binding.edtBarcode.requestFocus()
+                } else {
+                    activity?.let {
+                        Glide.with(it.baseContext).asBitmap().load(uriImage)
+                            .error(R.drawable.no_image)
+                            .apply(RequestOptions.overrideOf(800, 480))
+                            .listener(object : RequestListener<Bitmap> {
+                                override fun onLoadFailed(
+                                    e: GlideException?,
+                                    model: Any?,
+                                    target: Target<Bitmap>?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
+                                    dialogProgress.dismiss()
+                                    return false
+                                }
+
+                                override fun onResourceReady(
+                                    bitmap: Bitmap?,
+                                    model: Any?,
+                                    target: Target<Bitmap>?,
+                                    dataSource: DataSource?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    viewModel.getUrlStorage(
+                                        getDbProduct(requireContext()),
+                                        pictureName ?: "",
+                                        bitmap ?: Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+                                    )
+                                    return false
+                                }
+                            }).submit()
+                    }
+                }
+            }
+
+            is CommonModelState.CommonState.Error -> {
+                Util.exibirToast(requireContext(), getString(FirebaseHelper.validError(state.message)))
+            }
+
+
+            is CommonModelState.CommonState.InsertProductSuccess -> {
+                if (state.data) {
+                    Util.exibirToast(requireContext(), getString(R.string.add_success_product))
+                    cleaner()
+                } else {
+                    Util.exibirToast(requireContext(), getString(R.string.error_save_product))
+                }
+            }
+
+            else -> {
+            }
+        }
+    }
+
 
     private fun initListeners() {
         binding.btnAddProduct.setOnClickListener {
@@ -130,61 +203,31 @@ class AddProductFragment : Fragment() {
             if (quantity >= 1) quantity -= 1
             updateQuantity()
         }
+
+        binding.btnScan.setOnClickListener {
+            checkPermissions()
+        }
     }
 
     // region - RequestCameraAccess
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                obterImagemdaCamera()
+            } else {
+                bottomSheetDialogCamera?.dismiss()
+                showBottomSheetDialogPermission()
+            }
+        }
 
     private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(
-                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                AddClientFragment.REQUEST_PERMISSION_CODE
-            )
-            return
-        }
-        // verifica se quem foi pressionado foi o botão scanner
-        if (binding.btnScan.isPressed) {
-            val integrator: IntentIntegrator =
-                IntentIntegrator.forSupportFragment(this@AddProductFragment)
-            integrator.setPrompt(getString(R.string.scan_active))
-            integrator.initiateScan()
-        } else {
-            obterImagemdaCamera()
-        }
-    }
+        when (PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) -> {
+                obterImagemdaCamera()
+            }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == AddClientFragment.REQUEST_PERMISSION_CODE) {
-            when (grantResults[0]) {
-                PackageManager.PERMISSION_GRANTED -> {
-                    when (grantResults[1]) {
-                        PackageManager.PERMISSION_GRANTED -> {
-                            checkPermissions()
-                        }
-
-                        PackageManager.PERMISSION_DENIED -> {
-                            bottomSheetDialogCamera?.dismiss()
-                            showBottomSheetDialogPermission()
-                        }
-                    }
-                }
-
-                PackageManager.PERMISSION_DENIED -> {
-                    if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                        bottomSheetDialogCamera?.dismiss()
-                        showBottomSheetDialogPermission()
-                    }
-                }
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
     }
@@ -214,7 +257,8 @@ class AddProductFragment : Fragment() {
     // endregion
 
     // region - Barcode&&ImageView
-    @Suppress("DEPRECATION")
+
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         // setar a imagem na ImageView
@@ -222,48 +266,19 @@ class AddProductFragment : Fragment() {
         if (requestCode == 11 || requestCode == 22) {
             super.onActivityResult(requestCode, resultCode, data)
             if (resultCode == Activity.RESULT_OK) {
-                binding.imvPlus.visibility = GONE
+//                binding.imvPlus.visibility = View.GONE
 
                 if (requestCode == 11 && data != null) {  // galeria
-                    uriImagem = data.data
+                    uriImage = data.data
 
+                    binding.imvPhoto.setImageURI(uriImage)
 
-                    binding.imvPhoto.setImageURI(uriImagem)
+                } else if (requestCode == 22 && uriImage != null) {// camera
 
-                } else if (requestCode == 22 && uriImagem != null) {// camera
-
-                    binding.imvPhoto.setImageURI(uriImagem)
-                } else {
-
+                    binding.imvPhoto.setImageURI(uriImage)
                 }
-
                 bottomSheetDialogCamera?.dismiss()
             }
-        } else {
-            // BARCODE
-            var result: IntentResult? =
-                IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-
-            if (result != null) {
-                if (result.contents != null) {
-                    binding.edtBarcode.setText(result.contents)
-                    binding.edtDescriptionProduct.requestFocus()
-
-                } else {
-                    binding.edtBarcode.setText(getString(R.string.scan_failed))
-                }
-            } else {
-                super.onActivityResult(requestCode, resultCode, data)
-                binding.edtBarcode.requestFocus()
-            }
-        }
-    }
-
-    // BARCODE
-    @Suppress("DEPRECATION")
-    private fun configureButton() {
-        binding.btnScan.setOnClickListener {
-            checkPermissions()
         }
     }
 
@@ -274,7 +289,8 @@ class AddProductFragment : Fragment() {
         val validBarcode = checkEmptyField(binding.edtBarcode, binding.barcodeContainer, requireContext())
         cleanErrorValidation(binding.edtBarcode, binding.barcodeContainer)
 
-        val validDescription = checkEmptyField(binding.edtDescriptionProduct, binding.descriptionContainer, requireContext())
+        val validDescription =
+            checkEmptyField(binding.edtDescriptionProduct, binding.descriptionContainer, requireContext())
         cleanErrorValidation(binding.edtDescriptionProduct, binding.descriptionContainer)
 
         val validSize = checkEmptyField(binding.edtSizeProduct, binding.sizeContainer, requireContext())
@@ -287,52 +303,48 @@ class AddProductFragment : Fragment() {
         cleanErrorValidation(binding.edtSalesProduct, binding.salesContainer)
 
         if (validBarcode && validDescription && validSize && validCost && validSales) {
-            if (uriImagem != null) {
-                uploadImagem()
+            if (uriImage != null) {
+                getImage()
             } else {
-                // SE NÃO TIVER IMAGEM  O URI E PREENCHIDO COM IMAGEM PADRÃO
                 val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
                 val bitmap = drawable?.toBitmap()
-                uriImagem = getImageUriFromBitmap(requireContext(), bitmap!!)
-                uploadImagem()
+                uriImage = getImageUriFromBitmap(requireContext(), bitmap!!)
+                getImage()
             }
         }
     }
-
-
     // endregion
 
     // region - FirebaseStorage
     private fun obterImagemdaCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val contentValues = ContentValues()
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        val resolver = activity?.contentResolver
+        uriImage = resolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // versão nova
-            val contentValues = ContentValues()
-            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            val resolver = activity?.contentResolver
-            uriImagem =
-                resolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-
-        } else { // versão antiga
-            val authority = "com.clausfonseca.rosacha"
-            val directory =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val path = directory.path ?: ""
-            val imageName = "$path/Products$pictureName.jpg"
-            if (imageName == "/Products.jpg") {
-                val imageName = directory.path + "/Products" + System.currentTimeMillis() + ".jpg"
-            }
+        if (uriImage == null) {
+            val authorization = "com.clausfonseca.rosacha"
+            val directory = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            val imageName = "$directory/${getDbProduct(requireContext())}${System.currentTimeMillis()}.jpg"
             val file = File(imageName)
-            uriImagem =
-                activity?.let { FileProvider.getUriForFile(it.baseContext, authority, file) }
+            uriImage = activity?.let { FileProvider.getUriForFile(it.baseContext, authorization, file) }
         }
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImagem)
-        startActivityForResult(intent, 22)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriImage)
+        cameraLauncher.launch(intent)
     }
 
+    private val cameraLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                bottomSheetDialogCamera?.dismiss()
+                binding.imvPhoto.setImageURI(uriImage)
+            }
+        }
+
     // para corrigir problema de falta de imagem selecionada
-    fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
+    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
         val path =
@@ -340,87 +352,19 @@ class AddProductFragment : Fragment() {
         return Uri.parse(path.toString())
     }
 
-    // selecionar imagem da galeria
-    private fun obterImagemdaGaleria() {
+    private fun getImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
         startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), 11)
     }
-
     // com recurso para diminuir a imagem
-    fun uploadImagem() {
-        dialogProgress.show(childFragmentManager, "0")
+    private fun getImage() {
         pictureName = binding.edtBarcode.text.toString()
-
-        val reference = db.collection(dbProducts).document(pictureName.toString())
-        reference.get().addOnSuccessListener { item ->
-            if (item.exists()) {
-                Util.exibirToast(requireContext(), getString(R.string.error_already_registered_product))
-                dialogProgress.dismiss()
-                binding.edtBarcode.requestFocus()
-            } else {
-                activity?.let {
-                    Glide.with(it.baseContext).asBitmap().load(uriImagem)
-                        .error(R.drawable.baseline_image_not_supported_24)
-                        .apply(RequestOptions.overrideOf(800, 480))
-                        .listener(object : RequestListener<Bitmap> {
-
-
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Bitmap>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                Util.exibirToast(requireContext(), getString(R.string.error_reduced_image))
-                                dialogProgress.dismiss()
-                                return false
-                            }
-
-                            override fun onResourceReady(
-                                bitmap: Bitmap?,
-                                model: Any?,
-                                target: Target<Bitmap>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-
-                                val baos = ByteArrayOutputStream()
-                                bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                                val data = baos.toByteArray()
-                                val reference =
-                                    firebaseStorage.reference
-                                        .child(dbProducts)
-                                        .child("$pictureName.jpg")
-                                val uploadTask = reference.putBytes(data)
-                                uploadTask.continueWithTask { task ->
-                                    if (!task.isSuccessful) {
-                                        task.exception.let {
-                                            throw it!!
-                                        }
-                                    }
-                                    reference.downloadUrl
-                                }.addOnSuccessListener { task ->
-                                    var url = task.toString()
-                                    validateData(url)
-                                }.addOnFailureListener { error ->
-                                    Util.exibirToast(
-                                        requireContext(),
-                                        getString(R.string.error_upload_image) + ":" + error.message.toString()
-                                    )
-                                    dialogProgress.dismiss()
-                                }
-                                return false
-                            }
-                        }).submit()
-                }
-            }
-        }
+        viewModel.getUrlFile(getDbProduct(requireContext()), pictureName ?: "")
     }
     // endregion
 
     // region - FirebaseFirestore
     private fun validateData(url: String) {
-
         val barcode = binding.edtBarcode.text.toString().trim()
         val referenceProduct = binding.edtReferenceProduct.text.toString().trim()
         val description = binding.edtDescriptionProduct.text.toString().trim()
@@ -456,20 +400,7 @@ class AddProductFragment : Fragment() {
         }
         productModel.owner = owner
         productModel.qtySales = 1
-        insertProduct()
-    }
-
-    // Inserir produto no Firestore
-    private fun insertProduct() {
-        db.collection(dbProducts).document(productModel.barcode.toString())
-            .set(productModel).addOnCompleteListener {
-                Util.exibirToast(requireContext(), getString(R.string.add_success_product))
-                cleaner()
-                dialogProgress.dismiss()
-            }.addOnFailureListener {
-                Util.exibirToast(requireContext(), getString(R.string.error_save_product))
-                dialogProgress.dismiss()
-            }
+        viewModel.insertProduct(getDbProduct(requireContext()), productModel)
     }
     // endregion
 
@@ -484,7 +415,7 @@ class AddProductFragment : Fragment() {
         }
 
         sheetBinding.clGallery.setOnClickListener {
-            obterImagemdaGaleria()
+            getImageFromGallery()
         }
         bottomSheetDialogCamera?.setContentView(sheetBinding.root)
         bottomSheetDialogCamera?.show()

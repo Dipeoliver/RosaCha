@@ -314,13 +314,6 @@ class EditClientFragment : Fragment() {
                 selectedClientModel?.urlImagem = url
                 selectedClientModel?.id = clientId
 
-//                when {
-//                    oldId != phone -> {
-//                        viewModel.removeImage(getDbClient(requireContext()), oldId.toString())
-//                        //                    removeImage(oldId.toString())
-//                    }
-//                }
-
                 viewModel.updateClient(getDbClient(requireContext()), selectedClientModel ?: ClientModel())
             }
         } else {

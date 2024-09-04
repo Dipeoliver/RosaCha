@@ -113,10 +113,10 @@ class AddClientFragment : Fragment() {
                     binding.edtPhoneClient.requestFocus()
                 } else {
                     activity?.let {
-                        Glide.with(it.baseContext).asBitmap().load(uriImage).error(R.drawable.no_image)
+                        Glide.with(it.baseContext).asBitmap().load(uriImage)
+                            .error(R.drawable.no_image)
                             .apply(RequestOptions.overrideOf(800, 480))
                             .listener(object : RequestListener<Bitmap> {
-
                                 override fun onLoadFailed(
                                     e: GlideException?,
                                     model: Any?,
@@ -127,7 +127,6 @@ class AddClientFragment : Fragment() {
                                     dialogProgress.dismiss()
                                     return false
                                 }
-
                                 override fun onResourceReady(
                                     bitmap: Bitmap?,
                                     model: Any?,
@@ -167,6 +166,7 @@ class AddClientFragment : Fragment() {
 
     private fun initListeners() {
         binding.btnAddClient.setOnClickListener {
+            // verificar sinal de internet (FAZER)
             submitForm()
         }
 
@@ -313,6 +313,7 @@ class AddClientFragment : Fragment() {
 
     // region - FirebaseStorage
 
+    // talvez mudar fetFileUrl para getImage
     private fun getFileUrl() {
         pictureName = binding.edtPhoneClient.text.toString()
         viewModel.getFileUrl(getDbClient(requireContext()),pictureName ?: "")
@@ -359,7 +360,6 @@ class AddClientFragment : Fragment() {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) -> {
                 obterImagemdaCamera()
             }
-
             else -> {
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
@@ -399,6 +399,8 @@ class AddClientFragment : Fragment() {
 
     // region - BottomSheetDialog
 
+
+    // Criar função commom também usado em produto
     private fun showBottomSheetDialogPermission() {
         bottomSheetDialogPermission = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
         val sheetBinding: ItemCustomBottonSheetRequestPermissionBinding =

@@ -19,20 +19,25 @@ class CommonModelState {
         data class Loading(val isLoading: Boolean) : CommonState()
         data class SuccessStorageUrl(val data: String) : CommonState()
         data class Error(val message: String) : CommonState()
+
+
+        // Client
         data class InsertClient(val data: Boolean) : CommonState()
         data class DeleteClientError(val message: String) : CommonState()
         data class InsertClientError(val message: String) : CommonState()
         data class UpdateClientError(val message: String) : CommonState()
-
-
         data object FilterClientSuccess : CommonState()
         data object ReinsertClientSuccess : CommonState()
+
         data object GetClientsLoaded : CommonState()
         data object GetMoreClientsLoaded : CommonState()
         data object RemoveClientSuccess : CommonState()
         data object RemoveImageSuccess : CommonState()
         data object Success : CommonState()
 
+        //Product
+        data class InsertProductSuccess(val data: Boolean) : CommonState()
+        data object  SuccessUpdate: CommonState()
 
     }
 }
