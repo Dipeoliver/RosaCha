@@ -87,55 +87,11 @@ class EditProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        selectedProductModel = EditProductFragmentArgs.fromBundle(requireArguments()).selectedProductModel
+//        selectedProductModel = EditProductFragmentArgs.fromBundle(requireArguments()).selectedProductModel
         recoverProduct()
-        onBackPressed()
         initListeners()
         configureObservables()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // Inicializar o ActivityResultLauncher
-        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                val imageUri: Uri? = data?.data
-                // Faça algo com o imageUri, como carregar a imagem em uma ImageView
-            }
-        }
-        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                uriImage?.let { uri ->
-                    // Faça algo com o uri, como carregar a imagem em uma ImageView
-                }
-            }
-        }
-        galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                uriImage = data?.data
-                binding.imvPlus.visibility = View.GONE
-                photoImageView.setImageURI(uriImage)
-                bottomSheetDialogCamera?.dismiss()
-            }
-        }
-        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            val cameraGranted = permissions[Manifest.permission.CAMERA] ?: false
-            val storageGranted = permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] ?: false
-
-            if (cameraGranted && storageGranted) {
-                captureImageFromCamera()
-            } else {
-                // Se alguma permissão for negada
-                if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
-                    !shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                ) {
-                    bottomSheetDialogCamera?.dismiss()
-                    showBottomSheetDialogPermission()
-                }
-            }
-        }
+        onBackPressed()
     }
 
     private fun configureObservables() {
@@ -177,6 +133,51 @@ class EditProductFragment : Fragment() {
             }
         }
     }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        // Inicializar o ActivityResultLauncher
+//        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            if (result.resultCode == Activity.RESULT_OK) {
+//                val data: Intent? = result.data
+//                val imageUri: Uri? = data?.data
+//                // Faça algo com o imageUri, como carregar a imagem em uma ImageView
+//            }
+//        }
+//        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            if (result.resultCode == Activity.RESULT_OK) {
+//                uriImage?.let { uri ->
+//                    // Faça algo com o uri, como carregar a imagem em uma ImageView
+//                }
+//            }
+//        }
+//        galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            if (result.resultCode == Activity.RESULT_OK) {
+//                val data: Intent? = result.data
+//                uriImage = data?.data
+//                binding.imvPlus.visibility = View.GONE
+//                photoImageView.setImageURI(uriImage)
+//                bottomSheetDialogCamera?.dismiss()
+//            }
+//        }
+//        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+//            val cameraGranted = permissions[Manifest.permission.CAMERA] ?: false
+//            val storageGranted = permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] ?: false
+//
+//            if (cameraGranted && storageGranted) {
+//                captureImageFromCamera()
+//            } else {
+//                // Se alguma permissão for negada
+//                if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+//                    !shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                ) {
+//                    bottomSheetDialogCamera?.dismiss()
+//                    showBottomSheetDialogPermission()
+//                }
+//            }
+//        }
+//    }
+
+
 
     private fun initListeners() {
         binding.imvAdd.setOnClickListener {
@@ -232,7 +233,6 @@ class EditProductFragment : Fragment() {
         binding.sizeContainer.helperText = ""
         binding.descriptionContainer.helperText = ""
     }
-
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),

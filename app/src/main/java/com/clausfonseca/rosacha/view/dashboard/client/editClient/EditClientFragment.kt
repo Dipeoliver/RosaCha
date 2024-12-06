@@ -248,7 +248,7 @@ class EditClientFragment : Fragment() {
 
     // region - FirebaseStorage
     // com recurso para diminuir a imagem
-    private fun uploadImagem() {
+    private fun uploadImage() {
         pictureName = binding.edtPhoneClientEdit.text.toString()
         activity?.let {
             Glide.with(it.baseContext).asBitmap().load(uriImage).error(R.drawable.no_image)
@@ -414,10 +414,10 @@ class EditClientFragment : Fragment() {
                 val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.no_image)
                 val bitmap = drawable?.toBitmap()
                 uriImage = getImageUriFromBitmap(requireContext(), bitmap!!)
-                uploadImagem()
+                uploadImage()
 
             } else if (uriImage != null) {
-                uploadImagem()
+                uploadImage()
             } else {
                 validateData(oldUrl)
             }

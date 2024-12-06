@@ -1,6 +1,7 @@
 package com.clausfonseca.rosacha.view.common
 
 import com.clausfonseca.rosacha.model.ClientModel
+import com.clausfonseca.rosacha.model.ProductModel
 import com.clausfonseca.rosacha.utils.SingleLiveEvent
 import com.google.firebase.firestore.Query
 
@@ -13,7 +14,10 @@ class CommonModelState {
 
     var queryResult: Query? = null
 
+
     var clientsResult: MutableList<ClientModel> = mutableListOf()
+    var productsResult: MutableList<ProductModel> = mutableListOf()
+
 
     sealed class CommonState {
         data class Loading(val isLoading: Boolean) : CommonState()
@@ -26,18 +30,24 @@ class CommonModelState {
         data class DeleteClientError(val message: String) : CommonState()
         data class InsertClientError(val message: String) : CommonState()
         data class UpdateClientError(val message: String) : CommonState()
+        data class RemoveClientSuccess(val position: Int) : CommonState()
         data object FilterClientSuccess : CommonState()
         data object ReinsertClientSuccess : CommonState()
 
         data object GetClientsLoaded : CommonState()
         data object GetMoreClientsLoaded : CommonState()
-        data object RemoveClientSuccess : CommonState()
         data object RemoveImageSuccess : CommonState()
         data object Success : CommonState()
 
         //Product
         data class InsertProductSuccess(val data: Boolean) : CommonState()
-        data object  SuccessUpdate: CommonState()
+        data class InsertProductError(val message: String) : CommonState()
+        data class DeleteProductError(val message: String) : CommonState()
+        data class RemoveProductSuccess(val position: Int) : CommonState()
+        data object FilterProductSuccess : CommonState()
+        data object ReinsertProductSuccess : CommonState()
 
+        data object GetProductsLoaded : CommonState()
+        data object SuccessUpdate : CommonState()
     }
 }

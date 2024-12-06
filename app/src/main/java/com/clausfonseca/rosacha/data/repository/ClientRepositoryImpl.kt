@@ -5,7 +5,6 @@ import android.util.Log
 import com.clausfonseca.rosacha.domain.repository.ClientRepository
 import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.Resource
-import com.clausfonseca.rosacha.utils.Util
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -25,7 +24,7 @@ class ClientRepositoryImpl @Inject constructor(
     private val firebaseStorage: FirebaseStorage
 ) : ClientRepository {
     private var lastResult: DocumentSnapshot? = null
-    var nextquery: Query? = null
+    private var nextQuery: Query? = null
 
     override fun getUrlFile(dbClient: String, pictureName: String): Flow<Resource<Boolean>> = callbackFlow {
 
@@ -116,7 +115,7 @@ class ClientRepositoryImpl @Inject constructor(
                         }
                         lastResult = results.documents[results.size() - 1]
 
-                        nextquery = fireStore
+                        nextQuery = fireStore
                             .collection(dbClient)
                             .orderBy("phone")
                             .startAfter(lastResult)
@@ -152,10 +151,10 @@ class ClientRepositoryImpl @Inject constructor(
 //                    .orderBy("name")
 //                    .startAfter(lastResult)
 //                    .limit(10)
-                nextquery?.get()?.addOnSuccessListener { results ->
-                    Log.d("****nextqueryClient", "${(nextquery?.get()?.addOnSuccessListener {})}")
+                nextQuery?.get()?.addOnSuccessListener { results ->
+                    Log.d("****nextqueryClient", "${(nextQuery?.get()?.addOnSuccessListener {})}")
                     if (results.size() > 0) {
-                        Log.d("****ClientOK", "${nextquery?.get()}")
+                        Log.d("****ClientOK", "${nextQuery?.get()}")
 
                         lastResult = results.documents[results.size() - 1]
                         fireStore.collection(dbClient).orderBy("phone").startAfter(lastResult).limit(10)
@@ -167,7 +166,7 @@ class ClientRepositoryImpl @Inject constructor(
                         trySend(Resource.Success(clientList))
 //                            clientAdapter.notifyDataSetChanged()
                     } else {
-                        Log.d("****Client", "${nextquery?.get()}")
+                        Log.d("****Client", "${nextQuery?.get()}")
                         trySend(Resource.Success(mutableListOf()))
                     }
                 }?.addOnFailureListener() { error ->

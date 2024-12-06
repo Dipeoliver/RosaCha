@@ -6,7 +6,6 @@ import com.clausfonseca.rosacha.domain.usecases.client.ClientUseCases
 import com.clausfonseca.rosacha.model.ClientModel
 import com.clausfonseca.rosacha.utils.Resource
 import com.clausfonseca.rosacha.view.common.CommonModelState
-import com.google.firebase.firestore.DocumentSnapshot
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,7 +16,7 @@ class ListClientViewModel @Inject constructor(
 ) : ViewModel() {
     val model = CommonModelState()
 
-    fun removeClient(dbClient: String, clientModel: ClientModel) {
+    fun removeClient(dbClient: String, clientModel: ClientModel, position: Int) {
         viewModelScope.launch {
             clientUseCases.removeClient.invoke(dbClient, clientModel).collect {
                 when (it) {
@@ -33,7 +32,7 @@ class ListClientViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         model.screenState.value = CommonModelState.CommonState.Loading(false)
-                        model.screenState.value = CommonModelState.CommonState.RemoveClientSuccess
+                        model.screenState.value = CommonModelState.CommonState.RemoveClientSuccess(position)
                     }
                 }
             }

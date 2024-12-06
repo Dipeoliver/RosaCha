@@ -1,18 +1,12 @@
 package com.clausfonseca.rosacha.data.repository
 
 import android.graphics.Bitmap
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
-import com.clausfonseca.rosacha.R
 import com.clausfonseca.rosacha.domain.repository.ProductRepository
 import com.clausfonseca.rosacha.model.ProductModel
 import com.clausfonseca.rosacha.utils.Resource
-import com.clausfonseca.rosacha.utils.Util
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +21,9 @@ import javax.inject.Inject
 class ProductRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
-) : ProductRepository{
+) : ProductRepository {
+    private var lastResult: DocumentSnapshot? = null
+    private var nextQuery: Query? = null
     override fun getUrlFile(dbProduct: String, pictureName: String): Flow<Resource<Boolean>> = callbackFlow {
 
         try {
@@ -44,7 +40,7 @@ class ProductRepositoryImpl @Inject constructor(
                     }
                 }
             }
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             trySend(
                 Resource.Error(e)
             )
@@ -98,12 +94,74 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getProducts(dbProduct: String, productModelList: MutableList<ProductModel>): Flow<Resource<MutableList<ProductModel>>> {
-        TODO("Not yet implemented")
-    }
+    override fun getProducts(
+        dbProduct: String,
+        productModelList: MutableList<ProductModel>
+    ): Flow<Resource<MutableList<ProductModel>>> =
+        callbackFlow {
+            try {
+                trySend(Resource.Loading())
+                fireStore.collection(dbProduct).orderBy("description").get().addOnSuccessListener { results ->
+                    // tiramos o .limit(10)
+                    if (results.size() > 0) {
+//                        clientList.clear()
 
-    override fun getMoreProducts(dbProduct: String, productModelList: MutableList<ProductModel>): Flow<Resource<MutableList<ProductModel>>> {
-        TODO("Not yet implemented")
+                        for (result in results) {
+//                            val key = result.id // pegar o nome  da pasta do documento
+                            val product1 = result.toObject(ProductModel::class.java)
+                            productModelList.add(product1)
+                        }
+                        lastResult = results.documents[results.size() - 1]
+                        nextQuery = fireStore
+                            .collection(dbProduct)
+                            .orderBy("description")
+                            .startAfter(lastResult)
+                            .limit(10)
+                        trySend(Resource.Success(productModelList))
+                    } else {
+                        trySend(Resource.Success(mutableListOf()))
+                    }
+                }
+            } catch (e: Exception) {
+                trySend(
+                    Resource.Error(e)
+                )
+            }
+            awaitClose {
+            }
+        }
+
+    override fun getMoreProducts(
+        dbProduct: String,
+        productModelList: MutableList<ProductModel>
+    ): Flow<Resource<MutableList<ProductModel>>> =callbackFlow {
+        try {
+            nextQuery?.get()?.addOnSuccessListener { results ->
+                if (results.size() > 0) {
+                    lastResult = results.documents[results.size() - 1]
+                    fireStore.collection(dbProduct).orderBy("description").startAfter(lastResult).limit(10)
+
+                    for (result in results) {
+                        val productModel1 = result.toObject(ProductModel::class.java)
+                        productModelList.add(productModel1)
+                    }
+                    trySend(Resource.Success(productModelList))
+//                            clientAdapter.notifyDataSetChanged()
+                } else {
+                    trySend(Resource.Success(mutableListOf()))
+                }
+            }?.addOnFailureListener() { error ->
+                trySend(
+                    Resource.Error(error)
+                )
+            }
+        } catch (e: Exception) {
+            trySend(
+                Resource.Error(e)
+            )
+        }
+        awaitClose {
+        }
     }
 
     override fun insertProduct(dbProduct: String, productModel: ProductModel): Flow<Resource<Boolean>> = callbackFlow {
@@ -138,15 +196,29 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun removeImageProduct(dbProduct: String, id: String): Flow<Resource<Boolean>> {
-        TODO("Not yet implemented")
+    override fun removeImageProduct(dbProduct: String, id: String): Flow<Resource<Boolean>> = callbackFlow {
+        try {
+            trySend(Resource.Loading())
+            val reference = firebaseStorage.reference.child(dbProduct).child("${id}.jpg")
+
+            reference.delete().addOnSuccessListener { task ->
+                trySend(Resource.Success(true)).isSuccess
+            }.addOnFailureListener { error ->
+                trySend(
+                    Resource.Error(error)
+                )
+            }
+        } catch (e: Exception) {
+            trySend(
+                Resource.Error(e)
+            )
+        }
+        awaitClose {
+        }
     }
 
-    override fun removeProduct(dbProduct: String, productModel: ProductModel): Flow<Resource<Boolean>> {
-        TODO("Not yet implemented")
-    }
 
-    override fun updateProduct(dbProduct: String, selectedProductModel: ProductModel): Flow<Resource<Boolean>>  = callbackFlow{
+    override fun updateProduct(dbProduct: String, selectedProductModel: ProductModel): Flow<Resource<Boolean>> = callbackFlow {
         try {
             val product = hashMapOf(
                 // posso fazer update de apenas 1 campo se necessário
@@ -193,8 +265,59 @@ class ProductRepositoryImpl @Inject constructor(
         dbProduct: String,
         fieldText: String,
         productModelList: MutableList<ProductModel>
-    ): Flow<Resource<MutableList<ProductModel>>> {
-        TODO("Not yet implemented")
+    ): Flow<Resource<MutableList<ProductModel>>> = callbackFlow {
+        try {
+            trySend(Resource.Loading())
+
+            fireStore.collection(dbProduct).orderBy("name").startAt(fieldText)
+                .endAt(fieldText + "\uf8ff").limit(5).get().addOnSuccessListener { results ->
+                    if (results.size() > 0) {
+                        productModelList.clear()
+                        for (result in results) {
+                            val productModel1 = result.toObject(ProductModel::class.java)
+                            productModelList.add(productModel1)
+                        }
+                        trySend(Resource.Success(productModelList))
+                    }
+                }.addOnFailureListener { error ->
+                    trySend(
+                        Resource.Error(error)
+                    )
+                }
+        } catch (e: Exception) {
+            trySend(
+                Resource.Error(e)
+            )
+        }
+        awaitClose {
+        }
+    }
+
+    override fun removeProduct(dbProduct: String, productModel: ProductModel): Flow<Resource<Boolean>> = callbackFlow {
+        try {
+            trySend(Resource.Loading())
+
+            val reference = fireStore.collection(dbProduct)
+            productModel.barcode?.let { it ->
+                reference.document(it).delete().addOnCompleteListener() { task ->
+
+                    if (task.isSuccessful) {
+                        trySend(Resource.Success(true)).isSuccess
+                    }
+                }.addOnFailureListener { error ->
+                    trySend(
+                        Resource.Error(error)
+                    )
+                }
+            }
+
+        } catch (e: Exception) {
+            trySend(
+                Resource.Error(e)
+            )
+        }
+        awaitClose {
+        }
     }
 
 }

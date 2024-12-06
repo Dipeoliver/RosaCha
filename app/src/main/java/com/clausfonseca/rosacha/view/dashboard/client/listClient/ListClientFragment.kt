@@ -1,6 +1,5 @@
 package com.clausfonseca.rosacha.view.dashboard.client.listClient
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
@@ -25,11 +24,11 @@ import com.clausfonseca.rosacha.utils.Swipe.SwipeGesture
 import com.clausfonseca.rosacha.utils.Util
 import com.clausfonseca.rosacha.utils.extencionFunctions.getDbClient
 import com.clausfonseca.rosacha.view.adapter.ClientAdapter
-import com.clausfonseca.rosacha.view.dashboard.client.ClientFragmentDirections
 import com.clausfonseca.rosacha.view.common.CommonModelState
+import com.clausfonseca.rosacha.view.dashboard.client.ClientFragmentDirections
+import com.clausfonseca.rosacha.view.dashboard.product.ProductFragment
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,12 +41,10 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     private val clientlist = mutableListOf<ClientModel>()
     private val viewModel: ListClientViewModel by viewModels()
     private val dialogProgress = DialogProgress()
-
-    private var dbClients: String = ""
-    var db: FirebaseFirestore? = null
     var nextquery: Query? = null
     var isFilterOn = false
     var client = ClientModel()
+    var actionBtnTapped = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,12 +56,10 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        db = FirebaseFirestore.getInstance()
-        dbClients = getString(R.string.db_client)
         initListeners()
         initAdapter()
         viewModel.getClients(getDbClient(requireContext()), clientlist)
-        searchClient()
+//        searchClient()
         onBackPressed()
         configureObservables()
     }
@@ -114,44 +109,16 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
         val swipeGesture = object : SwipeGesture(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                var actionBtnTapped = false
+
                 try {
                     when (direction) {
                         ItemTouchHelper.LEFT -> {
-
-                            client = clientlist[position]
-                            clientlist.removeAt(position)
-                            clientAdapter.notifyItemRemoved(position)
-
-                            viewModel.removeClient(dbClient = getDbClient(requireContext()), clientModel = client)
-
-                            val snackBar = Snackbar.make(
-                                binding.rvClient, getString(R.string.item_deleted_client), 5000
-                            ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                                    super.onDismissed(transientBottomBar, event)
-                                }
-
-                                override fun onShown(transientBottomBar: Snackbar?) {
-                                    transientBottomBar?.setAction(getString(R.string.undo_client)) {
-                                        clientlist.clear()
-                                        viewModel.insertClient(getDbClient(requireContext()), client)
-                                        viewModel.getClients(getDbClient(requireContext()), clientlist)
-                                        actionBtnTapped = true
-                                    }
-                                    super.onShown(transientBottomBar)
-                                }
-                            }).apply {
-                                animationMode = Snackbar.ANIMATION_MODE_FADE
-                            }
-                            snackBar.setActionTextColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.pink,
-
-                                    )
+                            viewModel.removeClient(
+                                dbClient = getDbClient(requireContext()),
+                                clientModel = client,
+                                position = position
                             )
-                            snackBar.show()
+
                         }
 
                         ItemTouchHelper.RIGHT -> {
@@ -170,65 +137,65 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
     }
 
     // Filter  -----------------------------------------------------------
-    private fun searchClient() {
-        binding.svClient.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS + InputType.TYPE_CLASS_TEXT
-        binding.svClient.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
-            android.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                isFilterOn = true
-                viewModel.filterSearchClients(getDbClient(requireContext()), newText ?: "", clientlist)
-//                filterSearchClient(newText.toString())    // $$$$$$  colocar viewModel 17/05
-                return true
-            }
-        })
-        binding.svClient.setOnCloseListener(object : SearchView.OnCloseListener,
-            android.widget.SearchView.OnCloseListener {
-            override fun onClose(): Boolean {
-                binding.svClient.onActionViewCollapsed()
-                viewModel.getClients(getDbClient(requireContext()), clientlist)
-                isFilterOn = false
-                return true
-            }
-        })
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun getMoreClients() {
-
-        nextquery?.get()?.addOnSuccessListener { results ->
-            if (results.size() > 0) {
-                // pegar ultimo item da query
-                val lastResult = results.documents[results.size() - 1]
-
-                nextquery =
-                    db!!.collection(dbClients).orderBy("name").startAfter(lastResult).limit(10)
-
-                for (result in results) {
-                    val clientModel = result.toObject(ClientModel::class.java)
-                    clientlist.add(clientModel)
-                }
-                // notificar que teve atualizalçao
-                clientAdapter.notifyDataSetChanged()
-            } else {
-//                Util.exibirToast(requireContext(), "Não ha mais itens para serem exibidos")
-            }
-        }?.addOnFailureListener() { error ->
-            Util.exibirToast(requireContext(), error.message.toString())
-        }
-//        if (viewModel.model.queryResult?.get()?.result?.size()!! > 0) {
-//            for (result in viewModel.model.queryResult?.get()?.result!!) {
-//                val clientModel = result.toObject(ClientModel::class.java)
-//                clientlist.add(clientModel)
-////                }
-////                // notificar que teve atualizalçao
-//                clientAdapter.notifyDataSetChanged()
+//    private fun searchClient() {
+//        binding.svClient.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS + InputType.TYPE_CLASS_TEXT
+//        binding.svClient.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+//            android.widget.SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String?): Boolean {
+//                return true
 //            }
+//
+//            override fun onQueryTextChange(newText: String?): Boolean {
+//                isFilterOn = true
+//                viewModel.filterSearchClients(getDbClient(requireContext()), newText ?: "", clientlist)
+////                filterSearchClient(newText.toString())    // $$$$$$  colocar viewModel 17/05
+//                return true
+//            }
+//        })
+//        binding.svClient.setOnCloseListener(object : SearchView.OnCloseListener,
+//            android.widget.SearchView.OnCloseListener {
+//            override fun onClose(): Boolean {
+//                binding.svClient.onActionViewCollapsed()
+//                viewModel.getClients(getDbClient(requireContext()), clientlist)
+//                isFilterOn = false
+//                return true
+//            }
+//        })
+//    }
+
+//    @SuppressLint("NotifyDataSetChanged")
+//    private fun getMoreClients() {
+//
+//        nextquery?.get()?.addOnSuccessListener { results ->
+//            if (results.size() > 0) {
+//                // pegar ultimo item da query
+//                val lastResult = results.documents[results.size() - 1]
+//
+//                nextquery =
+//                    db!!.collection(dbClients).orderBy("name").startAfter(lastResult).limit(10)
+//
+//                for (result in results) {
+//                    val clientModel = result.toObject(ClientModel::class.java)
+//                    clientlist.add(clientModel)
+//                }
+//                // notificar que teve atualizalçao
+//                clientAdapter.notifyDataSetChanged()
+//            } else {
+////                Util.exibirToast(requireContext(), "Não ha mais itens para serem exibidos")
+//            }
+//        }?.addOnFailureListener() { error ->
+//            Util.exibirToast(requireContext(), error.message.toString())
 //        }
-    }
+////        if (viewModel.model.queryResult?.get()?.result?.size()!! > 0) {
+////            for (result in viewModel.model.queryResult?.get()?.result!!) {
+////                val clientModel = result.toObject(ClientModel::class.java)
+////                clientlist.add(clientModel)
+//////                }
+//////                // notificar que teve atualizalçao
+////                clientAdapter.notifyDataSetChanged()
+////            }
+////        }
+//    }
 
     private fun configureObservables() {
         viewModel.model.screenState.observe(viewLifecycleOwner) {
@@ -244,8 +211,42 @@ class ListClientFragment : Fragment(), ClientAdapter.LastItemRecyclerView,
             }
 
             is CommonModelState.CommonState.RemoveClientSuccess -> {
+                client = clientlist[state.position]
+                clientlist.removeAt(state.position)
+                clientAdapter.notifyItemRemoved(state.position)
+
+
+                val snackBar = Snackbar.make(
+                    binding.rvClient, getString(R.string.item_deleted_client), 5000
+                ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        super.onDismissed(transientBottomBar, event)
+                    }
+
+                    override fun onShown(transientBottomBar: Snackbar?) {
+                        transientBottomBar?.setAction(getString(R.string.undo_client)) {
+                            clientlist.clear()
+                            viewModel.insertClient(getDbClient(requireContext()), client)
+                            viewModel.getClients(getDbClient(requireContext()), clientlist)
+                            actionBtnTapped = true
+                        }
+                        super.onShown(transientBottomBar)
+                    }
+                }).apply {
+                    animationMode = Snackbar.ANIMATION_MODE_FADE
+                }
+                snackBar.setActionTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.pink,
+
+                        )
+                )
+                snackBar.show()
+
                 viewModel.removeImageFireStorage(getDbClient(requireContext()), client.phone.toString())
                 viewModel.getClients(getDbClient(requireContext()), clientlist)
+
 
             }
 

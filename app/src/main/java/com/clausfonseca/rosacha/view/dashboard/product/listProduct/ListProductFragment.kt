@@ -14,6 +14,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,30 +25,26 @@ import com.clausfonseca.rosacha.model.ProductModel
 import com.clausfonseca.rosacha.utils.DialogProgress
 import com.clausfonseca.rosacha.utils.Swipe.SwipeGesture
 import com.clausfonseca.rosacha.utils.Util
+import com.clausfonseca.rosacha.utils.extencionFunctions.getDbProduct
 import com.clausfonseca.rosacha.view.adapter.ProductAdapter
-import com.clausfonseca.rosacha.view.dashboard.product.ProductFragmentDirections
+import com.clausfonseca.rosacha.view.common.CommonModelState
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
 
     private lateinit var binding: FragmentProductListBinding
     private lateinit var productAdapter: ProductAdapter
-    private lateinit var firebaseStorage: FirebaseStorage
-    private lateinit var auth: FirebaseAuth
-    private var dbProducts: String = ""
-
-    private val productlist = mutableListOf<ProductModel>()
-    var db: FirebaseFirestore? = null
+    private val productList = mutableListOf<ProductModel>()
+    private val viewModel: ListProductViewModel by viewModels()
+    private val dialogProgress = DialogProgress()
     var nextquery: Query? = null
     var isFilterOn = false
+    var product = ProductModel()
+    var actionBtnTapped = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,20 +56,17 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        db = FirebaseFirestore.getInstance()
-        firebaseStorage = Firebase.storage
-        auth = Firebase.auth
-        dbProducts = getString(R.string.db_product)
         initListeners()
         initAdapter()
-        getProducts()
+        viewModel.getProducts(getDbProduct(requireContext()), productList)
         searchProduct()
         onBackPressed()
+        configureObservables()
     }
 
     override fun lastItemRecyclerView(isShow: Boolean) {
-        if (isFilterOn)
-        else getMoreProducts()
+//        if (isFilterOn)
+//        else getMoreProducts()
     }
 
     private fun onBackPressed() {
@@ -92,29 +86,139 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
     }
 
     private fun selectedProduct(productModel: ProductModel) {
-        findNavController().navigate(ProductFragmentDirections.actionProductFragmentToEditProductFragment(productModel))
+//        findNavController().navigate(
+
+
+//            ProductFragmentDirections.actionProductFragmentToEditProductFragment(
+//                productModel
+//            )
+//        )
     }
 
     private fun initAdapter() {
         binding.rvProduct.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProduct.setHasFixedSize(true)
-        productAdapter = ProductAdapter(requireContext(), productlist, this, this) { product, select ->
-            optionSelect(product, select)
+        productAdapter = ProductAdapter(requireContext(), productList, this, this) { product, select ->
+
         }
         binding.rvProduct.adapter = productAdapter
         swipeToGesture(binding.rvProduct)
     }
 
-    private fun optionSelect(productModel: ProductModel, select: Int) {
-        when (select) {
-            ProductAdapter.SELECT_REMOVE -> {
-                configDialog(productModel)
+    private fun swipeToGesture(itemRv: RecyclerView?) {
+        val swipeGesture = object : SwipeGesture(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                try {
+                    when (direction) {
+                        ItemTouchHelper.LEFT -> {
+                            viewModel.removeProduct(
+                                dbProduct = getDbProduct(requireContext()),
+                                productModel = productList[position],
+                                position = position
+                            )
+
+                        }
+
+                        ItemTouchHelper.RIGHT -> {
+                            val productPosition = productList[position]
+                            selectedProduct(productPosition)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        val touchHelper = ItemTouchHelper(swipeGesture)
+        touchHelper.attachToRecyclerView(itemRv)
+    }
+
+    private fun configureObservables() {
+        viewModel.model.screenState.observe(viewLifecycleOwner) {
+            handleState(it)
+        }
+    }
+
+    private fun handleState(state: CommonModelState.CommonState?) {
+        when (state) {
+            is CommonModelState.CommonState.Loading -> {
+                if (state.isLoading) dialogProgress.show(childFragmentManager, "0")
+                else dialogProgress.dismiss()
             }
 
-            ProductAdapter.SELECT_EDIT -> {
+            is CommonModelState.CommonState.RemoveProductSuccess -> {
+                product = productList[state.position]
+                productList.removeAt(state.position)
+                productAdapter.notifyItemRemoved(state.position)
+
+
+                val snackBar = Snackbar.make(
+                    binding.rvProduct, getString(R.string.item_deleted_client), 5000
+                ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        super.onDismissed(transientBottomBar, event)
+                    }
+
+                    override fun onShown(transientBottomBar: Snackbar?) {
+                        transientBottomBar?.setAction(getString(R.string.undo_client)) {
+                            productList.clear()
+                            viewModel.insertProduct(getDbProduct(requireContext()), product)
+                            viewModel.getProducts(getDbProduct(requireContext()), productList)
+                            actionBtnTapped = true
+                        }
+                        super.onShown(transientBottomBar)
+                    }
+                }).apply {
+                    animationMode = Snackbar.ANIMATION_MODE_FADE
+                }
+                snackBar.setActionTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.pink,
+
+                        )
+                )
+                snackBar.show()
+
+                viewModel.removeImageFireStorage(getDbProduct(requireContext()), product.barcode.toString())
+                viewModel.getProducts(getDbProduct(requireContext()), productList)
+
+
+            }
+
+            is CommonModelState.CommonState.DeleteProductError -> {
+                Util.exibirToast(
+                    requireContext(),
+                    getString(R.string.error_delete_product) + ":" + state.message
+                )
+            }
+
+            is CommonModelState.CommonState.InsertProductSuccess -> {
+                Util.exibirToast(requireContext(), getString(R.string.error_save_product))
+            }
+
+            is CommonModelState.CommonState.GetProductsLoaded, CommonModelState.CommonState.FilterProductSuccess -> {
+                productList.clear()
+                productList.addAll(viewModel.model.productsResult)
+                productAdapter.notifyDataSetChanged()
+            }
+
+            else -> {
             }
         }
     }
+//    private fun optionSelect(productModel: ProductModel, select: Int) {
+//        when (select) {
+//            ProductAdapter.SELECT_REMOVE -> {
+//                configDialog(productModel)
+//            }
+//
+//            ProductAdapter.SELECT_EDIT -> {
+//            }
+//        }
+//    }
 
     private fun configDialog(productModel: ProductModel) {
 
@@ -130,7 +234,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
 
         //performing positive action
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            deleteProduct(productModel)
+//            deleteProduct(productModel)
         }
 //        //performing cancel action
 //        builder.setNeutralButton("Cancel"){dialogInterface , which ->
@@ -147,67 +251,6 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
         alertDialog.show()
     }
 
-    private fun swipeToGesture(itemRv: RecyclerView?) {
-        val swipeGesture = object : SwipeGesture(requireContext()) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                var actionBtnTapped = false
-                try {
-                    when (direction) {
-                        ItemTouchHelper.LEFT -> {
-
-                            val product = productlist[position]
-                            productlist.removeAt(position)
-                            productAdapter.notifyItemRemoved(position)
-
-                            deleteProduct(product)
-                            productAdapter.notifyDataSetChanged()
-
-                            val snackBar = Snackbar.make(
-                                binding.rvProduct, getString(R.string.item_deleted_client), 5000
-                            ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                                    super.onDismissed(transientBottomBar, event)
-                                }
-
-                                override fun onShown(transientBottomBar: Snackbar?) {
-                                    transientBottomBar?.setAction(getString(R.string.undo_client)) {
-//                                        clientlist.add(position, client)
-                                        productlist.clear()
-                                        insertProduct(product)
-                                        getProducts()
-//                                        clientAdapter.notifyItemInserted(position)
-//                                        clientAdapter.notifyDataSetChanged()
-                                        actionBtnTapped = true
-                                    }
-                                    super.onShown(transientBottomBar)
-                                }
-                            }).apply {
-                                animationMode = Snackbar.ANIMATION_MODE_FADE
-                            }
-                            snackBar.setActionTextColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.pink,
-                                )
-                            )
-                            snackBar.show()
-                        }
-
-                        ItemTouchHelper.RIGHT -> {
-                            val clientPosition = productlist[position]
-                            selectedProduct(clientPosition)
-                        }
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        val touchHelper = ItemTouchHelper(swipeGesture)
-        touchHelper.attachToRecyclerView(itemRv)
-    }
-
     // Filter  -----------------------------------------------------------
     private fun searchProduct() {
         binding.svProduct.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
@@ -220,7 +263,7 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 isFilterOn = true
-                filterSearchProduct(newText.toString())
+                viewModel.filterSearchProducts(getDbProduct(requireContext()), newText ?: "", productList)
                 Log.d("Diego-onQueryTextChange", newText.toString())
                 return true
             }
@@ -229,124 +272,114 @@ class ListProductFragment : Fragment(), ProductAdapter.LastItemRecyclerView {
             android.widget.SearchView.OnCloseListener {
             override fun onClose(): Boolean {
                 binding.svProduct.onActionViewCollapsed()
-                productlist.clear()
+                productList.clear()
                 productAdapter.notifyDataSetChanged()
-                getProducts()
+                viewModel.getProducts(getDbProduct(requireContext()), productList)
                 isFilterOn = false
                 return true
             }
         })
     }
 
-    private fun filterSearchProduct(newText: String) {
-        db!!.collection(dbProducts).orderBy("description").startAt(newText)
-            .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
-                if (results.size() > 0) {
-                    productlist.clear()
-                    for (result in results) {
-                        val productModel = result.toObject(ProductModel::class.java)
-                        productlist.add(productModel)
-                    }
-                    productAdapter.notifyDataSetChanged()
-                }
-            }?.addOnFailureListener { error ->
-                Toast.makeText(
-                    requireContext(),
-                    "Error ${error.message.toString()}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-    }
+//    private fun filterSearchProduct(newText: String) {
+//        db!!.collection(dbProducts).orderBy("description").startAt(newText)
+//            .endAt(newText + "\uf8ff")?.limit(5)?.get()?.addOnSuccessListener { results ->
+//                if (results.size() > 0) {
+//                    productlist.clear()
+//                    for (result in results) {
+//                        val productModel = result.toObject(ProductModel::class.java)
+//                        productlist.add(productModel)
+//                    }
+//                    productAdapter.notifyDataSetChanged()
+//                }
+//            }?.addOnFailureListener { error ->
+//                Toast.makeText(
+//                    requireContext(),
+//                    "Error ${error.message.toString()}",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//    }
 
-    // Firestore DataBase --------------------------------------------------
-    private fun insertProduct(productModel: ProductModel) {
-        db!!.collection(dbProducts).document(productModel.barcode.toString())
-            .set(productModel).addOnCompleteListener {
-//                Util.exibirToast(requireContext(), getString(R.string.add_success_client))
-            }.addOnFailureListener {
-                Util.exibirToast(requireContext(), getString(R.string.error_save_client))
-            }
-    }
+//    private fun getProducts() {
+//        val dialogProgress = DialogProgress()
+//        dialogProgress.show(childFragmentManager, "0")
+//
+//        db!!.collection(dbProducts).orderBy("description").limit(10).get().addOnSuccessListener { results ->
+//            dialogProgress.dismiss()
+//
+//
+//            if (results.size() > 0) {
+//                productlist.clear()
+//
+//                // result é uma lista
+//                for (result in results) {
+//                    val productModel = result.toObject(ProductModel::class.java)
+//                    productlist.add(productModel)
+//                }
+//                // pegar ultimo item da query
+//                val lastresult = results.documents[results.size() - 1]
+//                nextquery = db!!.collection(dbProducts)
+//                    .orderBy("description")
+//                    .startAfter(lastresult)
+//                    .limit(10)
+//                Log.d("nextQuery", "${nextquery}")
+//                productAdapter.notifyDataSetChanged()
+//
+//            } else {
+//                dialogProgress.dismiss()
+//                Util.exibirToast(requireContext(), getString(R.string.no_list_product))
+//            }
+//        }.addOnFailureListener { error ->
+//            dialogProgress.dismiss()
+//            Util.exibirToast(requireContext(), getString(R.string.error_show_product) + ":" + error.message.toString())
+//        }
+//    }
 
-    private fun getProducts() {
-        val dialogProgress = DialogProgress()
-        dialogProgress.show(childFragmentManager, "0")
+//    private fun getMoreProducts() {
+//        nextquery?.get()?.addOnSuccessListener { results ->
+//            Log.d("****nextqueryProduct", "${(nextquery?.get()?.addOnSuccessListener {})}")
+//            // o if e para verificar se chegou o fim da lista
+//            if (results.size() > 0) {
+//                // pegar ultimo item da query
+//                val lastresult = results.documents[results.size() - 1]
+//                Log.d("DIEGO", "$lastresult")
+//                nextquery = db!!.collection(dbProducts).orderBy("description").startAfter(lastresult).limit(10)
+//
+//                for (result in results) {
+//                    val productModel = result.toObject(ProductModel::class.java)
+//                    productlist.add(productModel)
+//                }
+//                // notificar que teve atualizalçao
+//                productAdapter.notifyDataSetChanged()
+//            } else {
+////                Util.exibirToast(requireContext(), "Não ha mais itens para serem exibidos")
+//            }
+//        }?.addOnFailureListener() { error ->
+//            Util.exibirToast(requireContext(), error.message.toString())
+//        }
+//    }
 
-        db!!.collection(dbProducts).orderBy("description").limit(10).get().addOnSuccessListener { results ->
-            dialogProgress.dismiss()
+//    private fun deleteProduct(productModel: ProductModel) {
+//        val reference = db!!.collection(dbProducts)
+//        productModel.barcode?.let {
+//            reference.document(it).delete().addOnCompleteListener() { task ->
+//                if (task.isSuccessful) {
+////                    removeImage(productModel.barcode!!)
+////                    Util.exibirToast(requireContext(), getString(R.string.information_delete_product))
+//                    getProducts()
+//                } else {
+//                    Util.exibirToast(requireContext(), getString(R.string.error_delete_product) + ":" + task.exception.toString())
+//                }
+//            }
+//        }
+//    }
 
-
-            if (results.size() > 0) {
-                productlist.clear()
-
-                // result é uma lista
-                for (result in results) {
-                    val productModel = result.toObject(ProductModel::class.java)
-                    productlist.add(productModel)
-                }
-                // pegar ultimo item da query
-                val lastresult = results.documents[results.size() - 1]
-                nextquery = db!!.collection(dbProducts)
-                    .orderBy("description")
-                    .startAfter(lastresult)
-                    .limit(10)
-                Log.d("nextQuery", "${nextquery}")
-                productAdapter.notifyDataSetChanged()
-
-            } else {
-                dialogProgress.dismiss()
-                Util.exibirToast(requireContext(), getString(R.string.no_list_product))
-            }
-        }.addOnFailureListener { error ->
-            dialogProgress.dismiss()
-            Util.exibirToast(requireContext(), getString(R.string.error_show_product) + ":" + error.message.toString())
-        }
-    }
-
-    private fun getMoreProducts() {
-        nextquery?.get()?.addOnSuccessListener { results ->
-            Log.d("****nextqueryProduct", "${(nextquery?.get()?.addOnSuccessListener {})}")
-            // o if e para verificar se chegou o fim da lista
-            if (results.size() > 0) {
-                // pegar ultimo item da query
-                val lastresult = results.documents[results.size() - 1]
-                Log.d("DIEGO", "$lastresult")
-                nextquery = db!!.collection(dbProducts).orderBy("description").startAfter(lastresult).limit(10)
-
-                for (result in results) {
-                    val productModel = result.toObject(ProductModel::class.java)
-                    productlist.add(productModel)
-                }
-                // notificar que teve atualizalçao
-                productAdapter.notifyDataSetChanged()
-            } else {
-//                Util.exibirToast(requireContext(), "Não ha mais itens para serem exibidos")
-            }
-        }?.addOnFailureListener() { error ->
-            Util.exibirToast(requireContext(), error.message.toString())
-        }
-    }
-
-    private fun deleteProduct(productModel: ProductModel) {
-        val reference = db!!.collection(dbProducts)
-        productModel.barcode?.let {
-            reference.document(it).delete().addOnCompleteListener() { task ->
-                if (task.isSuccessful) {
-//                    removeImage(productModel.barcode!!)
-//                    Util.exibirToast(requireContext(), getString(R.string.information_delete_product))
-                    getProducts()
-                } else {
-                    Util.exibirToast(requireContext(), getString(R.string.error_delete_product) + ":" + task.exception.toString())
-                }
-            }
-        }
-    }
-
-    private fun removeImage(barcode: String) {
-        val reference = firebaseStorage.reference.child(dbProducts).child("${barcode}.jpg")
-        reference.delete().addOnSuccessListener { task ->
-        }.addOnFailureListener { error ->
-            Util.exibirToast(requireContext(), getString(R.string.error_delete_image) + ":" + error.message.toString())
-        }
-    }
+//    private fun removeImage(barcode: String) {
+//        val reference = firebaseStorage.reference.child(dbProducts).child("${barcode}.jpg")
+//        reference.delete().addOnSuccessListener { task ->
+//        }.addOnFailureListener { error ->
+//            Util.exibirToast(requireContext(), getString(R.string.error_delete_image) + ":" + error.message.toString())
+//        }
+//    }
 }

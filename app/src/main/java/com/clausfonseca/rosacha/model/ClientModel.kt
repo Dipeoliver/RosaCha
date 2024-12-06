@@ -1,6 +1,5 @@
 package com.clausfonseca.rosacha.model
 
-import android.app.DownloadManager.Query
 import android.os.Parcel
 import android.os.Parcelable
 import com.clausfonseca.rosacha.data.firebase.FirebaseHelper
